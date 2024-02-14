@@ -1,5 +1,12 @@
 <template>
-    <div class="header w-full h-20% text-center bg-red-200">
-        <el-text>驿站管理系统</el-text>
+    <div class="header w-full h-full text-center bg-red-200 flex items-center justify-center">
+        <span class="title font-semibold text-white text-9xl">驿 站 管 理 系 统</span>
     </div>
 </template>
+
+<style scoped lang="scss">
+.header{
+    background-color:var(--primary-color)
+}
+
+</style>
