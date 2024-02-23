@@ -1,6 +1,6 @@
 <template>
     <div class="login-container h-full w-full flex justify-center items-center" >
-        <article class="login-form h-60% w-30% bg-white rounded-20 flex flex-col items-center overflow-hidden" >
+        <article class="login-form min-h-60% w-30% bg-white rounded-20 flex flex-col items-center overflow-hidden" >
 
             <div class=" <sm:shadow-none p-5 w-60% h-60% flex flex-col items-center">
                 <div>

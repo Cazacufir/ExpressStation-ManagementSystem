@@ -13,19 +13,19 @@ const routes = [
     redirect: "/login",
     children: [
       {
-        path: "/cooperate",
-        name: "Cooperate",
-        component: async () => await import("@/views/cooperate/cooperate.vue"),
-        meta: {
-          title: "合作公司"
-        },
-      },
-      {
         path: "/main",
         name: "Main",
         component: async () => await import("@/views/main/main.vue"),
         meta: {
           title: "驿站主体信息"
+        },
+      },
+      {
+        path: "/cooperate",
+        name: "Cooperate",
+        component: async () => await import("@/views/cooperate/cooperate.vue"),
+        meta: {
+          title: "合作公司"
         },
       },
       {
