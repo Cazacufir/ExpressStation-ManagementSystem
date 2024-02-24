@@ -1,5 +1,4 @@
 <template>
-    快递管理页面
     <router-view :key="key"/>
 </template>
 

@@ -48,6 +48,30 @@ const routes = [
             meta:{
               title:'快递入库'
             }
+          },
+          {
+            path: "out",
+            name: "Out",
+            component: async () => await import("@/views/parcel/views/out.vue"),
+            meta:{
+              title:'快递出库'
+            }
+          },
+          {
+            path: "send",
+            name: "Send",
+            component: async () => await import("@/views/parcel/views/send.vue"),
+            meta:{
+              title:'寄送快递'
+            }
+          },
+          {
+            path:'search',
+            name:'Search',
+            component: async () => await import("@/views/parcel/views/search.vue"),
+            meta:{
+              title:'快递查询'
+            }
           }
         ],
         meta: {
