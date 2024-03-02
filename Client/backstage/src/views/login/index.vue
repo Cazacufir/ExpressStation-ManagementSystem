@@ -2,7 +2,7 @@
     <div class="login-container h-full w-full flex justify-center items-center" >
         <article class="login-form min-h-60% w-30% bg-white rounded-20 flex flex-col items-center overflow-hidden" >
 
-            <div class=" <sm:shadow-none p-5 w-60% h-60% flex flex-col items-center">
+            <div class=" <sm:shadow-none p-5 h-60% flex flex-col items-center">
                 <div>
                     <button v-for="(_, tab) in tabs" :key="tab" :class="['tab-button', { active: currentTab === tab }]"
                         @click="currentTab = tab">
@@ -13,7 +13,7 @@
                 </div>
 
                 <Transition name="slide-fade" mode="out-in">
-                    <component :is="tabs[currentTab]" class="tab h-full w-full flex flex-1 flex-col pt-60"></component>
+                    <component :is="tabs[currentTab]" class="tab"></component>
                 </Transition>
             </div>
 
@@ -73,4 +73,5 @@ button.active~button::before {
 .slide-fade-leave-to {
     transform: translate3d(10%, 0, 0);
     opacity: 0;
-}</style>
+}
+</style>

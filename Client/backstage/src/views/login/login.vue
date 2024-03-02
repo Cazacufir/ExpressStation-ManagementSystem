@@ -3,14 +3,15 @@
     ref="login_ruleFormRef"
     :model="user"
     :rules="rules"
-    size="large">
+    size="large"
+    class="h-full w-full flex flex-1 flex-col pt-40">
         <el-form-item prop="contact">
-            <el-input v-model="user.contact" placeholder="请输入您的手机号" ></el-input>
+            <el-input v-model="user.contact" placeholder="请输入您的手机号" style="width:250px"></el-input>
         </el-form-item>
 
         <el-form-item prop="password">
             <el-input v-model="user.password" placeholder="请输入密码" type="password"
-            show-password></el-input>
+            show-password style="width:250px"></el-input>
         </el-form-item>
 
         <el-form-item>

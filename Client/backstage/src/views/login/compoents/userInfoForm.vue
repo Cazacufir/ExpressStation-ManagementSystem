@@ -1,0 +1,49 @@
+<template>
+    <el-form ref="info_ruleFormRef" :model="info" :rules="rules_info" size="large" label-width="auto">
+        <el-form-item prop="age" label="您的年龄">
+            <el-input v-model="info.age"></el-input>
+        </el-form-item>
+
+        <el-form-item prop="sex" label="您的性别">
+            <el-input v-model="info.sex"></el-input>
+        </el-form-item>
+
+        <el-form-item prop="name" label="您的姓名">
+            <el-input v-model="info.name"></el-input>
+        </el-form-item>
+        </el-form>
+</template>
+
+<script setup>
+import { reactive, ref } from 'vue';
+
+const info_ruleFormRef = ref()
+
+const info = reactive({
+    age:null,
+    sex:null,
+    name:null
+})
+
+const checkAge = (role,value,callback) =>{
+    if(!value){
+        callback(new Error('年龄不能为空!'))
+    }
+    else if(value < 18 || value >70 ){
+        callback(new Error('请输入合法年龄!'))
+    }
+    callback()
+}
+
+const rules_info = reactive({
+    age:[
+    { validator: checkAge, trigger: 'blur' }
+    ],
+    sex:[
+    { required: true, message: '性别不能为空！', trigger: 'blur' }
+    ],
+    name:[
+    { required: true, message: '姓名不能为空！', trigger: 'blur' }
+    ]
+})
+</script>
