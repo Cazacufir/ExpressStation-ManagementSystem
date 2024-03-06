@@ -3,6 +3,7 @@ package com.parcelhub.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.parcelhub.entity.Admin;
+import com.parcelhub.entity.Hub;
 import com.parcelhub.mapper.AdminMapper;
 import com.parcelhub.service.AdminService;
 import com.parcelhub.utils.AppHttpCodeEnum;

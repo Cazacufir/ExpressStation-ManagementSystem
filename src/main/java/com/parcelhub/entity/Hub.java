@@ -15,11 +15,13 @@ import java.util.Date;
 public class Hub implements Serializable {
 
     @TableId(type = IdType.AUTO)
-    private int Id;
+    private int id;
 
     private String name;
 
     private String contact;
+
+    private String address;
 
     private String open_time;
 
