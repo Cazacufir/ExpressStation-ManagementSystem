@@ -31,4 +31,9 @@ public class HubController {
     public Result deleteCompany(@RequestParam int com_id,@RequestParam int hub_id){
         return hubService.deleteCompany(com_id,hub_id);
     }
+
+    @PostMapping("/addCompany")
+    public Result addCompany(@RequestParam int com_id,@RequestParam int hub_id){
+        return hubService.addCompany(com_id, hub_id);
+    }
 }

@@ -50,4 +50,12 @@ public class HubServiceImpl extends ServiceImpl<HubMapper, Hub>  implements HubS
         comHubMergeMapper.deleteById(comHubMerge.getMapId());
         return Result.okResult("取消合作成功");
     }
+
+    public Result addCompany(int com_id,int hub_id){
+        ComHubMerge comHubMerge = new ComHubMerge();
+        comHubMerge.setCom_id(com_id);
+        comHubMerge.setHub_id(hub_id);
+        comHubMergeMapper.insert(comHubMerge);
+        return Result.okResult();
+    }
 }
