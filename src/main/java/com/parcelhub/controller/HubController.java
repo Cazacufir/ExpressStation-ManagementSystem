@@ -22,4 +22,9 @@ public class HubController {
     public Result updateHubInfo(@RequestBody Hub hub){
         return hubService.updateHubInfo(hub);
     }
+
+    @GetMapping("/companyList")
+    public Result getCompany(@RequestParam int hub_id){
+        return hubService.getCompany(hub_id);
+    }
 }

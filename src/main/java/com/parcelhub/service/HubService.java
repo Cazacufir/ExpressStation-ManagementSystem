@@ -8,4 +8,6 @@ public interface HubService extends IService<Hub> {
     Result getMainInfo(int Id);
 
     Result updateHubInfo(Hub hub);
+
+    Result getCompany(int hubId);
 }
