@@ -1,7 +1,6 @@
 package com.parcelhub.controller;
 
 import com.parcelhub.entity.Hub;
-import com.parcelhub.mapper.HubMapper;
 import com.parcelhub.service.HubService;
 import com.parcelhub.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,5 +25,10 @@ public class HubController {
     @GetMapping("/companyList")
     public Result getCompany(@RequestParam int hub_id){
         return hubService.getCompany(hub_id);
+    }
+
+    @DeleteMapping("/deleteCompany")
+    public Result deleteCompany(@RequestParam int com_id,@RequestParam int hub_id){
+        return hubService.deleteCompany(com_id,hub_id);
     }
 }

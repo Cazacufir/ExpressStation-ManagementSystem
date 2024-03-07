@@ -22,4 +22,6 @@ public class ComHubMerge implements Serializable {
     private int com_id;
 
     private int hub_id;
+
+    private int delFlag;
 }

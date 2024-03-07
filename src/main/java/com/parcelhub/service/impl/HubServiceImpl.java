@@ -1,6 +1,8 @@
 package com.parcelhub.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.parcelhub.entity.ComHubMerge;
 import com.parcelhub.entity.Company;
 import com.parcelhub.entity.Hub;
 import com.parcelhub.mapper.ComHubMergeMapper;
@@ -37,5 +39,15 @@ public class HubServiceImpl extends ServiceImpl<HubMapper, Hub>  implements HubS
         else {
             return Result.okResult(companyList);
         }
+    }
+
+    public Result deleteCompany(int com_id,int hub_id){
+        QueryWrapper<ComHubMerge> comHubMergeQueryWrapper = new QueryWrapper<>();
+        comHubMergeQueryWrapper.eq("com_id",com_id)
+                .eq("hub_id",hub_id)
+                .eq("delFlag",0);
+        ComHubMerge comHubMerge = comHubMergeMapper.selectOne(comHubMergeQueryWrapper);
+        comHubMergeMapper.deleteById(comHubMerge.getMapId());
+        return Result.okResult("取消合作成功");
     }
 }

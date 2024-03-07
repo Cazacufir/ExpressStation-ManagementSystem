@@ -12,6 +12,6 @@ import java.util.List;
 public interface ComHubMergeMapper extends BaseMapper<ComHubMerge> {
     @Select("SELECT c.* FROM com_hub_merge chm " +
             "INNER JOIN company c ON chm.com_id = c.comId " +
-            "WHERE chm.hub_id = #{hubId}")
+            "WHERE chm.hub_id = #{hubId} AND chm.delFlag = 0")
     List<Company> getCompanyByHubId(int hubId);
 }
