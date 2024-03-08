@@ -1,11 +1,11 @@
 <template>
     <el-container>
-        <el-header>
+        <el-header class="header">
             <Header></Header>
         </el-header>
 
         <el-container>
-            <el-aside class="w-200px">
+            <el-aside class="carrier w-200px h-100vh" >
                 <SideBar></SideBar>
             </el-aside>
 
@@ -19,3 +19,12 @@
 <script setup>
 import { Header,SideBar,AppMain } from './compoents'
 </script>
+
+<style scoped lang="scss">
+.header {
+    background:#545c64
+}
+.carrier {
+    background:#545c64
+}
+</style>

@@ -1,5 +1,5 @@
 <template>
-    <el-menu default-active="1">
+    <el-menu default-active="1" background-color="#545c64" --active-color="#1e80ff" text-color="#fff">
         <template v-for="(tab, index) in tabs" :key="index">
             <el-sub-menu v-if="tab.children" :index="index">
                 <template #title>
