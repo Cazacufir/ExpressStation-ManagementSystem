@@ -11,6 +11,11 @@
         <el-form-item prop="name" label="您的姓名">
             <el-input v-model="info.name"></el-input>
         </el-form-item>
+
+        <el-form-item>
+            <el-button type="primary m-auto" @click="toSubmit">已完成，下一步</el-button>
+        </el-form-item>
+
         </el-form>
 </template>
 
@@ -18,6 +23,7 @@
 import { reactive, ref } from 'vue';
 
 const info_ruleFormRef = ref()
+const emit = defineEmits(['getAdmin'])
 
 const info = reactive({
     age:null,
@@ -46,4 +52,8 @@ const rules_info = reactive({
     { required: true, message: '姓名不能为空！', trigger: 'blur' }
     ]
 })
+
+const toSubmit = () => {
+    emit('getAdmin','123',true)
+}
 </script>

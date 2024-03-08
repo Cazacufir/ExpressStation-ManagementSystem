@@ -15,6 +15,7 @@
                 <Transition name="slide-fade" mode="out-in">
                     <component :is="tabs[currentTab]" class="tab"></component>
                 </Transition>
+
             </div>
 
         </article>
@@ -28,6 +29,8 @@ import Register from './register.vue'
 
 const tabs = { Login, Register };
 const currentTab = ref('Login')
+
+let showNext = ref(false)
 </script>
 
 <style scoped lang="scss">

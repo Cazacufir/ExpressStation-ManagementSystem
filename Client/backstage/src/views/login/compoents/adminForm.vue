@@ -13,7 +13,7 @@
         </el-form-item>
 
         <el-form-item>
-            <el-button type="primary w-full">注 册</el-button>
+            <el-button type="primary w-full" @click="toSubmit">注 册</el-button>
         </el-form-item>
     </el-form>
 </template>
@@ -26,6 +26,8 @@ const user = reactive({
     password: '',
     conf: ''
 })
+
+const emit = defineEmits(['getInfo'])
 
 const register_ruleFormRef = ref()
 
@@ -51,4 +53,8 @@ const rules_user = reactive({
         { validator: checkConf, trigger: 'blur' }
     ]
 })
+
+const toSubmit = () =>{
+    emit('getInfo',213,false)
+}
 </script>

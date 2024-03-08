@@ -19,6 +19,10 @@
             <el-input v-model="hub.address"></el-input>
         </el-form-item>
 
+        <el-form-item>
+            <el-button type="primary m-auto" @click="toSubmit">已完成，下一步</el-button>
+        </el-form-item>
+
     </el-form>
 </template>
 
@@ -31,6 +35,8 @@ const hub = reactive({
     name:'',
     address:''
 })
+
+const emit = defineEmits(['getHub'])
 
 const hub_ruleFormRef = ref()
 
@@ -81,4 +87,8 @@ const rules_hub = reactive({
         { validator: checkAddress, trigger: 'blur' }
     ]
 })
+
+const toSubmit = () => {
+    emit('getHub',321,true)
+}
 </script>
