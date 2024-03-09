@@ -1,5 +1,6 @@
 package com.parcelhub.controller;
 
+import com.parcelhub.entity.Staff;
 import com.parcelhub.service.StaffService;
 import com.parcelhub.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,5 +21,10 @@ public class StaffController {
     @GetMapping("/getStaffList")
     public Result getStaffList(@RequestParam int hub_id){
         return staffService.getStaffList(hub_id);
+    }
+
+    @PostMapping("/addStaff")
+    public Result addStaff(@RequestBody Staff staff){
+        return staffService.addStaff(staff);
     }
 }

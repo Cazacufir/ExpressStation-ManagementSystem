@@ -23,7 +23,7 @@ public enum AppHttpCodeEnum {
     SKU_STOCK_LIMIT(515, "库存不足"),
     UPLOAD_ERROR(516, "上传错误"),
     ATTRIBUTE_IS_EXIST(517, "Attribute已存在"),
-    ATTRIBUTEID_NOT_EXIST(518, "AttributeId不存在"),
+    STAFF_EXIST(406, "员工已存在"),
     HUB_ID_NOT_EXIST(416, "驿站ID不存在"),
     HUB_NAME_EXIST(403, "驿站名称已被注册"),
     ADDRESS_EXIST(403,"地址已被使用");
