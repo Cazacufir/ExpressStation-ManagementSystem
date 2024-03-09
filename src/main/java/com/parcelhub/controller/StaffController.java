@@ -27,4 +27,9 @@ public class StaffController {
     public Result addStaff(@RequestBody Staff staff){
         return staffService.addStaff(staff);
     }
+
+    @DeleteMapping("/deleteStaff")
+    public Result deleteStaff(@RequestParam int staffId){
+        return staffService.deleteStaff(staffId);
+    }
 }
