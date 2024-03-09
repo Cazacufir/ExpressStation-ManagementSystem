@@ -6,6 +6,8 @@ import com.parcelhub.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 public class HubController {
 
@@ -35,5 +37,10 @@ public class HubController {
     @PostMapping("/addCompany")
     public Result addCompany(@RequestParam int com_id,@RequestParam int hub_id){
         return hubService.addCompany(com_id, hub_id);
+    }
+
+    @PostMapping("/vertifyHub")
+    public Result vertifyHub(@RequestBody Map<String,Object> map){
+        return hubService.vertifyHub(map);
     }
 }

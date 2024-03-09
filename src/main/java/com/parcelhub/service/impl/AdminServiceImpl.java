@@ -120,7 +120,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
 
                 return Result.okResult();
             }
-            return Result.errorResult(AppHttpCodeEnum.USERNAME_EXIST);
+            return Result.errorResult(AppHttpCodeEnum.PHONENUMBER_EXIST);
         }
         catch (Exception e)
         {

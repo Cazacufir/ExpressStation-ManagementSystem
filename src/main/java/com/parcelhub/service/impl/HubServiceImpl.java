@@ -1,5 +1,6 @@
 package com.parcelhub.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.parcelhub.entity.ComHubMerge;
@@ -8,11 +9,14 @@ import com.parcelhub.entity.Hub;
 import com.parcelhub.mapper.ComHubMergeMapper;
 import com.parcelhub.mapper.HubMapper;
 import com.parcelhub.service.HubService;
+import com.parcelhub.utils.AppHttpCodeEnum;
 import com.parcelhub.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @Service
 public class HubServiceImpl extends ServiceImpl<HubMapper, Hub>  implements HubService {
@@ -57,5 +61,24 @@ public class HubServiceImpl extends ServiceImpl<HubMapper, Hub>  implements HubS
         comHubMerge.setHub_id(hub_id);
         comHubMergeMapper.insert(comHubMerge);
         return Result.okResult();
+    }
+
+    public Result vertifyHub(Map<String,Object> map){
+        LambdaQueryWrapper<Hub> hubLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        hubLambdaQueryWrapper.eq(Hub::getAddress,map.get("address"));
+        Hub hub1 = hubMapper.selectOne(hubLambdaQueryWrapper);
+
+        LambdaQueryWrapper<Hub> hubLambdaQueryWrapper1 = new LambdaQueryWrapper<>();
+        hubLambdaQueryWrapper1.eq(Hub::getName,map.get("name"));
+        Hub hub2 = hubMapper.selectOne(hubLambdaQueryWrapper1);
+        if(Objects.isNull(hub1) && Objects.isNull(hub2)){
+            return Result.okResult();
+        }
+        else if(!Objects.isNull(hub1)){
+            return Result.errorResult(AppHttpCodeEnum.ADDRESS_EXIST);
+        }
+        else {
+            return Result.errorResult(AppHttpCodeEnum.HUB_NAME_EXIST);
+        }
     }
 }
