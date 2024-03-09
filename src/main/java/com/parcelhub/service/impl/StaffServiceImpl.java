@@ -12,6 +12,7 @@ import com.parcelhub.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -20,6 +21,10 @@ public class StaffServiceImpl extends ServiceImpl<StaffMapper, Staff> implements
 
     @Autowired
     HubMapper hubMapper;
+
+    @Autowired
+    StaffMapper staffMapper;
+
     @Override
     public Result vertifyInfo(Map<String,Object> map){
         LambdaQueryWrapper<Hub> hubLambdaQueryWrapper = new LambdaQueryWrapper<>();
@@ -33,5 +38,13 @@ public class StaffServiceImpl extends ServiceImpl<StaffMapper, Staff> implements
         else {
             return Result.okResult();
         }
+    }
+
+    @Override
+    public Result getStaffList(int hub_id){
+        LambdaQueryWrapper<Staff> staffLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        staffLambdaQueryWrapper.eq(Staff::getHub_id,hub_id);
+        List<Staff> staff = staffMapper.selectList(staffLambdaQueryWrapper);
+        return Result.okResult(staff);
     }
 }

@@ -8,4 +8,6 @@ import java.util.Map;
 
 public interface StaffService extends IService<Staff> {
     Result vertifyInfo(Map<String,Object> map);
+
+    Result getStaffList(int hub_id);
 }
