@@ -28,5 +28,5 @@ public class Staff implements Serializable {
 
     private Date joinDate;
 
-    private String hub_id;
+    private int hub_id;
 }

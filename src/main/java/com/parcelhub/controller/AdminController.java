@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
 public class AdminController {
 
@@ -36,8 +38,13 @@ public class AdminController {
         return  loginService.login(admin);
     }
 
+//    @PostMapping("/register")
+//    public Result register(@RequestBody Admin admin){
+//        return adminService.register(admin);
+//    }
+
     @PostMapping("/register")
-    public Result register(@RequestBody Admin admin){
-        return adminService.register(admin);
+    public Result register(@RequestBody Map<String,Object> map){
+        return adminService.register(map);
     }
 }
