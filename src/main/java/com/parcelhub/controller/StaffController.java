@@ -32,4 +32,9 @@ public class StaffController {
     public Result deleteStaff(@RequestParam int staffId){
         return staffService.deleteStaff(staffId);
     }
+
+    @PutMapping("/updateStaffInfo")
+    public Result updateStaffInfo(@RequestBody Staff staff){
+        return staffService.updateStaffInfo(staff);
+    }
 }
