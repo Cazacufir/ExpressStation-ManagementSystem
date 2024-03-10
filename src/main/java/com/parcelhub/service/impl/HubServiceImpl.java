@@ -35,7 +35,7 @@ public class HubServiceImpl extends ServiceImpl<HubMapper, Hub>  implements HubS
         return Result.okResult("更新成功!");
     }
 
-    public Result getCompany(int hubId){
+    public Result getCompanyList(int hubId){
         List<Company> companyList = comHubMergeMapper.getCompanyByHubId(hubId);
         if(companyList.isEmpty()){
             return Result.errorResult2(404,"暂未与任何快递公司合作!");

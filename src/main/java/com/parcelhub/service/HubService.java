@@ -11,7 +11,7 @@ public interface HubService extends IService<Hub> {
 
     Result updateHubInfo(Hub hub);
 
-    Result getCompany(int hubId);
+    Result getCompanyList(int hubId);
 
     Result deleteCompany(int com_id,int hub_id);
 

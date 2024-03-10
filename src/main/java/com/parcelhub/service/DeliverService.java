@@ -7,4 +7,8 @@ import com.parcelhub.utils.Result;
 public interface DeliverService extends IService<Deliver> {
 
     Result updateDeliver(Deliver deliver);
+
+    Result addDeliver(Deliver deliver);
+
+    Result deleteDeliver(int deliverId);
 }

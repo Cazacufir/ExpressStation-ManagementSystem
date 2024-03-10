@@ -18,4 +18,14 @@ public class DeliverServiceImpl extends ServiceImpl<DeliverMapper, Deliver> impl
         deliverMapper.updateById(deliver);
         return Result.okResult();
     }
+
+    public Result addDeliver(Deliver deliver){
+        deliverMapper.insert(deliver);
+        return Result.okResult();
+    }
+
+    public Result deleteDeliver(int deliverId){
+        deliverMapper.deleteById(deliverId);
+        return Result.okResult();
+    }
 }

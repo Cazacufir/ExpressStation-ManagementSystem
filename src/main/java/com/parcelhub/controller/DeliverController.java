@@ -5,10 +5,7 @@ import com.parcelhub.service.DeliverHubMergeService;
 import com.parcelhub.service.DeliverService;
 import com.parcelhub.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class DeliverController {
@@ -26,5 +23,15 @@ public class DeliverController {
     @PutMapping("/updateDeliver")
     public Result updateDeliver(Deliver deliver){
         return deliverService.updateDeliver(deliver);
+    }
+
+    @PostMapping("/addDeliver")
+    public Result addDeliver(Deliver deliver){
+        return deliverService.addDeliver(deliver);
+    }
+
+    @DeleteMapping("/deleteDeliver")
+    public Result deleteDeliver(int deliverId){
+        return deliverService.deleteDeliver(deliverId);
     }
 }
