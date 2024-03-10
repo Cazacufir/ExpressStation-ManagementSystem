@@ -77,9 +77,9 @@ public class StaffServiceImpl extends ServiceImpl<StaffMapper, Staff> implements
     @Override
     public Result updateStaffInfo(Staff staff){
         staffMapper.updateById(staff);
-        LambdaQueryWrapper<Staff> staffLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        staffLambdaQueryWrapper.eq(Staff::getStaffId,staff.getStaffId());
-        Staff staff1 = staffMapper.selectOne(staffLambdaQueryWrapper);
-        return Result.okResult(staff1);
+//        LambdaQueryWrapper<Staff> staffLambdaQueryWrapper = new LambdaQueryWrapper<>();
+//        staffLambdaQueryWrapper.eq(Staff::getStaffId,staff.getStaffId());
+//        Staff staff1 = staffMapper.selectOne(staffLambdaQueryWrapper);
+        return Result.okResult();
     }
 }
