@@ -82,4 +82,25 @@ public class StaffServiceImpl extends ServiceImpl<StaffMapper, Staff> implements
 //        Staff staff1 = staffMapper.selectOne(staffLambdaQueryWrapper);
         return Result.okResult();
     }
+
+    @Override
+    public Result getStaff(int staffId){
+        Staff staff = staffMapper.selectById(staffId);
+        if(Objects.isNull(staff)){
+            return Result.errorResult(AppHttpCodeEnum.STAFF_NOT_EXIST);
+        }
+        return Result.okResult(staff);
+    }
+
+    @Override
+    public Result getStaff(String name){
+        LambdaQueryWrapper<Staff> staffLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        staffLambdaQueryWrapper.like(Staff::getName,name);
+        Staff staff = staffMapper.selectOne(staffLambdaQueryWrapper);
+
+        if (Objects.isNull(staff)){
+            return Result.errorResult(AppHttpCodeEnum.STAFF_NOT_EXIST);
+        }
+        return Result.okResult(staff);
+    }
 }

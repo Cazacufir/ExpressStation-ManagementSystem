@@ -37,4 +37,14 @@ public class StaffController {
     public Result updateStaffInfo(@RequestBody Staff staff){
         return staffService.updateStaffInfo(staff);
     }
+
+    @GetMapping("/getStaff")
+    public Result getStaff(@RequestParam int staffId){
+        return staffService.getStaff(staffId);
+    }
+
+    @GetMapping("/getStaff")
+    public Result getStaff(@RequestParam String name){
+        return staffService.getStaff(name);
+    }
 }

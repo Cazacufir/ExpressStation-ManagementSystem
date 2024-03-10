@@ -16,4 +16,8 @@ public interface StaffService extends IService<Staff> {
     Result deleteStaff(int staffId);
 
     Result updateStaffInfo(Staff staff);
+
+    Result getStaff(int staffId);
+
+    Result getStaff(String name);
 }

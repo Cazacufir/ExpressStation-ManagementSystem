@@ -24,6 +24,7 @@ public enum AppHttpCodeEnum {
     UPLOAD_ERROR(516, "上传错误"),
     DELIVER_NOT_FOUND(403, "未查询到配送员信息"),
     STAFF_EXIST(406, "员工已存在"),
+    STAFF_NOT_EXIST(403,"员工不存在"),
     HUB_ID_NOT_EXIST(416, "驿站ID不存在"),
     HUB_NAME_EXIST(403, "驿站名称已被注册"),
     ADDRESS_EXIST(403,"地址已被使用");

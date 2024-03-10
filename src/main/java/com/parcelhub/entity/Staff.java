@@ -24,6 +24,8 @@ public class Staff implements Serializable {
 
     private String sex;
 
+    private String work;
+
     private String contact;
 
     private Date joinDate;
