@@ -22,7 +22,7 @@ public enum AppHttpCodeEnum {
     CHILDREN_CATEGORY_EXIST(514, "当前分类关联的子分类，不能删除"),
     SKU_STOCK_LIMIT(515, "库存不足"),
     UPLOAD_ERROR(516, "上传错误"),
-    ATTRIBUTE_IS_EXIST(517, "Attribute已存在"),
+    DELIVER_NOT_FOUND(403, "未查询到配送员信息"),
     STAFF_EXIST(406, "员工已存在"),
     HUB_ID_NOT_EXIST(416, "驿站ID不存在"),
     HUB_NAME_EXIST(403, "驿站名称已被注册"),
