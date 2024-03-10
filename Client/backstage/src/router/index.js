@@ -13,6 +13,11 @@ const routes = [
     redirect: "/login",
     children: [
       {
+        path:"/home",
+        name: "Home",
+        component: async () => await import("@/views/home/home.vue"),
+      },
+      {
         path: "/main",
         name: "Main",
         component: async () => await import("@/views/main/main.vue"),
