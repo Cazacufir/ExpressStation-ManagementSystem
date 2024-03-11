@@ -1,4 +1,5 @@
 <template>
+    <div class="container"></div>
     此处放echarts
 </template>
 

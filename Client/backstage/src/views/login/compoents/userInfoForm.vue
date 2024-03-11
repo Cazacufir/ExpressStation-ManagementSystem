@@ -1,5 +1,10 @@
 <template>
     <el-form ref="info_ruleFormRef" :model="info" :rules="rules_info" size="large" label-width="auto">
+
+        <el-form-item prop="name" label="您的姓名">
+            <el-input v-model="info.name"></el-input>
+        </el-form-item>
+
         <el-form-item prop="age" label="您的年龄">
             <el-input v-model="info.age"></el-input>
         </el-form-item>
@@ -8,8 +13,8 @@
             <el-input v-model="info.sex"></el-input>
         </el-form-item>
 
-        <el-form-item prop="name" label="您的姓名">
-            <el-input v-model="info.name"></el-input>
+        <el-form-item prop="address" label="家庭地址">
+            <el-input v-model="info.address"></el-input>
         </el-form-item>
 
         <el-form-item>
@@ -28,7 +33,8 @@ const emit = defineEmits(['getAdmin'])
 const info = reactive({
     age:null,
     sex:null,
-    name:null
+    name:null,
+    address:null
 })
 
 const checkAge = (role,value,callback) =>{
@@ -50,6 +56,9 @@ const rules_info = reactive({
     ],
     name:[
     { required: true, message: '姓名不能为空！', trigger: 'blur' }
+    ],
+    address:[
+    { required: true, message: '地址不能为空！', trigger: 'blur' }
     ]
 })
 

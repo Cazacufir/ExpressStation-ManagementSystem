@@ -75,4 +75,8 @@ const StringIndex = (index) => {
 .el-menu-item.is-active {
     background-color: #1e80ff !important;
 }
+
+.el-menu{
+    border:none
+}
 </style>
