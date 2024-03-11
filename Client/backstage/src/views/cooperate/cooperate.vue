@@ -25,23 +25,23 @@
         </el-card>
     </div>
 
-    <el-dialog v-model="openForm" title="添加合作公司" width="500px">
+    <el-dialog v-model="openForm" title="添加合作公司" width="500px" :rules="company_rules">
         <el-form :model="company" label-width="120px">
-            <el-form-item label="公司名称：">
+            <el-form-item prop="name" label="公司名称：">
                 <el-input v-model="company.name"></el-input>
             </el-form-item>
 
-            <el-form-item label="联系方式：">
+            <el-form-item prop="contact" label="联系方式：">
                 <el-input v-model="company.contact"></el-input>
             </el-form-item>
 
-            <el-form-item label="公司地址：">
+            <el-form-item prop="address" label="公司地址：">
                 <el-input v-model="company.address"></el-input>
             </el-form-item>
         </el-form>
 
         <template #footer>
-            <el-button @click=closeForm>取消</el-button>
+            <el-button @click="closeForm">取消</el-button>
             <el-button type="primary">提交申请</el-button>
         </template>
     </el-dialog>
@@ -79,6 +79,20 @@ const closeForm = () =>{
     company.address = ''
     openForm.value = false
 }
+
+const company_rules = reactive({
+    name: [
+        { required: true, message: '公司名称不能为空！', trigger: 'blur' }
+    ],
+
+    contact: [
+        { required: true, message: '联系方式不能为空!', trigger: 'blur' }
+    ],
+
+    address: [
+        { required: true, message: '公司地址不能为空!', trigger: 'blur' }
+    ]
+})
 </script>
 
 <style scoped lang="scss">

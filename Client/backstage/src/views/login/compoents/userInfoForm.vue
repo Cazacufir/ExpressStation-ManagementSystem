@@ -9,8 +9,11 @@
             <el-input v-model="info.age"></el-input>
         </el-form-item>
 
-        <el-form-item prop="sex" label="您的性别">
-            <el-input v-model="info.sex"></el-input>
+        <el-form-item prop="sex" label="您的性别：">
+            <el-radio-group v-model="info.sex">
+                <el-radio label="F" size="large">男</el-radio>
+                <el-radio label="M" size="large">女</el-radio>
+            </el-radio-group>
         </el-form-item>
 
         <el-form-item prop="address" label="家庭地址">
@@ -32,7 +35,7 @@ const emit = defineEmits(['getAdmin'])
 
 const info = reactive({
     age:null,
-    sex:null,
+    sex:'F',
     name:null,
     address:null
 })
