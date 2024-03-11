@@ -24,7 +24,7 @@
             </el-table-column>
         </el-table>
 
-        <el-dialog v-model="isShow" :title="showTitile" width="600px" destroy-on-close @close="closeForm">
+        <el-dialog v-model="isShow" :title="showTitile" width="600px" @close="closeForm">
             <el-form :model="Staff" label-width="120px" :rules="staff_rules">
                 <el-form-item prop="name" label="员工姓名：">
                     <el-input v-model="Staff.name"></el-input>
@@ -56,7 +56,7 @@
 
             <template #footer>
                 <el-button @click="closeForm">取消</el-button>
-                <el-button type="primary">确认</el-button>
+                <el-button type="primary" @click="submitStaff">确认</el-button>
             </template>
         </el-dialog>
     </div>
@@ -159,6 +159,14 @@ const openForm = (scope) => {
 
 const deleteRow = (index) => {
   staffList.value.splice(index, 1)
+}
+
+const submitStaff = () =>{
+    if(showTitile.value == '新增员工'){
+        console.log('staff',Staff)
+        staffList.value.push(Staff)
+    }
+    closeForm()
 }
 </script>
 
