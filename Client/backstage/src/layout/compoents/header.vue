@@ -6,7 +6,6 @@
 
 <style scoped lang="scss">
 .header{
-    border-bottom: 1px solid var(--primary-color);
     background: #545c64;
 }
 

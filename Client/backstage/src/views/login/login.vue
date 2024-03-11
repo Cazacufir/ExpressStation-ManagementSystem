@@ -51,6 +51,6 @@ const toValidate = async () => {
     //     store.setAdminInfo(r.data)
     //     router.replace('/main')
     // }
-    router.replace('/main')
+    router.replace('/home')
 }
 </script>

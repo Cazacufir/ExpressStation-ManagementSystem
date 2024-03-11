@@ -7,6 +7,10 @@
         <div class="MainInfo w-40% h-50vh mr-100 flex flex-col justify-center items-center">
             <el-form :model="test"  lable-width="120px">
 
+                <el-form-item label="驿站ID：" v-show="!isModify">
+                    <el-text>{{ test.id }}</el-text>
+                </el-form-item>
+
                 <el-form-item label="驿站名称：">
                     <el-input v-model="test.name" v-show="isModify"></el-input>
                     <el-text v-show="!isModify">{{ test.name }}</el-text>
@@ -60,6 +64,7 @@ onMounted(() => {
 
 const test = reactive({
     name: '驿站',
+    id:"40000",
     address: '翻斗大街翻斗花园',
     contact: '123',
     open_time: '9:00',

@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+import { Histogram } from "@element-plus/icons-vue"
 
 const routes = [
   {
@@ -16,13 +17,18 @@ const routes = [
         path:"/home",
         name: "Home",
         component: async () => await import("@/views/home/home.vue"),
+        meta: {
+          title: "统计一览",
+          icon: 'Histogram',
+        }
       },
       {
         path: "/main",
         name: "Main",
         component: async () => await import("@/views/main/main.vue"),
         meta: {
-          title: "驿站主体信息"
+          title: "驿站主体信息",
+          icon: 'HomeFilled'
         },
       },
       {
@@ -30,7 +36,8 @@ const routes = [
         name: "Cooperate",
         component: async () => await import("@/views/cooperate/cooperate.vue"),
         meta: {
-          title: "合作公司"
+          title: "合作公司",
+          icon: 'OfficeBuilding'
         },
       },
       {
@@ -38,7 +45,8 @@ const routes = [
         name: "Staff",
         component: async () => await import("@/views/staff/staff.vue"),
         meta: {
-          title: "员工管理"
+          title: "员工管理",
+          icon: 'Avatar'
         },
       },
       {
@@ -51,7 +59,8 @@ const routes = [
             name: "Receive",
             component: async () => await import("@/views/parcel/views/receive.vue"),
             meta:{
-              title:'快递入库'
+              title:'快递入库',
+              icon: 'SoldOut'
             }
           },
           {
@@ -59,7 +68,8 @@ const routes = [
             name: "Out",
             component: async () => await import("@/views/parcel/views/out.vue"),
             meta:{
-              title:'快递出库'
+              title:'快递出库',
+              icon: 'Sell'
             }
           },
           {
@@ -67,7 +77,8 @@ const routes = [
             name: "Send",
             component: async () => await import("@/views/parcel/views/send.vue"),
             meta:{
-              title:'寄送快递'
+              title:'寄送快递',
+              icon: 'Van'
             }
           },
           {
@@ -75,12 +86,14 @@ const routes = [
             name:'Search',
             component: async () => await import("@/views/parcel/views/search.vue"),
             meta:{
-              title:'快递查询'
+              title:'快递查询',
+              icon: 'Search'
             }
           }
         ],
         meta: {
-          title: "快递管理"
+          title: "快递管理",
+          icon: 'Box'
         },
       },
       {
@@ -88,7 +101,8 @@ const routes = [
         name: "Deliver",
         component: async () => await import("@/views/delivery/delivery.vue"),
         meta: {
-          title: "配送员管理"
+          title: "配送员管理",
+          icon: 'Promotion'
         },
       },
       {
@@ -97,7 +111,8 @@ const routes = [
         component: async () =>
           await import("@/views/appointment/appointment.vue"),
         meta: {
-          title: "预约管理"
+          title: "预约管理",
+          icon: 'Clock'
         },
       },
     ],

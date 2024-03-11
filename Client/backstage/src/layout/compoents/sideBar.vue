@@ -1,17 +1,29 @@
 <template>
-    <el-menu default-active="1" background-color="#545c64" --active-color="#1e80ff" text-color="#fff">
+    <el-menu :default-active="defaultChosen" background-color="#545c64" active-text-color="#fff" text-color="#fff">
         <template v-for="(tab, index) in tabs" :key="index">
-            <el-sub-menu v-if="tab.children" :index="index">
+            <el-sub-menu v-if="tab.children" :index="StringIndex(index)">
                 <template #title>
+                    <el-icon>
+                        <component :is="tab.meta.icon"></component>
+                    </el-icon>
                     <span>{{ tab.meta.title }}</span>
                 </template>
-                <el-menu-item-group v-for="(item, num) in tab.children" :key="num" @click="toPage(tab.path + '/' + item.path)">
-                    <el-menu-item>{{ item.meta.title }}</el-menu-item>
+                <el-menu-item-group v-for="(item, num) in tab.children" :key="num"
+                    @click="toPage(tab.path + '/' + item.path)">
+                    <el-menu-item>
+                        <el-icon>
+                            <component :is="item.meta.icon"></component>
+                        </el-icon>
+                        <span>{{ item.meta.title }}</span>
+                    </el-menu-item>
                 </el-menu-item-group>
             </el-sub-menu>
 
-            <el-menu-item v-else :index="index" @click="toPage(tab.path)">
+            <el-menu-item v-else :index="StringIndex(index)" @click="toPage(tab.path)">
                 <template #title>
+                    <el-icon>
+                        <component :is="tab.meta.icon"></component>
+                    </el-icon>
                     <span>{{ tab.meta.title }}</span>
                 </template>
             </el-menu-item>
@@ -21,7 +33,7 @@
 
 <script setup>
 
-import { onMounted, ref } from "vue";
+import { onMounted, ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import { useRoute } from "vue-router";
 
@@ -35,7 +47,32 @@ onMounted(() => {
 })
 
 const toPage = (path) => {
+    let arr = document.getElementsByClassName("el-menu-item");
+    console.log('arr',arr)
+    for (let i = 0; i < arr.length; i++) {
+        arr[i].onclick = function () {
+            
+            arr[i].classList.add("is-active");
+
+            for (let j = 0; j < arr.length; j++) {
+                if (j !== i) {
+                    arr[j].classList.remove("is-active");
+                }
+            }
+        };
+    }
     router.replace(path)
-    console.log('path',path)
+}
+
+const defaultChosen = "0"
+
+const StringIndex = (index) => {
+    return index.toString()
 }
 </script>
+
+<style lang="scss">
+.el-menu-item.is-active {
+    background-color: #1e80ff !important;
+}
+</style>
