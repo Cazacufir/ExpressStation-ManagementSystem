@@ -49,7 +49,7 @@
                     <el-input v-model="Staff.contact"></el-input>
                 </el-form-item>
 
-                <el-form-item prop="work" label="职责：">
+                <el-form-item prop="work" label="职位：">
                     <el-input v-model="Staff.work"></el-input>
                 </el-form-item>
             </el-form>

@@ -43,6 +43,7 @@ const route = useRoute();
 const tabs = ref([])
 onMounted(() => {
     tabs.value = [...router.options.routes[1].children]
+    tabs.value.splice(tabs.value.length, 1)
     console.log(tabs.value)
 })
 
@@ -61,7 +62,7 @@ const toPage = (path) => {
             }
         };
     }
-    router.replace(path)
+    router.push(path)
 }
 
 const defaultChosen = "0"

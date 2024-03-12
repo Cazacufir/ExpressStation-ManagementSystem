@@ -115,6 +115,11 @@ const routes = [
           icon: 'Clock'
         },
       },
+      {
+        path: "/userInfo",
+        name: "UserInfo",
+        component: async () => await import("@/views/userInfo/userInfo.vue")
+      }
     ],
   },
 ];

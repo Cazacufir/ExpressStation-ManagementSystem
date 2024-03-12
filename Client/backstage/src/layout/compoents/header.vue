@@ -12,7 +12,7 @@
 
             <template #dropdown>
                 <el-dropdown-menu class="logout">
-                    <el-dropdown-item icon="Document">个人信息</el-dropdown-item>
+                    <el-dropdown-item icon="Document" @click="router.push('/userInfo')">个人信息</el-dropdown-item>
                     <el-dropdown-item icon="CircleClose" divided style="color: red;">退出登录</el-dropdown-item>
                 </el-dropdown-menu>
             </template>
@@ -20,6 +20,13 @@
 
     </div>
 </template>
+
+<script setup>
+import { onMounted, reactive, ref } from "vue";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+</script>
 
 <style scoped lang="scss">
 .header {
@@ -32,8 +39,3 @@
       outline: unset;
 }
 </style>
-
-<script setup>
-import { onMounted, reactive, ref } from "vue";
-
-</script>
