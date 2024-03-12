@@ -84,23 +84,23 @@ public class StaffServiceImpl extends ServiceImpl<StaffMapper, Staff> implements
     }
 
     @Override
-    public Result getStaff(int staffId){
-        Staff staff = staffMapper.selectById(staffId);
-        if(Objects.isNull(staff)){
-            return Result.errorResult(AppHttpCodeEnum.STAFF_NOT_EXIST);
-        }
-        return Result.okResult(staff);
-    }
+    public Result getStaff(Integer staffId,String name){
+        if (staffId == null) {
+            LambdaQueryWrapper<Staff> staffLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            staffLambdaQueryWrapper.like(Staff::getName,name);
+            Staff staff = staffMapper.selectOne(staffLambdaQueryWrapper);
 
-    @Override
-    public Result getStaff(String name){
-        LambdaQueryWrapper<Staff> staffLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        staffLambdaQueryWrapper.like(Staff::getName,name);
-        Staff staff = staffMapper.selectOne(staffLambdaQueryWrapper);
-
-        if (Objects.isNull(staff)){
-            return Result.errorResult(AppHttpCodeEnum.STAFF_NOT_EXIST);
+            if (Objects.isNull(staff)){
+                return Result.errorResult(AppHttpCodeEnum.STAFF_NOT_EXIST);
+            }
+            return Result.okResult(staff);
         }
-        return Result.okResult(staff);
+        else {
+            Staff staff = staffMapper.selectById(staffId);
+            if(Objects.isNull(staff)){
+                return Result.errorResult(AppHttpCodeEnum.STAFF_NOT_EXIST);
+            }
+            return Result.okResult(staff);
+        }
     }
 }

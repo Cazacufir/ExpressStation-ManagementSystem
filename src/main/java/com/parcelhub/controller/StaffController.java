@@ -39,12 +39,8 @@ public class StaffController {
     }
 
     @GetMapping("/getStaff")
-    public Result getStaff(@RequestParam int staffId){
-        return staffService.getStaff(staffId);
+    public Result getStaff(Integer staffId,String name){
+        return staffService.getStaff(staffId,name);
     }
 
-    @GetMapping("/getStaff")
-    public Result getStaff(@RequestParam String name){
-        return staffService.getStaff(name);
-    }
 }
