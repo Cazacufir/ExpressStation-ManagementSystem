@@ -14,46 +14,62 @@
         </el-descriptions>
 
         <div class="m-auto mt-50">
+            <el-button plain type="info" size="large" @click="router.go(-1)">返回</el-button>
             <el-button type="primary" size="large" @click="isShow = true">修改信息</el-button>
         </div>
     </div>
 
     <el-dialog v-model="isShow" title="修改个人信息" width="600px" @close="isShow = false">
-            <el-form :model="Staff" label-width="120px" :rules="staff_rules">
-                <el-form-item prop="name" label="姓名：">
-                    <el-input v-model="Staff.name"></el-input>
-                </el-form-item>
+        <el-form :model="Staff" label-width="120px" :rules="staff_rules">
+            <el-form-item prop="name" label="姓名：">
+                <el-input v-model="Staff.name"></el-input>
+            </el-form-item>
 
-                <el-form-item prop="age" label="年龄：">
-                    <el-input v-model="Staff.age"></el-input>
-                </el-form-item>
+            <el-form-item prop="age" label="年龄：">
+                <el-input v-model="Staff.age"></el-input>
+            </el-form-item>
 
-                <el-form-item prop="sex" label="性别：">
-                    <el-radio-group v-model="Staff.sex">
-                        <el-radio label="F" size="large">男</el-radio>
-                        <el-radio label="M" size="large">女</el-radio>
-                    </el-radio-group>
-                </el-form-item>
+            <el-form-item prop="sex" label="性别：">
+                <el-radio-group v-model="Staff.sex">
+                    <el-radio label="F" size="large">男</el-radio>
+                    <el-radio label="M" size="large">女</el-radio>
+                </el-radio-group>
+            </el-form-item>
 
-                <el-form-item prop="address" label="家庭住址：">
-                    <el-input v-model="Staff.address"></el-input>
-                </el-form-item>
+            <el-form-item prop="address" label="家庭住址：">
+                <el-input v-model="Staff.address"></el-input>
+            </el-form-item>
 
-                <el-form-item prop="contact" label="联系方式：">
-                    <el-input v-model="Staff.contact"></el-input>
-                </el-form-item>
-            </el-form>
+            <el-form-item prop="contact" label="联系方式：">
+                <el-input v-model="Staff.contact"></el-input>
+            </el-form-item>
+        </el-form>
 
-            <template #footer>
-                <el-button @click="isShow = false">取消</el-button>
-                <el-button type="primary" @click="submitStaff">确认</el-button>
-            </template>
-        </el-dialog>
+        <template #footer>
+            <el-button @click="isShow = false">取消</el-button>
+            <el-button type="primary" @click="submitStaff">确认</el-button>
+        </template>
+    </el-dialog>
 
 </template>
 
 <script setup>
-import { computed, ref, reactive } from 'vue'
+import { computed, ref, reactive, onMounted } from 'vue'
+import { api } from "@/api"
+import { adminStore } from "@/stores/admin.js"
+import { ElMessage } from 'element-plus'
+import { useRouter } from "vue-router";
+
+const store = adminStore()
+const router = useRouter();
+
+onMounted(() => {
+    init()
+})
+
+const init = async () => {
+    Object.assign(Staff, store.getAdminInfo())
+}
 
 const size = ref('default')
 const blockMargin = computed(() => {
@@ -68,14 +84,14 @@ const blockMargin = computed(() => {
 })
 
 const Staff = reactive({
-    staffId: '123',
-    name: 'test1',
-    sex: 'M',
-    age: 21,
-    contact: '123',
-    address: '123',
-    work: '管理员',
-    joinDate: '2024-02-24'
+    staffId: '',
+    name: '',
+    sex: '',
+    age: null,
+    contact: '',
+    address: '',
+    work: '',
+    joinDate: ''
 })
 
 const isShow = ref(false)
@@ -108,7 +124,18 @@ const staff_rules = reactive({
     ]
 })
 
-const submitStaff = () =>{
-    isShow.value = false
+const submitStaff = async () => {
+    const [e, r] = await api.updateStaffInfo(Staff)
+    if (r.code == 200) {
+        ElMessage({
+            message: '修改成功！',
+            type: 'success',
+        })
+        isShow.value = false
+    }
+
+    else{
+        ElMessage.error('修改失败，请检查网络连接')
+    }
 }
 </script>

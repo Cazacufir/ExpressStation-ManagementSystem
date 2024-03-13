@@ -1,7 +1,10 @@
 import { Get, Post, Delete, Put, PostForm } from "../server";
 
 export function getMainInfo(Id){
-    return Get("/mainInfo",Id)
+    const params = {
+        Id: Id,
+    }
+    return Get(`/mainInfo/${params.Id}`)
 }
 
 export const hubApi = {

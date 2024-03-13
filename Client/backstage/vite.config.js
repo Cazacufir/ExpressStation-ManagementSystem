@@ -29,7 +29,7 @@ export default defineConfig({
     proxy: {
       // 接口地址代理
       "/api": {
-        target: "http://localhost:55466",
+        target: "http://localhost:64363",
         ws: true,
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ""),

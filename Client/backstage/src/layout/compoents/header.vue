@@ -4,7 +4,7 @@
 
         <el-dropdown class="text-light-50">
             <span>
-                欢迎您，管理员
+                欢迎您，{{ name }}
                 <el-icon>
                     <ArrowDown />
                 </el-icon>
@@ -22,10 +22,25 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
+import { api } from "@/api"
+import { adminStore } from "@/stores/admin.js"
 
+const store = adminStore()
 const router = useRouter();
+
+const name = ref('')
+
+onMounted(()=>{
+    init()
+})
+
+const init = async () => {
+    const [e,r] = await api.getStaff(600000)
+    store.setAdminInfo(r.data)
+    name.value = r.data.name
+}
 </script>
 
 <style scoped lang="scss">
