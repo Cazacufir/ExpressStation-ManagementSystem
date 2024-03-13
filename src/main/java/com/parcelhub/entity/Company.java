@@ -1,6 +1,7 @@
 package com.parcelhub.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,4 +22,7 @@ public class Company implements Serializable {
     private String contact;
 
     private String address;
+
+    @TableField(exist = false)
+    private Date co_date;
 }

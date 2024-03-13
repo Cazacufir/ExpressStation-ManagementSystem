@@ -25,7 +25,6 @@ public class ComHubMerge implements Serializable {
 
     private int hub_id;
 
-    @TableField(exist = false)
     private Date co_date;
 
     private int delFlag;

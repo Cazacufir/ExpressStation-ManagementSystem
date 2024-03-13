@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Select;
 
 import java.lang.reflect.Array;
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface CompanyMapper extends BaseMapper<Company> {
@@ -15,6 +16,6 @@ public interface CompanyMapper extends BaseMapper<Company> {
     "WHERE comId = #{comId}")
     String getName(int comId);
 
-    @Select("SELECT name from company")
-    List<String> getAllName();
+    @Select("SELECT comId,name from company")
+    List<Map<Integer,String>> getAllName();
 }
