@@ -66,12 +66,14 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
 
                     admin.setHub_id(hubId);
                     staff.setHub_id(hubId);
+                    staff.setWork("站长");
                 }
 
                 else{
                     int hub_id = (int) map.get("hub_id");
                     admin.setHub_id(hub_id);
                     staff.setHub_id(hub_id);
+                    staff.setWork("管理员");
                 }
 
                 BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -85,11 +87,13 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
                 int age = (int) map.get("age");
                 String sex = (String) map.get("sex");
                 String staffContact = (String) map.get("staffContact");
+                String staffAddress = (String) map.get("staffAddress");
 
                 staff.setName(staffName);
                 staff.setAge(age);
                 staff.setSex(sex);
                 staff.setContact(staffContact);
+                staff.setAddress(staffAddress);
                 staffMapper.insert(staff);
 
                 return Result.okResult();

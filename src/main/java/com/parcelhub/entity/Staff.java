@@ -28,6 +28,8 @@ public class Staff implements Serializable {
 
     private String contact;
 
+    private String address;
+
     private Date joinDate;
 
     private int hub_id;
