@@ -7,6 +7,7 @@ import com.parcelhub.entity.ComHubMerge;
 import com.parcelhub.entity.Company;
 import com.parcelhub.entity.Hub;
 import com.parcelhub.mapper.ComHubMergeMapper;
+import com.parcelhub.mapper.CompanyMapper;
 import com.parcelhub.mapper.HubMapper;
 import com.parcelhub.service.HubService;
 import com.parcelhub.utils.AppHttpCodeEnum;
@@ -22,6 +23,9 @@ import java.util.Objects;
 public class HubServiceImpl extends ServiceImpl<HubMapper, Hub>  implements HubService {
     @Autowired
     private HubMapper hubMapper;
+
+    @Autowired
+    private CompanyMapper companyMapper;
 
     @Autowired
     private ComHubMergeMapper comHubMergeMapper;
@@ -43,6 +47,13 @@ public class HubServiceImpl extends ServiceImpl<HubMapper, Hub>  implements HubS
         else {
             return Result.okResult(companyList);
         }
+    }
+
+    public Result getCompanyName(){
+//        LambdaQueryWrapper<Company> companyLambdaQueryWrapper = new LambdaQueryWrapper<>();
+//        companyLambdaQueryWrapper.eq(Company::getName,"");
+//        return Result.okResult(companyMapper.selectList(companyLambdaQueryWrapper));
+        return Result.okResult(companyMapper.getAllName());
     }
 
     public Result deleteCompany(int com_id,int hub_id){
@@ -69,16 +80,16 @@ public class HubServiceImpl extends ServiceImpl<HubMapper, Hub>  implements HubS
         }
         LambdaQueryWrapper<Hub> hubLambdaQueryWrapper = new LambdaQueryWrapper<>();
         hubLambdaQueryWrapper.eq(Hub::getAddress,map.get("address"));
-        Hub hub1 = hubMapper.selectOne(hubLambdaQueryWrapper);
+        List<Hub> hub1 = hubMapper.selectList(hubLambdaQueryWrapper);
 
         LambdaQueryWrapper<Hub> hubLambdaQueryWrapper1 = new LambdaQueryWrapper<>();
         hubLambdaQueryWrapper1.eq(Hub::getName,map.get("name"));
-        Hub hub2 = hubMapper.selectOne(hubLambdaQueryWrapper1);
+        List<Hub> hub2 = hubMapper.selectList(hubLambdaQueryWrapper1);
 
-        if(hub1 != null){
+        if(hub1.size()>1){
             return Result.errorResult(AppHttpCodeEnum.ADDRESS_EXIST);
         }
-        if(hub2 != null){
+        if(hub2.size()>1){
             return Result.errorResult(AppHttpCodeEnum.HUB_NAME_EXIST);
         }
         return Result.okResult();

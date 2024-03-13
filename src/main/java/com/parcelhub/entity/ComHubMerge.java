@@ -2,6 +2,7 @@ package com.parcelhub.entity;
 
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
@@ -9,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.Date;
 
 @Data
 @AllArgsConstructor
@@ -22,6 +24,9 @@ public class ComHubMerge implements Serializable {
     private int com_id;
 
     private int hub_id;
+
+    @TableField(exist = false)
+    private Date co_date;
 
     private int delFlag;
 }

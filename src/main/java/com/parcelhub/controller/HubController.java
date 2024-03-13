@@ -29,6 +29,11 @@ public class HubController {
         return hubService.getCompanyList(hub_id);
     }
 
+    @GetMapping("/companyName")
+    public Result getcompanyName(){
+        return hubService.getCompanyName();
+    }
+
     @DeleteMapping("/deleteCompany")
     public Result deleteCompany(@RequestParam int com_id,@RequestParam int hub_id){
         return hubService.deleteCompany(com_id,hub_id);

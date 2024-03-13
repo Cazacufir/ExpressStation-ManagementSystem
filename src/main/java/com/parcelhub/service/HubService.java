@@ -13,6 +13,8 @@ public interface HubService extends IService<Hub> {
 
     Result getCompanyList(int hubId);
 
+    Result getCompanyName();
+
     Result deleteCompany(int com_id,int hub_id);
 
     Result addCompany(int com_id,int hub_id);
