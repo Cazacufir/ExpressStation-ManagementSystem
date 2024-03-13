@@ -64,6 +64,9 @@ public class HubServiceImpl extends ServiceImpl<HubMapper, Hub>  implements HubS
     }
 
     public Result vertifyHub(Map<String,Object> map){
+        if(map.get("address") == "" || map.get("name") == ""){
+            return Result.errorResult(AppHttpCodeEnum.NAME_OR_ADDRESS_NOT_EXIST);
+        }
         LambdaQueryWrapper<Hub> hubLambdaQueryWrapper = new LambdaQueryWrapper<>();
         hubLambdaQueryWrapper.eq(Hub::getAddress,map.get("address"));
         Hub hub1 = hubMapper.selectOne(hubLambdaQueryWrapper);
@@ -71,14 +74,13 @@ public class HubServiceImpl extends ServiceImpl<HubMapper, Hub>  implements HubS
         LambdaQueryWrapper<Hub> hubLambdaQueryWrapper1 = new LambdaQueryWrapper<>();
         hubLambdaQueryWrapper1.eq(Hub::getName,map.get("name"));
         Hub hub2 = hubMapper.selectOne(hubLambdaQueryWrapper1);
-        if(Objects.isNull(hub1) && Objects.isNull(hub2)){
-            return Result.okResult();
-        }
-        else if(!Objects.isNull(hub1)){
+
+        if(hub1 != null){
             return Result.errorResult(AppHttpCodeEnum.ADDRESS_EXIST);
         }
-        else {
+        if(hub2 != null){
             return Result.errorResult(AppHttpCodeEnum.HUB_NAME_EXIST);
         }
+        return Result.okResult();
     }
 }

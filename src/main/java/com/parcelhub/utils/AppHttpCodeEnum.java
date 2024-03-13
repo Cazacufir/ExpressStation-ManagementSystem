@@ -21,7 +21,7 @@ public enum AppHttpCodeEnum {
     PRODUCT_EXIST(513, "当前分类关联的商品存在，不能删除"),
     CHILDREN_CATEGORY_EXIST(514, "当前分类关联的子分类，不能删除"),
     SKU_STOCK_LIMIT(515, "库存不足"),
-    UPLOAD_ERROR(516, "上传错误"),
+    NAME_OR_ADDRESS_NOT_EXIST(412, "地址或名称不能为空"),
     DELIVER_NOT_FOUND(403, "未查询到配送员信息"),
     STAFF_EXIST(406, "员工已存在"),
     STAFF_NOT_EXIST(403,"员工不存在"),
