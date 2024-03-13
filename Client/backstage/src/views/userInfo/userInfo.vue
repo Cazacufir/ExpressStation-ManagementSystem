@@ -10,7 +10,7 @@
             <el-descriptions-item label="职位" span="2">
                 <el-tag size="small">{{ Staff.work }}</el-tag>
             </el-descriptions-item>
-            <el-descriptions-item label="入职日期" span="2">{{ Staff.joinDate }}</el-descriptions-item>
+            <el-descriptions-item label="入职日期" span="2">{{ formatDate(Staff.joinDate) }}</el-descriptions-item>
         </el-descriptions>
 
         <div class="m-auto mt-50">
@@ -95,6 +95,15 @@ const Staff = reactive({
 })
 
 const isShow = ref(false)
+
+function formatDate(dateString) {
+    let date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+
+    return `${year}年${month}月${day}日`;
+}
 
 const checkAge = (role, value, callback) => {
     if (!value) {

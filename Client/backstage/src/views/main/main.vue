@@ -5,7 +5,7 @@
         </div>
 
         <div class="MainInfo w-40% h-50vh mr-100 flex flex-col justify-center items-center">
-            <el-form ref="ruleFormRef" :model="Info" lable-width="120px" :rules="hub_rules">
+            <el-form ref="ruleFormRef" :model="Info" lable-width="120px" :rules="hub_rules" hide-required-asterisk>
 
                 <el-form-item prop="id" label="驿站ID：" v-show="!isModify">
                     <el-text>{{ Info.id }}</el-text>
