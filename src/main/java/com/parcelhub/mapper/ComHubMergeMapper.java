@@ -18,4 +18,10 @@ public interface ComHubMergeMapper extends BaseMapper<ComHubMerge> {
             "INNER JOIN com_hub_merge chm ON chm.com_id = c.comId " +
             "WHERE chm.hub_id = #{hubId} AND chm.delFlag = 0;")
     List<Company> getCompanyByHubId(int hubId);
+
+    @Select("SELECT c.*, chm.* " +
+            "FROM company c " +
+            "INNER JOIN com_hub_merge chm ON chm.com_id = c.comId " +
+            "WHERE chm.mapId = #{mapId} AND chm.delFlag = 0;")
+    Company getCompanyByMapId(int mapId);
 }

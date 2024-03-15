@@ -25,4 +25,7 @@ public class Company implements Serializable {
 
     @TableField(exist = false)
     private Date co_date;
+
+    @TableField(exist = false)
+    private int mapId;
 }

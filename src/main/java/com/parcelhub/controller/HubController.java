@@ -35,13 +35,13 @@ public class HubController {
     }
 
     @DeleteMapping("/deleteCompany")
-    public Result deleteCompany(@RequestParam int com_id,@RequestParam int hub_id){
-        return hubService.deleteCompany(com_id,hub_id);
+    public Result deleteCompany(@RequestParam int mapId){
+        return hubService.deleteCompany(mapId);
     }
 
     @PostMapping("/addCompany")
-    public Result addCompany(@RequestParam int com_id,@RequestParam int hub_id){
-        return hubService.addCompany(com_id, hub_id);
+    public Result addCompany(@RequestBody Map<String,Integer> map){
+        return hubService.addCompany(map);
     }
 
     @PostMapping("/vertifyHub")

@@ -50,28 +50,32 @@ public class HubServiceImpl extends ServiceImpl<HubMapper, Hub>  implements HubS
     }
 
     public Result getCompanyName(){
-//        LambdaQueryWrapper<Company> companyLambdaQueryWrapper = new LambdaQueryWrapper<>();
-//        companyLambdaQueryWrapper.eq(Company::getName,"");
-//        return Result.okResult(companyMapper.selectList(companyLambdaQueryWrapper));
         return Result.okResult(companyMapper.getAllName());
     }
 
-    public Result deleteCompany(int com_id,int hub_id){
-        QueryWrapper<ComHubMerge> comHubMergeQueryWrapper = new QueryWrapper<>();
-        comHubMergeQueryWrapper.eq("com_id",com_id)
-                .eq("hub_id",hub_id)
-                .eq("delFlag",0);
-        ComHubMerge comHubMerge = comHubMergeMapper.selectOne(comHubMergeQueryWrapper);
-        comHubMergeMapper.deleteById(comHubMerge.getMapId());
+    public Result deleteCompany(int mapId){
+//        QueryWrapper<ComHubMerge> comHubMergeQueryWrapper = new QueryWrapper<>();
+//        comHubMergeQueryWrapper.eq("com_id",com_id)
+//                .eq("hub_id",hub_id)
+//                .eq("delFlag",0);
+//        ComHubMerge comHubMerge = comHubMergeMapper.selectOne(comHubMergeQueryWrapper);
+//        comHubMergeMapper.deleteById(comHubMerge.getMapId());
+        comHubMergeMapper.deleteById(mapId);
         return Result.okResult("取消合作成功");
     }
 
-    public Result addCompany(int com_id,int hub_id){
+    public Result addCompany(Map<String,Integer> map){
+        int com_id = map.get("com_id");
+        int hub_id = map.get("hub_id");
         ComHubMerge comHubMerge = new ComHubMerge();
         comHubMerge.setCom_id(com_id);
         comHubMerge.setHub_id(hub_id);
         comHubMergeMapper.insert(comHubMerge);
-        return Result.okResult();
+
+        LambdaQueryWrapper<ComHubMerge> comHubMergeQueryWrapper = new LambdaQueryWrapper<>();
+        comHubMergeQueryWrapper.eq(ComHubMerge::getMapId,comHubMerge.getMapId());
+        Company company = comHubMergeMapper.getCompanyByMapId(comHubMerge.getMapId());
+        return Result.okResult(company);
     }
 
     public Result vertifyHub(Map<String,Object> map){
