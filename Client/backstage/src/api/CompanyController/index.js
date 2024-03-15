@@ -9,11 +9,16 @@ export function getCompanyName (){
 }
 
 export function addCompany (com_id,hub_id){
-    return Post('/addCompany',{ com_id: com_id,hub_id: hub_id})
+    return Post('/addCompany',{ com_id:com_id, hub_id:hub_id })
+}
+
+export function deleteCompany(mapId){
+    return Delete('/deleteCompany',{mapId: mapId})
 }
 
 export const companyApi = {
     getCompanyList,
     getCompanyName,
     addCompany,
+    deleteCompany
 }

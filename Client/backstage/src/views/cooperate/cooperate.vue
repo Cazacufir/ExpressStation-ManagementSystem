@@ -12,7 +12,7 @@
             </article>
 
             <template #footer>
-                <el-button type="danger">终止合作</el-button>
+                <el-button type="danger" @click="deleteCompany(item.mapId,index)">终止合作</el-button>
             </template>
         </el-card>
 
@@ -27,7 +27,7 @@
 
     <el-dialog v-model="openForm" title="添加合作公司" :rules="company_rules" width="500px">
         <el-form :model="company" label-width="120px">
-            <el-form-item prop="name" label="公司名称：">
+            <el-form-item prop="com_id" label="公司名称：">
                 <el-select v-model="company.com_id" clearable placeholder="请选择快递公司">
                     <el-option v-for="(item,index) in companyName" :key="index" :label="item.name" :value="item.comId"></el-option>
                 </el-select>
@@ -53,11 +53,12 @@
 import { onMounted, reactive, ref } from "vue";
 import { api } from "@/api"
 import { adminStore } from "@/stores/admin.js";
+import { ElMessage } from 'element-plus'
 
 const store = adminStore();
 const openForm = ref(false)
 
-const companyList = reactive({})
+const companyList = ref([])
 
 const companyName = ref([])
 
@@ -65,10 +66,13 @@ onMounted(()=>{
     init()
 })
 
+let hub_id = ref()
+
 const init = async () => {
     const hub = store.getAdminInfo()
+    hub_id.value = hub.hub_id
     const[e,r] = await api.getCompanyList(hub.hub_id)
-    Object.assign(companyList,r.data)
+    companyList.value = [...r.data]
     const [e2,r2] = await api.getCompanyName()
     companyName.value = [...r2.data]
 }
@@ -115,8 +119,39 @@ const company_rules = reactive({
 })
 
 const submitForm = async () =>{
-    // const[e,r] = await api.addCompany()
-    console.log(company.com_id)
+    console.log('id',company.com_id,hub_id.value)
+    if(company.com_id == null){
+        ElMessage.error('请选择快递公司!')
+        return
+    }
+    const[e,r] = await api.addCompany(company.com_id,hub_id.value)
+    console.log('r',r)
+    if(r.code == 200){
+        companyList.value.push(r.data)
+        ElMessage({
+            message: '添加成功！',
+            type: 'success',
+        })
+        closeForm()
+    }
+    else{
+        ElMessage.error('添加失败，请检查网络连接')
+    }
+}
+
+const deleteCompany = async (mapId,index) =>{
+    const[e,r] = await api.deleteCompany(mapId)
+    if(r.code == 200){
+        ElMessage({
+            message: '终止合成成功！',
+            type: 'success',
+        })
+        companyList.value.splice(index,1)
+        closeForm()
+    }
+    else{
+        ElMessage.error('请求失败，请检查网络连接')
+    }
 }
 </script>
 
