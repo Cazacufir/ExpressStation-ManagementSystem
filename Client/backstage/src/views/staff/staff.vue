@@ -15,8 +15,12 @@
             <el-table-column prop="work" label="职位" width="120" align="center" />
             <el-table-column prop="contact" label="联系方式" width="120" align="center" />
             <el-table-column prop="address" label="家庭住址" width="180" align="center" />
-            <el-table-column prop="joinDate" label="入职日期" width="120" align="center" />
-            <el-table-column fixed="right" label="Operations" width="150" align="center">
+            <el-table-column prop="joinDate" label="入职日期" width="140" align="center">
+                <template #default="scope">
+                    <span>{{ formatDate(scope.row.joinDate) }}</span>
+                </template>
+            </el-table-column>
+            <el-table-column fixed="right" label="操作" width="130" align="center">
                 <template #default="scope">
                     <el-button link type="primary" @click.prevent="openForm(scope)">修改</el-button>
                     <el-button link type="danger" @click.prevent="deleteRow(scope.$index)">删除</el-button>
@@ -64,29 +68,27 @@
 
 <script setup>
 import { onMounted, reactive, ref } from "vue";
+import { api } from "@/api"
+import { adminStore } from "@/stores/admin.js";
+import { ElMessage } from 'element-plus'
 
-const staffList = ref([
-    {
-        staffId: '123',
-        name: 'test1',
-        sex: 'M',
-        age: 21,
-        contact: '123',
-        address: '123',
-        work: '管理员',
-        joinDate: '2024-02-24'
-    },
-    {
-        staffId: '124',
-        name: 'test2',
-        sex: 'F',
-        age: 22,
-        contact: '321',
-        address: '123',
-        work: '管理员',
-        joinDate: '2024-02-24'
-    }
-])
+const store = adminStore();
+
+const staffList = ref([])
+
+let currentIndex = null
+
+onMounted(()=>{
+    init()
+})
+
+
+const init = async () => {
+    const hub=store.getAdminInfo() 
+    const [e,r] = await api.getStaffList(hub.hub_id)
+    staffList.value = [...r.data]
+    Staff.hub_id = hub.hub_id
+}
 
 let isShow = ref(false)
 
@@ -151,10 +153,45 @@ const openForm = (scope) => {
     }
     else {
         showTitile.value = '修改员工信息'
+        currentIndex = scope.$index
+        console.log('currentIndex',currentIndex)
         console.log(scope.row)
         Object.assign(Staff,scope.row)
     }
     isShow.value = true
+}
+
+const updateForm = async () => {
+    const[e,r] = await api.updateStaffInfo(Staff)
+    if (r.code == 200) {
+        ElMessage({
+            message: '修改成功！',
+            type: 'success',
+        })
+        Object.assign(staffList.value[currentIndex],Staff)
+        closeForm()
+    }
+
+    else{
+        ElMessage.error('修改失败，请检查网络连接')
+    }
+}
+
+const addStaff = async () => {
+    const[e,r] = await api.addStaff(Staff)
+    if (r.code == 200) {
+        // staffList.value.push(JSON.parse(JSON.stringify(Staff)))
+        staffList.value.push(r.data)
+        ElMessage({
+            message: '新增员工成功！',
+            type: 'success',
+        })
+        closeForm()
+    }
+
+    else{
+        ElMessage.error('修改失败，请检查网络连接')
+    }
 }
 
 const deleteRow = (index) => {
@@ -163,10 +200,20 @@ const deleteRow = (index) => {
 
 const submitStaff = () =>{
     if(showTitile.value == '新增员工'){
-        console.log('staff',Staff)
-        staffList.value.push(Staff)
+        addStaff()
     }
-    closeForm()
+    else{
+        updateForm()
+    }
+}
+
+function formatDate(dateString) {
+    let date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+
+    return `${year}年${month}月${day}日`;
 }
 </script>
 
