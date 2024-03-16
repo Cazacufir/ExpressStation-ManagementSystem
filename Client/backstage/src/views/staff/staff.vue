@@ -23,7 +23,7 @@
             <el-table-column fixed="right" label="操作" width="130" align="center">
                 <template #default="scope">
                     <el-button link type="primary" @click.prevent="openForm(scope)">修改</el-button>
-                    <el-button link type="danger" @click.prevent="deleteRow(scope.$index)">删除</el-button>
+                    <el-button link type="danger" @click.prevent="deleteRow(scope)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -194,8 +194,20 @@ const addStaff = async () => {
     }
 }
 
-const deleteRow = (index) => {
-  staffList.value.splice(index, 1)
+const deleteRow = async (scope) => {
+    const [e,r] = await api.deleteStaff(scope.row.staffId)
+    staffList.value.splice(scope.$index, 1)
+    if (r.code == 200) {
+        ElMessage({
+            message: '删除成功！',
+            type: 'success',
+        })
+        closeForm()
+    }
+
+    else{
+        ElMessage.error('删除失败，请检查网络连接')
+    }
 }
 
 const submitStaff = () =>{

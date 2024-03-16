@@ -16,9 +16,14 @@ export function addStaff(staff){
     return Post('/addStaff',staff)
 }
 
+export function deleteStaff(staffId){
+    return Delete('/deleteStaff',{staffId:staffId})
+}
+
 export const staffApi = {
     getStaffList,
     getStaff,
     updateStaffInfo,
-    addStaff
+    addStaff,
+    deleteStaff
 }
