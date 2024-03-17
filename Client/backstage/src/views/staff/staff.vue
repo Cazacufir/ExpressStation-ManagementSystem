@@ -82,7 +82,6 @@ onMounted(()=>{
     init()
 })
 
-
 const init = async () => {
     const hub=store.getAdminInfo() 
     const [e,r] = await api.getStaffList(hub.hub_id)
@@ -228,8 +227,8 @@ const addStaff = async () => {
 
 const deleteRow = async (scope) => {
     const [e,r] = await api.deleteStaff(scope.row.staffId)
-    staffList.value.splice(scope.$index, 1)
     if (r.code == 200) {
+        staffList.value.splice(scope.$index, 1)
         ElMessage({
             message: '删除成功！',
             type: 'success',
