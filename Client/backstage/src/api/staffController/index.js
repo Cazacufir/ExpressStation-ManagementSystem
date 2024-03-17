@@ -4,8 +4,8 @@ export function getStaffList(hub_id){
     return Get('/getStaffList',{hub_id:hub_id})
 }
 
-export function getStaff(staffId){
-    return Get('/getStaff',{  staffId:staffId  })
+export function getStaff(staffId = null,name = null){
+    return Get('/getStaff',{  staffId:staffId,name:name  })
 }
 
 export function updateStaffInfo(staff){

@@ -14,7 +14,7 @@
             <el-table-column prop="contact" label="联系方式" width="140" align="center" />
             <el-table-column prop="comName" label="所属公司" width="120" align="center" />
             <el-table-column prop="affair" label="当前事务" width="250" align="center" />
-            <el-table-column fixed="right" label="Operations" width="150" align="center">
+            <el-table-column fixed="right" label="操作" width="150" align="center">
                 <template #default="scope">
                     <el-button link type="primary" @click.prevent="openForm(scope)">修改</el-button>
                     <el-button link type="danger" @click.prevent="deleteRow(scope.$index)">删除</el-button>

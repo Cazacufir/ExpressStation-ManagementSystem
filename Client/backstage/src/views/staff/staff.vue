@@ -4,10 +4,10 @@
             <el-button plain type="primary" class="ml-40" icon="Plus" @click="openForm(null)"></el-button>
             <div class="flex mr-40">
                 <el-input v-model="searchFor" placeholder="查找员工"></el-input>
-                <el-button type="primary" icon="Search"></el-button>
+                <el-button type="primary" icon="Search" @click="searchStaff"></el-button>
             </div>
         </div>
-        <el-table :data="staffList" stripe>
+        <el-table :data="isShowSearch? searchList : staffList" stripe>
             <el-table-column prop="staffId" label="工号" width="120" align="center" />
             <el-table-column prop="name" label="姓名" width="120" align="center" />
             <el-table-column prop="sex" label="性别" width="120" align="center" />
@@ -67,7 +67,7 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, reactive, ref, watchEffect } from "vue";
 import { api } from "@/api"
 import { adminStore } from "@/stores/admin.js";
 import { ElMessage } from 'element-plus'
@@ -92,6 +92,10 @@ const init = async () => {
 
 let isShow = ref(false)
 
+const searchList = ref([])
+
+let isShowSearch = ref(false)
+
 const Staff = reactive({
     name: '',
     age: null,
@@ -101,7 +105,35 @@ const Staff = reactive({
     work: '',
 })
 
-const searchFor = ref('')
+const searchFor = ref()
+
+const searchStaff = async () => {
+    if(searchFor.value == null){
+        return
+    }
+    searchList.value = []
+    const word = parseInt(searchFor.value)
+    if(word){
+    const [e,r] = await api.getStaff(searchFor.value,null)
+        if(r.code == 200){
+            searchList.value.push(r.data)
+            isShowSearch.value = true
+        }
+        else{
+            ElMessage.error(r.msg)
+        }
+    }
+    else{
+        const [e,r] = await api.getStaff(null,searchFor.value)
+        if(r.code == 200){
+            searchList.value = [...r.data]
+            isShowSearch.value = true
+        }
+        else{
+            ElMessage.error(r.msg)
+        }
+    }
+}
 
 const closeForm = () => {
     Staff.name = ''
@@ -227,6 +259,12 @@ function formatDate(dateString) {
 
     return `${year}年${month}月${day}日`;
 }
+
+watchEffect(()=>{
+    if(searchFor.value == ''){
+        isShowSearch.value = false;
+    }
+})
 </script>
 
 <style lang="scss" scoped>
