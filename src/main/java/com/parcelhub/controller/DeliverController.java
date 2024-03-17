@@ -21,17 +21,22 @@ public class DeliverController {
     }
 
     @PutMapping("/updateDeliver")
-    public Result updateDeliver(Deliver deliver){
+    public Result updateDeliver(@RequestBody Deliver deliver){
         return deliverService.updateDeliver(deliver);
     }
 
     @PostMapping("/addDeliver")
-    public Result addDeliver(Deliver deliver){
+    public Result addDeliver(@RequestBody Deliver deliver){
         return deliverService.addDeliver(deliver);
     }
 
     @DeleteMapping("/deleteDeliver")
-    public Result deleteDeliver(int deliverId){
-        return deliverService.deleteDeliver(deliverId);
+    public Result deleteDeliver(@RequestParam int mapId){
+        return deliverHubMergeService.deleteDeliver(mapId);
+    }
+
+    @GetMapping("/getDeliver")
+    public Result getDeliver(Integer deliverId,String name){
+        return deliverService.getDeliver(deliverId,name);
     }
 }

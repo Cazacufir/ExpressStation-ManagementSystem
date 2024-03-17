@@ -61,7 +61,9 @@ public class StaffServiceImpl extends ServiceImpl<StaffMapper, Staff> implements
             staff.setContact(staff.getContact());
             staff.setHub_id(staff.getHub_id());
             save(staff);
-            return Result.okResult();
+//            LambdaQueryWrapper<Staff> staffLambdaQueryWrapper1 = new LambdaQueryWrapper<>();
+//            staffLambdaQueryWrapper1.eq(Staff::getStaffId,staff.getStaffId());
+            return Result.okResult(staffMapper.selectOne(staffLambdaQueryWrapper));
         }
         else {
             return Result.errorResult(AppHttpCodeEnum.STAFF_EXIST);
@@ -88,7 +90,7 @@ public class StaffServiceImpl extends ServiceImpl<StaffMapper, Staff> implements
         if (staffId == null) {
             LambdaQueryWrapper<Staff> staffLambdaQueryWrapper = new LambdaQueryWrapper<>();
             staffLambdaQueryWrapper.like(Staff::getName,name);
-            Staff staff = staffMapper.selectOne(staffLambdaQueryWrapper);
+            List<Staff> staff = staffMapper.selectList(staffLambdaQueryWrapper);
 
             if (Objects.isNull(staff)){
                 return Result.errorResult(AppHttpCodeEnum.STAFF_NOT_EXIST);

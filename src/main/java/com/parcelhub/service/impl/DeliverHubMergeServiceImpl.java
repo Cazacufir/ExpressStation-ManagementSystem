@@ -22,6 +22,7 @@ public class DeliverHubMergeServiceImpl extends ServiceImpl<DeliverHubMergeMappe
     @Autowired
     CompanyMapper companyMapper;
 
+
     public Result getAllDeliver(int hubId){
         List<Deliver> deliverHubMerges = deliverHubMergeMapper.getAllDeliverByHubId(hubId);
         if (deliverHubMerges.isEmpty()){
@@ -29,5 +30,10 @@ public class DeliverHubMergeServiceImpl extends ServiceImpl<DeliverHubMergeMappe
         }
         deliverHubMerges.forEach(deliver -> { deliver.setComName(companyMapper.getName(deliver.getCom_id())); });
         return Result.okResult(deliverHubMerges);
+    }
+
+    public Result deleteDeliver(int mapId){
+        deliverHubMergeMapper.deleteById(mapId);
+        return Result.okResult();
     }
 }

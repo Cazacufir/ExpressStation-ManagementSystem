@@ -6,4 +6,6 @@ import com.parcelhub.utils.Result;
 
 public interface DeliverHubMergeService extends IService<DeliverHubMerge> {
     Result getAllDeliver(int hubId);
+
+    Result deleteDeliver(int mapId);
 }

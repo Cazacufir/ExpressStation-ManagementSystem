@@ -10,5 +10,5 @@ public interface DeliverService extends IService<Deliver> {
 
     Result addDeliver(Deliver deliver);
 
-    Result deleteDeliver(int deliverId);
+    Result getDeliver(Integer deliverId,String name);
 }

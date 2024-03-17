@@ -31,4 +31,10 @@ public class Deliver implements Serializable {
     @TableField(exist = false)
     private String comName;
 
+    @TableField(exist = false)
+    private int mapId;
+
+    @TableField(exist = false)
+    private int hub_id;
+
 }
