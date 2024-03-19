@@ -7,27 +7,29 @@
 		</div>
 
 		<div class="MainBody">
-			<u-checkbox-group @change="changeDeleteList">
-				<section class="addressBar" v-for="(item,index) in addressList" :key="index">
-					<div>
-						<u-text :text="item.name" bold size="20"></u-text>
-						<u-text :text="item.contact" bold></u-text>
-					</div>
+			
+				<u-checkbox-group @change="changeDeleteList"  style="gap: 20rpx;">
+					<section class="addressBar" v-for="(item,index) in addressList" :key="index">
+						<div>
+							<u-text :text="item.name" bold size="20"></u-text>
+							<u-text :text="item.contact" bold></u-text>
+						</div>
 
-					<div class="tab" v-for="(items,num) in item.address" :key="num">
-						<span>
-							<u-checkbox shape="circle" :key="num" :label="items"
-								:name="items" class="check">
-							</u-checkbox>
-						</span>
+						<div class="tab" v-for="(items,num) in item.address" :key="num">
+							<span>
+								<u-checkbox shape="circle" :key="num" :label="items" :name="items">
+								</u-checkbox>
+							</span>
 
-						<span>
-							<u-icon name="edit-pen"></u-icon>
-						</span>
-					</div>
+							<span>
+								<u-icon name="edit-pen" size="22"></u-icon>
+							</span>
+						</div>
 
-				</section>
-			</u-checkbox-group>
+					</section>
+				</u-checkbox-group>
+			
+
 		</div>
 
 		<div class="bottomBar">
@@ -89,7 +91,6 @@
 		align-items: center;
 		padding: 10rpx 40rpx 0 40rpx;
 		background-color: #ebebef;
-		gap: 15rpx;
 		height: 100%;
 	}
 
@@ -100,6 +101,7 @@
 		padding: 20rpx;
 		width: 90%;
 		background: white;
+		width: 100%;
 	}
 
 	.bottomBar {
@@ -117,8 +119,4 @@
 		padding: 10rpx;
 		border-bottom: 1px solid #ebebef;
 	}
-
-	// .check {
-	// 	border-bottom: 1px solid #ebebef;
-	// }
 </style>
