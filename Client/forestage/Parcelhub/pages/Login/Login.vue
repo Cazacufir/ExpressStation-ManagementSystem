@@ -14,7 +14,7 @@
 				</u-form-item>
 			</u-form>
 			
-			<u-button text="登 录" type="primary" shape="circle" size="large" customStyle="font-size:30px"></u-button>
+			<u-button text="登 录" type="primary" shape="circle" size="large" @click="toHome()"></u-button>
 			
 			<div class="btnBar">
 				<span>
@@ -57,7 +57,7 @@ const toRegister = () => {
 }
 
 const toHome = () => {
-	uni.navigateTo({
+	uni.switchTab({
 		url:'/pages/Home/Home'
 	})
 }
