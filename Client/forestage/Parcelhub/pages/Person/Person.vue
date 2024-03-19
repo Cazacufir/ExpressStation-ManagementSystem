@@ -6,10 +6,23 @@
 				<u-text :text="userInfo.username" color="white" size="28"></u-text>
 			</div>
 			
-			<u-icon name="arrow-right" color="white"></u-icon>
 		</div>
 		
-		<div class="btnBar"></div>
+		<div class="btnBar">
+			<div class="btn" v-for="(item,index) in list" :key="index">
+				<span class="content">
+					<u-icon :name="item.icon" :color="item.color" size="25"></u-icon>
+					<span>{{ item.name }}</span>
+				</span>
+				
+				<u-icon name="arrow-right"></u-icon>
+			</div>
+		</div>
+		
+		<div class="logoutBtn">
+			<u-button type="error" size="large">退出登录</u-button>
+		</div>
+		
 	</view>
 </template>
 
@@ -24,7 +37,24 @@ const userInfo = reactive({
 
 const list = [
 	{
-		name:'地址簿'
+		name:'个人信息',
+		icon:'account',
+		color:'green'
+	},
+	{
+		name:'地址簿',
+		icon:'map-fill',
+		color:'#0165fe'
+	},
+	{
+		name:'我的订单',
+		icon:'order',
+		color:'orange'
+	},
+	{
+		name:'账号安全',
+		icon:'integral-fill',
+		color:'#F47174'
 	}
 ]
 </script>
@@ -42,11 +72,40 @@ const list = [
 		align-items: center;
 		justify-content: space-between;
 		height: 15%;
-		padding: 20rpx;
+		padding: 20rpx 40rpx;
 	}
 	
 	.avatarBar{
 		display: flex;
 		align-items: center;
+	}
+	
+	.btnBar{
+		display: flex;
+		flex-direction: column;
+		gap: 25rpx;
+		font-size: 40rpx;
+		padding: 0 25rpx;
+		margin-top: 40rpx;
+	}
+	
+	.btn{
+		display: flex;
+		gap: 10rpx;
+		height: 90rpx;
+		background-color: white;
+		border-radius: 40rpx;
+		align-items: center;
+		justify-content: space-between;
+		padding: 0 20rpx 0 20rpx;
+	}
+	
+	.content{
+		display: flex;
+	}
+	
+	.logoutBtn{
+		margin-top: 40rpx;
+		padding: 0 40rpx;
 	}
 </style>
