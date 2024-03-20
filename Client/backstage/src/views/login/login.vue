@@ -25,6 +25,7 @@ import { reactive,ref } from 'vue';
 import { useRouter } from "vue-router";
 import { api } from "@/api"
 import { adminStore } from "@/stores/admin.js";
+import { ElMessage } from 'element-plus'
 
 const store = adminStore();
 const router = useRouter();
@@ -45,12 +46,18 @@ const rules = reactive({
 })
 
 const toValidate = async () => {
-    // const [e,r] = await api.login(user)
-    // console.log('res',r)
-    // if(r.code == '200'){
-    //     store.setAdminInfo(r.data)
-    //     router.replace('/main')
-    // }
-    router.replace('/home')
+    const [e,r] = await api.login(user)
+    console.log('res',r)
+    if(r.code == '200'){
+        ElMessage({
+            message: '登录成功！',
+            type: 'success',
+        })
+        store.setAdminInfo(r.data)
+        router.replace('/home')
+    }
+    else{
+        ElMessage.error(r.msg)
+    }
 }
 </script>
