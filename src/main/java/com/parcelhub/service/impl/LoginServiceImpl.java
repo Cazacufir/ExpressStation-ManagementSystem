@@ -39,6 +39,7 @@ public class LoginServiceImpl implements LoginService {
 //        return Result.okResult(user);
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(admin.getContact(),admin.getPassword());
         Authentication authenticate = authenticationManager.authenticate(authenticationToken);
+        System.out.println("authenticate" + authenticate);
         if(Objects.isNull(authenticate)){
             throw new RuntimeException("用户名或密码错误");
         }
@@ -47,10 +48,10 @@ public class LoginServiceImpl implements LoginService {
         String adminId =String.valueOf(securityUser.getAdmin().getAdminId()) ;
         String jwt = JwtUtil.createJWT(adminId);
 
-//        redisCache.setCacheObject("login:"+adminId,securityUser);
+        redisCache.setCacheObject("login:"+adminId,securityUser);
 
-//        AdminInfoVo adminInfoVo = BeanCopyUtils.copyBean(securityUser.getAdmin(), AdminInfoVo.class);
-//        AdminLoginVo vo = new AdminLoginVo(jwt,adminInfoVo);
-        return Result.okResult(jwt);
+        AdminInfoVo adminInfoVo = BeanCopyUtils.copyBean(securityUser.getAdmin(), AdminInfoVo.class);
+        AdminLoginVo vo = new AdminLoginVo(jwt,adminInfoVo);
+        return Result.okResult(vo);
     }
 }
