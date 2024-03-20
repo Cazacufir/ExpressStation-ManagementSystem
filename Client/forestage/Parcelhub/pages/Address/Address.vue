@@ -99,7 +99,6 @@
 		border-radius: 40rpx;
 		flex-direction: column;
 		padding: 20rpx;
-		width: 90%;
 		background: white;
 		width: 100%;
 	}

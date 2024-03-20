@@ -1,17 +1,13 @@
 <template>
-    <el-form
-    ref="login_ruleFormRef"
-    :model="user"
-    :rules="rules"
-    size="large"
-    class="h-full w-full flex flex-1 flex-col pt-40">
+    <el-form ref="login_ruleFormRef" :model="user" :rules="rules" size="large"
+        class="h-full w-full flex flex-1 flex-col pt-40">
         <el-form-item prop="contact">
             <el-input v-model="user.contact" placeholder="请输入您的手机号" style="width:250px"></el-input>
         </el-form-item>
 
         <el-form-item prop="password">
-            <el-input v-model="user.password" placeholder="请输入密码" type="password"
-            show-password style="width:250px"></el-input>
+            <el-input v-model="user.password" placeholder="请输入密码" type="password" show-password
+                style="width:250px"></el-input>
         </el-form-item>
 
         <el-form-item>
@@ -21,8 +17,9 @@
 </template>
 
 <script setup>
-import { reactive,ref } from 'vue';
+import { reactive, ref } from 'vue';
 import { useRouter } from "vue-router";
+import utils from "@/utils";
 import { api } from "@/api"
 import { adminStore } from "@/stores/admin.js";
 import { ElMessage } from 'element-plus'
@@ -30,33 +27,34 @@ import { ElMessage } from 'element-plus'
 const store = adminStore();
 const router = useRouter();
 const user = reactive({
-    contact:'',
-    password:''
+    contact: '',
+    password: ''
 })
 
 const login_ruleFormRef = ref()
 
 const rules = reactive({
-    contact:[
-        { required:true,message:'手机号不能为空！',trigger:'blur' }
+    contact: [
+        { required: true, message: '手机号不能为空！', trigger: 'blur' }
     ],
-    password:[
-        { required:true,message:'密码不能为空!',trigger:'blur' }
+    password: [
+        { required: true, message: '密码不能为空!', trigger: 'blur' }
     ]
 })
 
 const toValidate = async () => {
-    const [e,r] = await api.login(user)
-    console.log('res',r)
-    if(r.code == '200'){
+    const [e, r] = await api.login(user)
+    console.log('res', r)
+    if (r.code == '200') {
+        utils.setSession("token", r.data.token);
+        store.setAdminInfo(r.data)
+        router.replace('/home')
         ElMessage({
             message: '登录成功！',
             type: 'success',
         })
-        store.setAdminInfo(r.data)
-        router.replace('/home')
     }
-    else{
+    else {
         ElMessage.error(r.msg)
     }
 }
