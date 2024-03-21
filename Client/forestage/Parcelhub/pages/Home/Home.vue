@@ -39,7 +39,8 @@
 			</div>
 			
 			<div class="parcelBody">
-				<component :is="tabs[currentIndex]"></component>
+				<receive v-show="current"></receive>
+				<send v-show="!current"></send>
 			</div>
 		</view>
 
@@ -64,7 +65,7 @@
 	
 	const tabs = [Receive,Send]
 	
-	let currentIndex = ref(0)
+	let current = ref(true)
 	
 	const list = ref([
 		{
@@ -75,10 +76,11 @@
 		}
 	])
 	
-	const switchTab = (item) => {
-		console.log('item',item)
-		currentIndex.value = item.index
-		console.log(currentIndex.value)
+	const switchTab = () => {
+		// console.log('item',item)
+		// currentIndex.value = item.index
+		// console.log(currentIndex.value)
+		current.value = !current.value
 	}
 	
 </script>
