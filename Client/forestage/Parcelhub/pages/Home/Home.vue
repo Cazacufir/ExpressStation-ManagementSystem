@@ -67,7 +67,7 @@
 	
 	let current = ref(true)
 	
-	const list = ref([
+	const list = ([
 		{
 			name:'收'
 		},

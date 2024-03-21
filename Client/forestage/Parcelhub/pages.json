@@ -38,6 +38,14 @@
 				"enablePullDownRefresh": false,
 				"disableScroll": true
 			}
+		},
+		{
+			"path" : "pages/Order/Order",
+			"style" : 
+			{
+				"navigationBarTitleText" : "",
+				"enablePullDownRefresh" : false
+			}
 		}
 	],
 	"globalStyle": {
