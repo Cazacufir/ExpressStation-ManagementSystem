@@ -35,9 +35,7 @@ public class StaffServiceImpl extends ServiceImpl<StaffMapper, Staff> implements
             return Result.errorResult(AppHttpCodeEnum.HUB_ID_NOT_EXIST);
         }
 
-        else {
-            return Result.okResult();
-        }
+        return Result.okResult();
     }
 
     @Override
