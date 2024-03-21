@@ -1,8 +1,8 @@
-import { adminApi } from "./adminController";
-import { hubApi } from "./hubController";
-import { staffApi } from "./staffController";
-import { companyApi } from "./companyController";
-import { deliverApi } from "./deliverController";
+import { adminApi } from "./adminApi";
+import { hubApi } from "./hubApi";
+import { staffApi } from "./staffApi";
+import { companyApi } from "./companyApi";
+import { deliverApi } from "./deliverApi";
 
 export const api = {
     ...adminApi,

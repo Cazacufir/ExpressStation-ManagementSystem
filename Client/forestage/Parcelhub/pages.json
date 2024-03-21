@@ -17,19 +17,26 @@
 			"path": "pages/Person/Person"
 		},
 		{
-			"path" : "pages/Address/Address",
-			"style" : 
-			{
-				"navigationBarTitleText" : "",
-				"enablePullDownRefresh" : false
+			"path": "pages/Address/Address",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
 			}
 		},
 		{
-			"path" : "pages/Address/NewAddress/NewAddress",
-			"style" : 
-			{
-				"navigationBarTitleText" : "",
-				"enablePullDownRefresh" : false
+			"path": "pages/Address/NewAddress/NewAddress",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/UserInfo/UserInfo",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false,
+				"enablePullDownRefresh": false,
+				"disableScroll": true
 			}
 		}
 	],

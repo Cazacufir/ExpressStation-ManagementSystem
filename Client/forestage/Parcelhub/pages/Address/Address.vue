@@ -38,7 +38,7 @@
 			</span>
 
 			<span style="width: 400rpx;">
-				<u-button shape="circle" type="primary" color="#0165fe" text="新增地址"></u-button>
+				<u-button shape="circle" type="primary" color="#0165fe" text="新增地址" @click="toNew"></u-button>
 			</span>
 		</div>
 	</view>
@@ -69,6 +69,12 @@
 		console.log('n', n)
 		deleteList.value = [...n]
 		console.log('d', deleteList.value)
+	}
+	
+	const toNew = () => {
+		uni.navigateTo({
+			url:'/pages/Address/NewAddress/NewAddress'
+		})
 	}
 </script>
 
