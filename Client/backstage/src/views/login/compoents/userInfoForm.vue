@@ -1,12 +1,12 @@
 <template>
-    <el-form ref="info_ruleFormRef" :model="info" :rules="rules_info" size="large" label-width="auto">
+    <el-form ref="info_ruleFormRef" :model="info" :rules="rules_info" size="large" label-width="auto" hide-required-asterisk="true">
 
-        <el-form-item prop="name" label="您的姓名">
-            <el-input v-model="info.name"></el-input>
+        <el-form-item prop="staffName" label="您的姓名">
+            <el-input v-model="info.staffName"></el-input>
         </el-form-item>
 
         <el-form-item prop="age" label="您的年龄">
-            <el-input v-model="info.age"></el-input>
+            <el-input v-model.number="info.age"></el-input>
         </el-form-item>
 
         <el-form-item prop="sex" label="您的性别：">
@@ -16,8 +16,8 @@
             </el-radio-group>
         </el-form-item>
 
-        <el-form-item prop="address" label="家庭地址">
-            <el-input v-model="info.address"></el-input>
+        <el-form-item prop="staffAddress" label="家庭地址">
+            <el-input v-model="info.staffAddress"></el-input>
         </el-form-item>
 
         <el-form-item>
@@ -36,8 +36,8 @@ const emit = defineEmits(['getAdmin'])
 const info = reactive({
     age:null,
     sex:'F',
-    name:null,
-    address:null
+    staffName:null,
+    staffAddress:null,
 })
 
 const checkAge = (role,value,callback) =>{
@@ -57,15 +57,15 @@ const rules_info = reactive({
     sex:[
     { required: true, message: '性别不能为空！', trigger: 'blur' }
     ],
-    name:[
+    staffName:[
     { required: true, message: '姓名不能为空！', trigger: 'blur' }
     ],
-    address:[
+    staffAddress:[
     { required: true, message: '地址不能为空！', trigger: 'blur' }
     ]
 })
 
 const toSubmit = () => {
-    emit('getAdmin','123',true)
+    emit('getAdmin',info,true)
 }
 </script>

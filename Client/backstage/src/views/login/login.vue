@@ -19,7 +19,7 @@
 <script setup>
 import { reactive, ref } from 'vue';
 import { useRouter } from "vue-router";
-import utils from "@/utils";
+import { utils } from "@/utils/session.js";
 import { api } from "@/api"
 import { adminStore } from "@/stores/admin.js";
 import { ElMessage } from 'element-plus'

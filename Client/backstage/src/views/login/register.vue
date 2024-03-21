@@ -29,6 +29,7 @@ import { reactive, ref } from 'vue';
 import adminForm from './compoents/adminForm.vue'
 import hubForm from './compoents/hubForm.vue'
 import infoForm from './compoents/userInfoForm.vue'
+import { api } from "@/api"
 
 const forms = [hubForm, infoForm, adminForm]
 
@@ -49,25 +50,52 @@ const admin = reactive({})
 const info = reactive({})
 
 const getHub = (data,show) => {
-    // Object.assign(hub,data)
+    Object.assign(hub,data)
     showNext.value = show
     console.log('data',data)
     console.log('show',show)
+    if(show == true) next()
 }
 
 const getAdmin = (data,show) => {
-    // Object.assign(admin,data)
+    Object.assign(admin,data)
     showNext.value = show
     console.log('data',data)
     console.log('show',show)
+    if(show == true) next()
 }
 
 const getInfo = (data,show) => {
-    // Object.assign(info,data)
+    Object.assign(info,data)
     showNext.value = show
     console.log('data',data)
     console.log('show',show)
+    toRegister()
 }
+
+const allInfo = reactive({})
+
+const toRegister = async () => {
+    Object.assign(allInfo,hub,admin,info)
+    console.log('allInfo',allInfo)
+    allInfo.contact = allInfo.staffContact
+    const [e,r] = await api.register(allInfo)
+    if(r.code == 200){
+        ElMessage({
+            message: '注册成功！',
+            type: 'success',
+        })
+        routerKey.push('/login')
+    }
+    else{
+        ElMessage.error(r.msg)
+    }
+    console.log(typeof allInfo.age)
+    console.log(typeof allInfo.hub_id)
+    console.log(typeof allInfo.role)
+}
+
+
 </script>
 
 <style scoped lang="scss">

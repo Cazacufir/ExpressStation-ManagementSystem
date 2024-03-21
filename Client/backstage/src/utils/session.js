@@ -15,7 +15,7 @@ export const clearSession = () => {
   return window.sessionStorage.clear();
 };
 
-export const session = {
+export const utils = {
   setSession,
   getSession,
   removeSession,

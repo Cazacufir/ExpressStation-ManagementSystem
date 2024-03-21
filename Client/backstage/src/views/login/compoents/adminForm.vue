@@ -1,7 +1,7 @@
 <template>
-    <el-form ref="register_ruleFormRef" :model="user" :rules="rules_user" size="large">
-        <el-form-item prop="concact">
-            <el-input v-model="user.concact" placeholder="请输入您的手机号"></el-input>
+    <el-form ref="register_ruleFormRef" :model="user" :rules="rules_user" size="large" hide-required-asterisk="true">
+        <el-form-item prop="staffContact">
+            <el-input v-model="user.staffContact" placeholder="请输入您的手机号"></el-input>
         </el-form-item>
 
         <el-form-item prop="password">
@@ -22,7 +22,7 @@
 import { reactive, ref } from 'vue';
 
 const user = reactive({
-    concact: '',
+    staffContact: '',
     password: '',
     conf: ''
 })
@@ -41,7 +41,7 @@ const checkConf = (role,value,callback) => {
 }
 
 const rules_user = reactive({
-    concact: [
+    staffContact: [
         { required: true, message: '手机号不能为空！', trigger: 'blur' }
     ],
 
@@ -55,6 +55,6 @@ const rules_user = reactive({
 })
 
 const toSubmit = () =>{
-    emit('getInfo',213,false)
+    emit('getInfo',user,true)
 }
 </script>
