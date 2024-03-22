@@ -16,9 +16,13 @@
 						</div>
 
 						<div class="tab" v-for="(items,num) in item.address" :key="num">
-							<span>
+							<span v-show="isDelete">
 								<u-checkbox shape="circle" :key="num" :label="items" :name="items">
 								</u-checkbox>
+							</span>
+							
+							<span v-show="!isDelete" style="margin-left: 50rpx;">
+								<u-text :text="items"></u-text>
 							</span>
 
 							<span>
@@ -34,11 +38,13 @@
 
 		<div class="bottomBar">
 			<span style="width: 200rpx;">
-				<u-button shape="circle" plain type="primary" text="批量删除"></u-button>
+				<u-button v-show="!isDelete" shape="circle" plain type="primary" text="批量删除" @click="isDelete = true"></u-button>
+				<u-button v-show="isDelete" shape="circle" plain type="primary" text="取消" @click="isDelete = false"></u-button>
 			</span>
 
 			<span style="width: 400rpx;">
-				<u-button shape="circle" type="primary" color="#0165fe" text="新增地址" @click="toNew"></u-button>
+				<u-button v-show="!isDelete" shape="circle" type="primary" color="#0165fe" text="新增地址" @click="toNew"></u-button>
+				<u-button v-show="isDelete" shape="circle" type="primary" color="#0165fe" text="一键删除" @click="toDelete"></u-button>
 			</span>
 		</div>
 	</view>
@@ -75,6 +81,21 @@
 		uni.navigateTo({
 			url:'/pages/Address/NewAddress/NewAddress'
 		})
+	}
+	
+	let isDelete = ref(false)
+	
+	const filterArray = (arr1,arr2) => {
+		const setArr = new Set(arr1)
+		const result = arr2.filter(item => !setArr.has(item))
+		return result
+	}
+	
+	const toDelete = () => {
+		addressList.value.forEach(item => {
+			item.address = [...filterArray(deleteList.value,item.address)]
+		})
+		isDelete.value = false
 	}
 </script>
 
@@ -123,5 +144,6 @@
 		align-items: center;
 		padding: 10rpx;
 		border-bottom: 1px solid #ebebef;
+		min-height: 60rpx;
 	}
 </style>
