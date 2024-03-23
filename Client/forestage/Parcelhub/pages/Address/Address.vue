@@ -7,44 +7,48 @@
 		</div>
 
 		<div class="MainBody">
-			
-				<u-checkbox-group @change="changeDeleteList"  style="gap: 20rpx;">
-					<section class="addressBar" v-for="(item,index) in addressList" :key="index">
-						<div>
-							<u-text :text="item.name" bold size="20"></u-text>
-							<u-text :text="item.contact" bold></u-text>
-						</div>
 
-						<div class="tab" v-for="(items,num) in item.address" :key="num">
-							<span v-show="isDelete">
-								<u-checkbox shape="circle" :key="num" :label="items" :name="items">
-								</u-checkbox>
-							</span>
-							
-							<span v-show="!isDelete" style="margin-left: 50rpx;">
-								<u-text :text="items"></u-text>
-							</span>
+			<u-checkbox-group @change="changeDeleteList" style="gap: 20rpx;">
+				<section class="addressBar" v-for="(item,index) in addressList" :key="index">
+					<div>
+						<u-text :text="item.name" bold size="20"></u-text>
+						<u-text :text="item.contact" bold></u-text>
+					</div>
 
-							<span>
-								<u-icon name="edit-pen" size="22"></u-icon>
-							</span>
-						</div>
+					<div class="tab" v-for="(items,num) in item.address" :key="num">
+						<span v-show="isDelete">
+							<u-checkbox shape="circle" :key="num" :label="items" :name="items">
+							</u-checkbox>
+						</span>
 
-					</section>
-				</u-checkbox-group>
-			
+						<span v-show="!isDelete" style="margin-left: 50rpx;" @click="transferAddress(item,items)">
+							<u-text :text="items"></u-text>
+						</span>
+
+						<span>
+							<u-icon name="edit-pen" size="22"></u-icon>
+						</span>
+					</div>
+
+				</section>
+			</u-checkbox-group>
+
 
 		</div>
 
 		<div class="bottomBar">
 			<span style="width: 200rpx;">
-				<u-button v-show="!isDelete" shape="circle" plain type="primary" text="批量删除" @click="isDelete = true"></u-button>
-				<u-button v-show="isDelete" shape="circle" plain type="primary" text="取消" @click="isDelete = false"></u-button>
+				<u-button v-show="!isDelete" shape="circle" plain type="primary" text="批量删除"
+					@click="isDelete = true"></u-button>
+				<u-button v-show="isDelete" shape="circle" plain type="primary" text="取消"
+					@click="isDelete = false"></u-button>
 			</span>
 
 			<span style="width: 400rpx;">
-				<u-button v-show="!isDelete" shape="circle" type="primary" color="#0165fe" text="新增地址" @click="toNew"></u-button>
-				<u-button v-show="isDelete" shape="circle" type="primary" color="#0165fe" text="一键删除" @click="toDelete"></u-button>
+				<u-button v-show="!isDelete" shape="circle" type="primary" color="#0165fe" text="新增地址"
+					@click="toNew"></u-button>
+				<u-button v-show="isDelete" shape="circle" type="primary" color="#0165fe" text="一键删除"
+					@click="toDelete"></u-button>
 			</span>
 		</div>
 	</view>
@@ -52,8 +56,27 @@
 
 <script setup>
 	import {
-		ref
+		ref,
+		getCurrentInstance,
+		onMounted
 	} from 'vue';
+	import {
+		onLoad
+	} from '@dcloudio/uni-app'
+
+	let command = null
+	
+	let eventChannel = null
+
+	onLoad(option => {
+		if (option.command) {
+			command = JSON.parse(option.command)
+			console.log(command)
+			console.log('gte',getCurrentInstance().proxy.getOpenerEventChannel())
+			eventChannel = getCurrentInstance().proxy.getOpenerEventChannel();
+			// console.log(eventChannel)
+		}
+	})
 
 	let searchFor = ref()
 
@@ -76,26 +99,44 @@
 		deleteList.value = [...n]
 		console.log('d', deleteList.value)
 	}
-	
+
 	const toNew = () => {
 		uni.navigateTo({
-			url:'/pages/Address/NewAddress/NewAddress'
+			url: '/pages/Address/NewAddress/NewAddress'
 		})
 	}
-	
+
 	let isDelete = ref(false)
-	
-	const filterArray = (arr1,arr2) => {
+
+	const filterArray = (arr1, arr2) => {
 		const setArr = new Set(arr1)
 		const result = arr2.filter(item => !setArr.has(item))
 		return result
 	}
-	
+
 	const toDelete = () => {
 		addressList.value.forEach(item => {
-			item.address = [...filterArray(deleteList.value,item.address)]
+			item.address = [...filterArray(deleteList.value, item.address)]
 		})
 		isDelete.value = false
+	}
+
+	const transferAddress = (person, address) => {
+		if (!command) return
+		console.log('command', command)
+		const Newaddress = {}
+		Newaddress.name = person.name
+		Newaddress.contact = person.contact
+		Newaddress.address = address
+		console.log('na', Newaddress)
+		if (command == 'send') {
+			eventChannel.emit('getSend', Newaddress);
+			uni.navigateBack()
+		} else {
+			eventChannel.emit('getReceive', Newaddress);
+			uni.navigateBack()
+		}
+
 	}
 </script>
 
