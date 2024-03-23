@@ -9,7 +9,7 @@
 		</div>
 		
 		<div class="btnBar">
-			<div class="btn" v-for="(item,index) in list" :key="index">
+			<div class="btn" v-for="(item,index) in list" :key="index" @click="toPage(item.target)">
 				<span class="content">
 					<u-icon :name="item.icon" :color="item.color" size="25"></u-icon>
 					<span>{{ item.name }}</span>
@@ -39,17 +39,20 @@ const list = [
 	{
 		name:'个人信息',
 		icon:'account',
-		color:'green'
+		color:'green',
+		target:'/pages/UserInfo/UserInfo'
 	},
 	{
 		name:'地址簿',
 		icon:'map-fill',
-		color:'#0165fe'
+		color:'#0165fe',
+		target:'/pages/Address/Address'
 	},
 	{
 		name:'我的订单',
 		icon:'order',
-		color:'orange'
+		color:'orange',
+		target:'/pages/Order/Order'
 	},
 	{
 		name:'账号安全',
@@ -57,6 +60,12 @@ const list = [
 		color:'#F47174'
 	}
 ]
+
+const toPage = (url) => {
+	uni.navigateTo({
+		url:url
+	})
+}
 </script>
 
 <style scoped lang="scss">
@@ -98,6 +107,7 @@ const list = [
 		align-items: center;
 		justify-content: space-between;
 		padding: 0 20rpx 0 20rpx;
+		box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 	}
 	
 	.content{

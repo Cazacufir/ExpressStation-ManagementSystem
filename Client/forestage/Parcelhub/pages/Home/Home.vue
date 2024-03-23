@@ -9,14 +9,14 @@
 		</div>
 
 		<view class="btnBar">
-			<div class="btn">
+			<div class="btn" @click="toReceive">
 				<u-icon name="bag-fill" color="white" size="40"></u-icon>
 				<u-text text="取包裹" bold size="20" color="white"></u-text>
 			</div>
 
-			<div class="btn">
+			<div class="btn" @click="toSend">
 				<u-icon name="car-fill" color="white" size="40"></u-icon>
-				<u-text text="取包裹" bold size="20" color="white"></u-text>
+				<u-text text="寄包裹" bold size="20" color="white"></u-text>
 			</div>
 
 			<div class="btn">
@@ -33,7 +33,7 @@
 					inactiveStyle="font-size:35rpx;" scrollable="false" @change="switchTab"></u-tabs>
 				</div>
 				
-				<div>
+				<div @click="toAdd">
 					<u-button type="primary" color="#0165fe" shape="circle" icon="plus" size="small" text="添加包裹"></u-button>
 				</div>
 			</div>
@@ -83,6 +83,23 @@
 		current.value = !current.value
 	}
 	
+	const toReceive = () => {
+		uni.navigateTo({
+			url:'/pages/GetParcel/GetParcel'
+		})
+	}
+	
+	const toSend = () => {
+		uni.navigateTo({
+			url:'/pages/SendParcel/SendParcel'
+		})
+	}
+	
+	const toAdd = () => {
+		uni.navigateTo({
+			url:'/pages/Addparcel/Addparcel'
+		})
+	}
 </script>
 
 <style lang="scss" scoped>
