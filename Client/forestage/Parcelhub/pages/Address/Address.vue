@@ -17,16 +17,16 @@
 
 					<div class="tab" v-for="(items,num) in item.address" :key="num">
 						<span v-show="isDelete">
-							<u-checkbox shape="circle" :key="num" :label="items" :name="items">
+							<u-checkbox shape="circle" :key="num" :label="formatAddress(items)" :name="items">
 							</u-checkbox>
 						</span>
 
 						<span v-show="!isDelete" style="margin-left: 50rpx;" @click="transferAddress(item,items)">
-							<u-text :text="items"></u-text>
+							<u-text :text="formatAddress(items)"></u-text>
 						</span>
 
 						<span>
-							<u-icon name="edit-pen" size="22"></u-icon>
+							<u-icon name="edit-pen" size="22" @click="toUpdateAddress(item,items,num)"></u-icon>
 						</span>
 					</div>
 
@@ -58,7 +58,6 @@
 	import {
 		ref,
 		getCurrentInstance,
-		onMounted
 	} from 'vue';
 	import {
 		onLoad
@@ -74,7 +73,6 @@
 			console.log(command)
 			console.log('gte',getCurrentInstance().proxy.getOpenerEventChannel())
 			eventChannel = getCurrentInstance().proxy.getOpenerEventChannel();
-			// console.log(eventChannel)
 		}
 	})
 
@@ -83,7 +81,7 @@
 	const addressList = ref([{
 			name: 'test1',
 			contact: '123',
-			address: ['广西壮族自治区桂林市灵川县灵田镇桂林电子科技大学花江校区', 'GUET']
+			address: ['广西壮族自治区桂林市灵川县_桂林电子科技大学花江校区', 'GUET']
 		},
 		{
 			name: 'test2',
@@ -137,6 +135,27 @@
 			uni.navigateBack()
 		}
 
+	}
+	
+	const toUpdateAddress = (person,address,num) => {
+		const Newaddress = {}
+		Newaddress.name = person.name
+		Newaddress.contact = person.contact
+		Newaddress.address = address
+		uni.navigateTo({
+			url:'/pages/Address/NewAddress/NewAddress?command=' + JSON.stringify(Newaddress),
+			events:{
+				updateAddress: function(data){
+					person.name = data.name
+					person.contact = data.contact
+					person.address[num] = data.address
+				}
+			}
+		})
+	}
+	
+	const formatAddress = (address) => {
+		return address.replace(/_/g, '')
 	}
 </script>
 
