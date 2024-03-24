@@ -47,6 +47,7 @@ const toValidate = async () => {
     console.log('res', r)
     if (r.code == '200') {
         utils.setSession("token", r.data.token);
+        utils.setSession("admin",r.data.adminInfoVo)
         store.setAdminInfo(r.data)
         router.replace('/home')
         ElMessage({

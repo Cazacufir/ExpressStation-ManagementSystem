@@ -119,6 +119,11 @@ const routes = [
         path: "/userInfo",
         name: "UserInfo",
         component: async () => await import("@/views/userInfo/userInfo.vue")
+      },
+      {
+        path: "/password",
+        name: "Password",
+        component: async () => await import("@/views/password/password.vue")
       }
     ],
   },

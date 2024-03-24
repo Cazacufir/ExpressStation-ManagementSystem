@@ -13,6 +13,7 @@
             <template #dropdown>
                 <el-dropdown-menu class="logout">
                     <el-dropdown-item icon="Document" @click="router.push('/userInfo')">个人信息</el-dropdown-item>
+                    <el-dropdown-item icon="Key" @click="router.push('/password')">修改密码</el-dropdown-item>
                     <el-dropdown-item icon="CircleClose" divided style="color: red;">退出登录</el-dropdown-item>
                 </el-dropdown-menu>
             </template>

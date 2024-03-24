@@ -12,8 +12,13 @@ export function vertifyInfo(hub){
     return Post("/vertifyInfo",hub)
 }
 
+export function updatePassword(admin){
+    return Post("/updatePassword",admin);
+}
+
 export const adminApi = {
     login,
     register,
-    vertifyInfo
+    vertifyInfo,
+    updatePassword
 }
