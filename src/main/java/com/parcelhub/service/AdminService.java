@@ -10,4 +10,6 @@ public interface AdminService extends IService<Admin> {
 //    Result register(Admin admin);
 
     Result register(Map<String,Object> map);
+
+    Result updatePassword(Map<String,Object> map);
 }

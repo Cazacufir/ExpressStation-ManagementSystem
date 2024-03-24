@@ -106,4 +106,22 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
         }
         return Result.errorResult(1000, "网络异常");
     }
+
+    @Override
+    public Result updatePassword(Map<String,Object> map){
+        String rawPassword = (String) map.get("rawPassword");
+        String newPassword = (String) map.get("newPassword");
+
+        int adminId = (int) map.get("adminId");
+
+        if(rawPassword.equals(newPassword)){
+            return Result.okResult(AppHttpCodeEnum.PASSWORD_EXITST);
+        }
+
+        Admin admin = adminMapper.selectById(adminId);
+        String encodeNewPassword = passwordEncoder.encode(newPassword);
+        admin.setPassword(encodeNewPassword);
+        adminMapper.updateById(admin);
+        return Result.okResult();
+    }
 }

@@ -47,4 +47,9 @@ public class AdminController {
     public Result register(@RequestBody Map<String,Object> map){
         return adminService.register(map);
     }
+
+    @PostMapping("/updatePassword")
+    public Result updatePassword(@RequestBody Map<String,Object> map){
+        return adminService.updatePassword(map);
+    }
 }
