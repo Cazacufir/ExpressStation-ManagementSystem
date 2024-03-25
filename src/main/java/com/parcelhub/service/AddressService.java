@@ -5,6 +5,7 @@ import com.parcelhub.entity.Address;
 import com.parcelhub.utils.Result;
 
 public interface AddressService extends IService<Address> {
-
     Result getAddressList(int user_id);
+
+    Result updateAddress(Address address);
 }
