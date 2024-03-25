@@ -18,7 +18,7 @@ public enum AppHttpCodeEnum {
     PASSWORD_NOT_NULL(510, "密码不能为空"),
     EMAIL_NOT_NULL(511, "邮箱不能为空"),
     NICKNAME_EXIST(512, "昵称已存在"),
-    PRODUCT_EXIST(513, "当前分类关联的商品存在，不能删除"),
+    ADDRESS_NOT_FOUND(514, "未查询到地址"),
     USER_NOT_FOUND(514, "未查询到用户数据"),
     DELIVER_EXIST(515, "快递员已存在"),
     NAME_OR_ADDRESS_NOT_EXIST(412, "地址或名称不能为空"),
