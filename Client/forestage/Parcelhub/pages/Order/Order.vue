@@ -8,7 +8,7 @@
 		<div style="margin-bottom: 20rpx; width: 95%;margin-left: auto;margin-right: auto;">
 			<u-input v-model="searchFor" placeholder="输入快递单号以查询快递" suffixIcon="search"
 				suffixIconStyle="color: #1e80ff;font-size:50rpx" shape="circle" fontSize="30rpx"
-				style="background: white;"></u-input>
+				customStyle="background: white;"></u-input>
 		</div>
 
 		<receiveall v-show="current"></receiveall>

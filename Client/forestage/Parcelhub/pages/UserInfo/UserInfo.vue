@@ -3,38 +3,41 @@
 		<div class="formBar">
 			<u-form labelPosition="left" labelWidth="70" :model="userInfo" :rules="user_rules" ref="userFormRef">
 				<u-form-item prop="avatar" label="头像">
-					<u-avatar :src="userInfo.avatar"></u-avatar>
-					<span style="margin-left: auto;">
-						<u-button type="primary" plain text="修改头像" shape="circle" size="small" @click="selectImg"></u-button>
-					</span>
+					<div class="itemBar">
+						<u-avatar :src="userInfo.avatar"></u-avatar>
+						<span>
+							<u-button type="primary" plain text="修改头像" shape="circle" size="small"
+								@click="selectImg"></u-button>
+						</span>
+					</div>
 				</u-form-item>
 
 				<u-form-item prop="name" label="姓名">
-					<u-text v-show="!isModify" :text="userInfo.name"></u-text>
-					<u-input v-show="isModify" v-model="userInfo.name"></u-input>
+					<u-text v-if="!isModify" :text="userInfo.name"></u-text>
+					<u-input v-if="isModify" v-model="userInfo.name"></u-input>
 				</u-form-item>
 
 				<u-form-item prop="nickname" label="昵称">
-					<u-text v-show="!isModify" :text="userInfo.nickname"></u-text>
-					<u-input v-show="isModify" v-model="userInfo.nickname"></u-input>
+					<u-text v-if="!isModify" :text="userInfo.nickname"></u-text>
+					<u-input v-if="isModify" v-model="userInfo.nickname"></u-input>
 				</u-form-item>
 
 				<u-form-item prop="contact" label="手机号">
-					<u-text v-show="!isModify" :text="userInfo.contact"></u-text>
-					<u-input v-show="isModify" v-model="userInfo.contact" type="number"></u-input>
+					<u-text v-if="!isModify" :text="userInfo.contact"></u-text>
+					<u-input v-if="isModify" v-model="userInfo.contact" type="number"></u-input>
 				</u-form-item>
 
 				<u-form-item prop="sex" label="性别">
-					<u-text v-show="!isModify" :text="userInfo.sex"></u-text>
-					<u-radio-group v-show="isModify" v-model="userInfo.sex">
+					<u-text v-if="!isModify" :text="userInfo.sex"></u-text>
+					<u-radio-group v-if="isModify" v-model="userInfo.sex">
 						<u-radio v-for="(item,index) in sexList" :key="index" :label="item.sex"
 							:name="item.name"></u-radio>
 					</u-radio-group>
 				</u-form-item>
 
 				<u-form-item prop="age" label="年龄">
-					<u-text v-show="!isModify" :text="userInfo.age"></u-text>
-					<u-input v-show="isModify" v-model="userInfo.age" type="number"></u-input>
+					<u-text v-if="!isModify" :text="userInfo.age"></u-text>
+					<u-input v-if="isModify" v-model="userInfo.age" type="number"></u-input>
 				</u-form-item>
 			</u-form>
 		</div>
@@ -42,9 +45,9 @@
 
 		<div class="bottomBar">
 			<span style="width: 400rpx;">
-				<u-button v-show="!isModify" shape="circle" type="primary" color="#0165fe" text="修改"
+				<u-button v-if="!isModify" shape="circle" type="primary" color="#0165fe" text="修改"
 					@click="isModify = true"></u-button>
-				<u-button v-show="isModify" shape="circle" type="primary" color="#0165fe" text="保存"
+				<u-button v-if="isModify" shape="circle" type="primary" color="#0165fe" text="保存"
 					@click="toSubmit"></u-button>
 			</span>
 		</div>
@@ -121,26 +124,26 @@
 	const toSubmit = () => {
 		isModify.value = false
 	}
-	
+
 	const imgSrc = ref('')
-	
+
 	let showPop = ref(false)
-	
+
 	const selectImg = () => {
 		uni.chooseImage({
-			count:1,
+			count: 1,
 			success(res) {
 				imgSrc.value = res.tempFiles[0].path
 				showPop.value = true
 			}
 		})
 	}
-	
+
 	const closePop = () => {
 		showPop.value = false
 		imgSrc.value = ''
 	}
-	
+
 	let finalImg = ref('')
 
 	const handleCrop = (e) => {
@@ -177,5 +180,11 @@
 		justify-content: center;
 		align-items: center;
 		width: 100%;
+	}
+
+	.itemBar {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
 	}
 </style>

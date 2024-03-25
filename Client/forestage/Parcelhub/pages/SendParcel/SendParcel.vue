@@ -102,9 +102,9 @@
 
 		<div class="btm">
 			<div class="left">
-				<u-text v-show="!isComplete" text="填写相关信息后看预估运费" size="18"></u-text>
-				<u-text v-show="isComplete" text="预估运费" size="18"></u-text>
-				<div v-show="isComplete">
+				<u-text v-if="!isComplete" text="填写相关信息后看预估运费" size="13"></u-text>
+				<u-text v-if="isComplete" text="预估运费" size="18"></u-text>
+				<div v-if="isComplete">
 					<u-text color="red" mode="price" :text="price" size="20"></u-text>
 				</div>
 			</div>

@@ -16,12 +16,12 @@
 					</div>
 
 					<div class="tab" v-for="(items,num) in item.address" :key="num">
-						<span v-show="isDelete">
+						<span v-if="isDelete">
 							<u-checkbox shape="circle" :key="num" :label="formatAddress(items)" :name="items">
 							</u-checkbox>
 						</span>
 
-						<span v-show="!isDelete" style="margin-left: 50rpx;" @click="transferAddress(item,items)">
+						<span v-if="!isDelete" style="margin-left: 50rpx;" @click="transferAddress(item,items)">
 							<u-text :text="formatAddress(items)"></u-text>
 						</span>
 
@@ -38,16 +38,16 @@
 
 		<div class="bottomBar">
 			<span style="width: 200rpx;">
-				<u-button v-show="!isDelete" shape="circle" plain type="primary" text="批量删除"
+				<u-button v-if="!isDelete" shape="circle" plain type="primary" text="批量删除"
 					@click="isDelete = true"></u-button>
-				<u-button v-show="isDelete" shape="circle" plain type="primary" text="取消"
+				<u-button v-if="isDelete" shape="circle" plain type="primary" text="取消"
 					@click="isDelete = false"></u-button>
 			</span>
 
 			<span style="width: 400rpx;">
-				<u-button v-show="!isDelete" shape="circle" type="primary" color="#0165fe" text="新增地址"
+				<u-button v-if="!isDelete" shape="circle" type="primary" color="#0165fe" text="新增地址"
 					@click="toNew"></u-button>
-				<u-button v-show="isDelete" shape="circle" type="primary" color="#0165fe" text="一键删除"
+				<u-button v-if="isDelete" shape="circle" type="primary" color="#0165fe" text="一键删除"
 					@click="toDelete"></u-button>
 			</span>
 		</div>

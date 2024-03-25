@@ -5,14 +5,14 @@
 		<div class="searchBar">
 			<u-input v-model="searchFor" placeholder="输入快递单号以查询快递" suffixIcon="search"
 				suffixIconStyle="color: #1e80ff;font-size:50rpx" shape="circle" fontSize="30rpx"
-				style="background: white;"></u-input>
+				customStyle="background-color: white;"></u-input>
 		</div>
 
 		<view class="btnBar">
-			<div class="btn" @click="toReceive">
+			<view class="btn" @click="toReceive">
 				<u-icon name="bag-fill" color="white" size="40"></u-icon>
-				<u-text text="取包裹" bold size="20" color="white"></u-text>
-			</div>
+				<u-text text="取包裹" bold size="17" color="white"></u-text>
+			</view>
 
 			<div class="btn" @click="toSend">
 				<u-icon name="car-fill" color="white" size="40"></u-icon>
@@ -116,6 +116,7 @@
 		padding: 0 10rpx;
 		display: flex;
 		justify-content: space-around;
+		gap: 2rpx;
 	}
 
 	.btn {
