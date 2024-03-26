@@ -3,6 +3,7 @@ package com.parcelhub.controller;
 import com.parcelhub.entity.User;
 import com.parcelhub.service.UserService;
 import com.parcelhub.utils.Result;
+import com.parcelhub.vo.UserAvatarVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,5 +21,10 @@ public class UserController {
     @PostMapping("/updateUserInfo")
     public Result updateUserInfo(@RequestBody User user){
         return userService.updateUserInfo(user);
+    }
+
+    @PostMapping("/uploadAvatar")
+    public Result uploadAvatar(@RequestBody UserAvatarVo userAvatarVo){
+        return userService.uploadAvatar(userAvatarVo);
     }
 }

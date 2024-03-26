@@ -8,9 +8,9 @@ import com.parcelhub.service.UserService;
 import com.parcelhub.utils.AppHttpCodeEnum;
 import com.parcelhub.utils.MinioUtil;
 import com.parcelhub.utils.Result;
+import com.parcelhub.vo.UserAvatarVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Objects;
 
@@ -44,17 +44,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return Result.okResult();
     }
 
-//    @Override
-//    public Result uploadAvatar(MultipartFile file){
-//        String objectName = minioUtil.upload(file);
-//        if (null != objectName) {
-//            String avatar = prop.getEndpoint() + "/" + prop.getBucketName() + "/" + objectName;
-//            User user = userService.addAdvater();
-//            user.setAvatar(avatar);
-//            userService.updateById(user);
-//            System.out.println(user);
-//            return Result.okResult(prop.getEndpoint() + "/" + prop.getBucketName() + "/" + objectName);
-//        }
-//        return Result.errorResult(AppHttpCodeEnum.UPLOAD_ERROR);
-//    }
+    @Override
+    public Result uploadAvatar(UserAvatarVo userAvatarVo){
+        String objectName = minioUtil.upload(userAvatarVo.getFile());
+        if (null != objectName) {
+            String avatar = prop.getEndpoint() + "/" + prop.getBucketName() + "/" + objectName;
+            User user = userMapper.selectById(userAvatarVo.getUserId());
+            user.setAvatar(avatar);
+            userMapper.updateById(user);
+            System.out.println(user);
+            return Result.okResult(prop.getEndpoint() + "/" + prop.getBucketName() + "/" + objectName);
+        }
+        return Result.errorResult(AppHttpCodeEnum.UPLOAD_ERROR);
+    }
 }
