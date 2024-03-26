@@ -24,9 +24,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     MinioUtil minioUtil;
 
     @Autowired
-    UserService userService;
-
-    @Autowired
     MinioConfig prop;
 
     @Override
