@@ -24,7 +24,7 @@ public class UserController {
     }
 
     @PostMapping("/uploadAvatar")
-    public Result uploadAvatar(@RequestBody UserAvatarVo userAvatarVo){
+    public Result uploadAvatar(UserAvatarVo userAvatarVo){
         return userService.uploadAvatar(userAvatarVo);
     }
 }

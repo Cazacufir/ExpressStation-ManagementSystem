@@ -10,7 +10,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserAvatarVo implements Serializable {
+public class UserAvatarVo {
     private int userId;
 
     private MultipartFile file;
