@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
 public class AddressController {
     @Autowired
@@ -19,7 +21,7 @@ public class AddressController {
     }
 
     @PutMapping("/updateAddress")
-    public Result updateAddress(Address address){
-        return addressService.updateAddress(address);
+    public Result updateAddress(Map<String,Object> map){
+        return addressService.updateAddress(map);
     }
 }
