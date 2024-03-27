@@ -1,6 +1,7 @@
 package com.parcelhub.filter;
 
 import com.alibaba.fastjson.JSON;
+import com.parcelhub.model.SecurityForeStageUser;
 import com.parcelhub.model.SecurityUser;
 import com.parcelhub.utils.AppHttpCodeEnum;
 import com.parcelhub.utils.JwtUtil;
@@ -32,39 +33,78 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException, ServletException, IOException {
         //获取token
         String token = request.getHeader("token");
-        if (!StringUtils.hasText(token)) {
+        String type = request.getHeader("type");
+        if(type.equals("admin")){
+            if (!StringUtils.hasText(token)) {
+                //放行
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            String adminId;
+            try {
+                Claims claims = JwtUtil.parseJWT(token);
+                adminId = claims.getSubject();
+            } catch (Exception e) {
+                e.printStackTrace();
+                //token超时  token非法
+                //响应告诉前端需要重新登录
+                Result result = Result.errorResult(AppHttpCodeEnum.NEED_LOGIN);
+                WebUtils.renderString(response, JSON.toJSONString(result));
+                return;
+            }
+            //从redis中获取用户信息
+            String redisKey = "login:" + adminId;
+            SecurityUser securityUser = redisCache.getCacheObject(redisKey);
+            if(Objects.isNull(securityUser)){
+                Result result = Result.errorResult(AppHttpCodeEnum.NEED_LOGIN);
+                WebUtils.renderString(response, JSON.toJSONString(result));
+                return;
+
+            }
+            //存入SecurityContextHolder
+
+            UsernamePasswordAuthenticationToken authenticationToken =
+                    new UsernamePasswordAuthenticationToken(securityUser,null,securityUser.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             //放行
             filterChain.doFilter(request, response);
-            return;
         }
+        else{
+            if (!StringUtils.hasText(token)) {
+                //放行
+                filterChain.doFilter(request, response);
+                return;
+            }
 
-        String adminId;
-        try {
-            Claims claims = JwtUtil.parseJWT(token);
-            adminId = claims.getSubject();
-        } catch (Exception e) {
-            e.printStackTrace();
-            //token超时  token非法
-            //响应告诉前端需要重新登录
-            Result result = Result.errorResult(AppHttpCodeEnum.NEED_LOGIN);
-            WebUtils.renderString(response, JSON.toJSONString(result));
-            return;
+            String userId;
+            try {
+                Claims claims = JwtUtil.parseJWT(token);
+                userId = claims.getSubject();
+            } catch (Exception e) {
+                e.printStackTrace();
+                //token超时  token非法
+                //响应告诉前端需要重新登录
+                Result result = Result.errorResult(AppHttpCodeEnum.NEED_LOGIN);
+                WebUtils.renderString(response, JSON.toJSONString(result));
+                return;
+            }
+            //从redis中获取用户信息
+            String redisKey = "login:" + userId;
+            SecurityForeStageUser securityForeStageUser = redisCache.getCacheObject(redisKey);
+            if(Objects.isNull(securityForeStageUser)){
+                Result result = Result.errorResult(AppHttpCodeEnum.NEED_LOGIN);
+                WebUtils.renderString(response, JSON.toJSONString(result));
+                return;
+
+            }
+            //存入SecurityContextHolder
+
+            UsernamePasswordAuthenticationToken authenticationToken =
+                    new UsernamePasswordAuthenticationToken(securityForeStageUser,null,securityForeStageUser.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            //放行
+            filterChain.doFilter(request, response);
         }
-        //从redis中获取用户信息
-        String redisKey = "login:" + adminId;
-        SecurityUser securityUser = redisCache.getCacheObject(redisKey);
-        if(Objects.isNull(securityUser)){
-            Result result = Result.errorResult(AppHttpCodeEnum.NEED_LOGIN);
-            WebUtils.renderString(response, JSON.toJSONString(result));
-            return;
-
-        }
-        //存入SecurityContextHolder
-
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(securityUser,null,securityUser.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-        //放行
-        filterChain.doFilter(request, response);
     }
 }
