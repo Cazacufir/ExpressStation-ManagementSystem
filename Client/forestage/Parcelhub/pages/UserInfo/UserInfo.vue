@@ -51,12 +51,13 @@
 					@click="toSubmit"></u-button>
 			</span>
 		</div>
-
 	</view>
+	
 	<u-popup mode="bottom" :show="showPop" @close="closePop" closeable="true">
 		<div style="height: 100vh;width: 100vw;"></div>
 		<qf-image-cropper :src="imgSrc" :width="500" :height="500" :radius="30" @crop="handleCrop"></qf-image-cropper>
 	</u-popup>
+	
 </template>
 
 <script setup>
@@ -147,11 +148,9 @@
 	let finalImg = ref('')
 
 	const handleCrop = (e) => {
-		uni.previewImage({
-			urls: [e.tempFilePath],
-			current: 0
-		});
 		finalImg.value = e.tempFilePath
+		console.log(finalImg.value)
+		closePop()
 	}
 </script>
 

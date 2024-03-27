@@ -9,6 +9,7 @@ const inst = axios.create({
 inst.interceptors.request.use(
   function (config) {
     // 在发送请求之前做些什么
+    config.headers.type = "admin"
     const token = getSession("token");
     if (token) {
       config.headers.token = token;
