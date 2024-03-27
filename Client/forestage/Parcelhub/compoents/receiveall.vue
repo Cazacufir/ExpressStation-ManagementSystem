@@ -1,6 +1,6 @@
 <template>
 	<view class="containerS">
-		<div class="parcelCard" v-for="(items,index) in list" :key="index">
+		<div class="parcelCard" v-for="(items,index) in list" :key="index" @click="toDetail">
 			<u-text :text="'订单号：' + items.orderId"></u-text>
 			<u-text :text="'下单时间：' + items.orderTime"></u-text>
 			
@@ -56,6 +56,12 @@ const list = ref([
 		status:'已签收'
 	}
 ])
+
+const toDetail = () => {
+	uni.navigateTo({
+		url:'/pages/Order/OrderDetail/OrderDetail'
+	})
+}
 </script>
 
 <style lang="scss">
