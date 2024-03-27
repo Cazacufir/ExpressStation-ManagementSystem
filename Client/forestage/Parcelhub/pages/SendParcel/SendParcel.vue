@@ -95,8 +95,16 @@
 					<u-text :text="info? info : '请选择' "></u-text>
 					<u-icon name="arrow-right"></u-icon>
 				</span>
-
 			</div>
+			
+			<div class="litteBar" style="margin-top: 20rpx;">
+				<u-text text="选择驿站"></u-text>
+			
+				<span class="litteBar" @click="isShowHub = true">
+					<u-text :text="hub? hub : '请选择' "></u-text>
+					<u-icon name="arrow-right"></u-icon>
+				</span>
+			</div> 
 
 		</div>
 
@@ -147,6 +155,8 @@
 				</div>
 			</div>
 		</u-popup>
+	<u-picker :show="isShowHub" :columns="addressList" closeOnClickOverlay="true"
+	@cancel="closeHubPicker" @close="closeHubPicker" @confirm="confirmHub"></u-picker>
 	</view>
 
 </template>
@@ -177,6 +187,10 @@
 	let weight = ref(1)
 
 	let currentType = ref('日用品')
+	
+	let isShowHub = ref(false)
+	
+	let hub = ref('')
 	
 	const isComplete = computed(()=> Object.keys(receive).length && Object.keys(send).length && info.value )
 	
@@ -219,15 +233,26 @@
 		dateTime.value = e.value[0] + e.value[1]
 		isShow.value = false;
 	};
+	
+	const confirmHub = (e) => {
+		console.log('confirm', e);
+		hub.value = e.value[0]
+		isShowHub.value = false
+	}
 
 	const closePicker = () => {
 		isShow.value = false;
+	}
+	
+	const closeHubPicker = () =>{
+		isShowHub.value = false
 	}
 
 	const closePop = () => {
 		isShowInfo.value = false
 		info.value = currentType.value + '/' + weight.value + 'kg'
 	}
+
 
 	const thingType = ['日用品', '食品', '文件', '衣物', '数码产品', '药品', '生鲜', '易碎品', '其他']
 
@@ -253,6 +278,10 @@
 			}
 		})
 	}
+	
+	const addressList = reactive([
+		['中央食堂','后街']
+	])
 </script>
 
 <style lang="scss" scoped>
