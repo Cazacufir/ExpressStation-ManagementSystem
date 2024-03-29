@@ -1,5 +1,7 @@
 package com.parcelhub.dto;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,6 +14,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderParcelMerge implements Serializable {
+    @TableId(type = IdType.AUTO)
     private int orderId;
 
     private String orderType;
@@ -30,6 +33,7 @@ public class OrderParcelMerge implements Serializable {
 
     private int del_flag;
 
+    @TableId(type = IdType.AUTO)
     private int parcelId;
 
     private String sendName;

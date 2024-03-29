@@ -67,7 +67,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderList> implem
         orderList.setOrderTime(orderParcelMerge.getOrderTime());
         orderList.setHub_id(orderParcelMerge.getHub_id());
         orderList.setPrice(orderParcelMerge.getPrice());
-        save(orderList);
+        orderMapper.updateById(orderList);
 
         parcel.setReceiveName(orderParcelMerge.getReceiveName());
         parcel.setReceiveAddress(orderParcelMerge.getReceiveAddress());
