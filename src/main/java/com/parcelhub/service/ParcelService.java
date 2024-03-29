@@ -6,5 +6,4 @@ import com.parcelhub.entity.Parcel;
 import com.parcelhub.utils.Result;
 
 public interface ParcelService extends IService<Parcel> {
-    Result updateSendParcel(OrderParcelMerge orderParcelMerge);
 }

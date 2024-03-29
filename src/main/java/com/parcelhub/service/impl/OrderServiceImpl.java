@@ -57,4 +57,28 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderList> implem
 
         return Result.okResult();
     }
+
+    @Override
+    public Result updateSendList(OrderParcelMerge orderParcelMerge){
+        OrderList orderList = orderMapper.selectById(orderParcelMerge.getOrderId());
+        Parcel parcel = parcelMapper.selectById(orderParcelMerge.getParcelId());
+
+        orderList.setOrderType(orderParcelMerge.getOrderType());
+        orderList.setOrderTime(orderParcelMerge.getOrderTime());
+        orderList.setHub_id(orderParcelMerge.getHub_id());
+        orderList.setPrice(orderParcelMerge.getPrice());
+        save(orderList);
+
+        parcel.setReceiveName(orderParcelMerge.getReceiveName());
+        parcel.setReceiveAddress(orderParcelMerge.getReceiveAddress());
+        parcel.setReceiveContact(orderParcelMerge.getReceiveContact());
+        parcel.setSendName(orderParcelMerge.getSendName());
+        parcel.setSendAddress(orderParcelMerge.getSendAddress());
+        parcel.setSendContact(orderParcelMerge.getSendContact());
+        parcel.setType(orderParcelMerge.getType());
+        parcel.setWeight(orderParcelMerge.getWeight());
+        parcelMapper.updateById(parcel);
+
+        return Result.okResult();
+    }
 }

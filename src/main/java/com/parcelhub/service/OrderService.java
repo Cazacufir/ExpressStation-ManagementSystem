@@ -9,4 +9,6 @@ public interface OrderService extends IService<OrderList> {
     Result getSendList(int user_id);
 
     Result addSendList(OrderParcelMerge orderParcelMerge);
+
+    Result updateSendList(OrderParcelMerge orderParcelMerge);
 }

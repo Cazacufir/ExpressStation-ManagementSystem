@@ -15,15 +15,4 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
     @Autowired
     ParcelMapper parcelMapper;
 
-    @Override
-    public Result updateSendParcel(OrderParcelMerge orderParcelMerge){
-        Parcel parcel = parcelMapper.selectById(orderParcelMerge.getParcelId());
-
-        parcel.setReceiveName(orderParcelMerge.getReceiveName());
-        parcel.setReceiveAddress(orderParcelMerge.getReceiveAddress());
-        parcel.setReceiveContact(orderParcelMerge.getReceiveContact());
-        save(parcel);
-
-        return Result.okResult();
-    }
 }

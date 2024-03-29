@@ -20,4 +20,9 @@ public class OrderController {
     public Result addSendList(@RequestBody OrderParcelMerge orderParcelMerge){
         return orderService.addSendList(orderParcelMerge);
     }
+
+    @PutMapping("/updateSendList")
+    public Result updateSendList(@RequestBody OrderParcelMerge orderParcelMerge){
+        return orderService.updateSendList(orderParcelMerge);
+    }
 }

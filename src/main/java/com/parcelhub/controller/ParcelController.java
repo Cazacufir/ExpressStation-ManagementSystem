@@ -8,12 +8,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class parcelController {
+public class ParcelController {
     @Autowired
     ParcelService parcelService;
 
-    @PostMapping("/updateSendParcel")
-    public Result updateSendParcel(OrderParcelMerge orderParcelMerge){
-        return parcelService.updateSendParcel(orderParcelMerge);
-    }
 }
