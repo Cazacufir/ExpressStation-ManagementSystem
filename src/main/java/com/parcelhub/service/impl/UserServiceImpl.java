@@ -38,7 +38,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         LambdaQueryWrapper<User> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(User::getContact,user.getContact());
         List<User> users = userMapper.selectList(lambdaQueryWrapper);
-        if(users.size() > 1){
+        if(users.size() > 0){
             return Result.errorResult(AppHttpCodeEnum.PHONENUMBER_EXIST);
         }
         String encodePassword = passwordEncoder.encode(user.getPassword());

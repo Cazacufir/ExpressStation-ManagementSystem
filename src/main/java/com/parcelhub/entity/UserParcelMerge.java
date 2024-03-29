@@ -20,4 +20,5 @@ public class UserParcelMerge implements Serializable {
     private int user_id;
 
     private int parcel_id;
+
 }

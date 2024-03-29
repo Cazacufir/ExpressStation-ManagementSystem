@@ -14,7 +14,7 @@ public enum AppHttpCodeEnum {
     CONTENT_NOT_NULL(506, "评论内容不能为空"),
     FILE_TYPE_ERROR(507, "文件类型错误，请上传png文件"),
     USERNAME_NOT_NULL(508, "用户名不能为空"),
-    NICKNAME_NOT_NULL(509, "昵称不能为空"),
+    PARCEL_EXIST(515, "快递已存在"),
     PARCEL_NOT_FOUND(514, "未查到到快递"),
     ORDER_NOT_FOUND(514, "未查询到订单"),
     UPLOAD_ERROR(504, "头像上传错误"),

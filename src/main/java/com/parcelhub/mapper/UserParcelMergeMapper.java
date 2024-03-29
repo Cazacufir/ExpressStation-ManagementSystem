@@ -2,13 +2,14 @@ package com.parcelhub.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.parcelhub.entity.Parcel;
+import com.parcelhub.entity.UserParcelMerge;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
 @Mapper
-public interface UserParcelMergeMapper extends BaseMapper<UserParcelMergeMapper> {
+public interface UserParcelMergeMapper extends BaseMapper<UserParcelMerge> {
 
     @Select("SELECT p.* " +
     "FROM parcel p " +
