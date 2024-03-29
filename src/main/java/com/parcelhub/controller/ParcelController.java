@@ -4,6 +4,7 @@ import com.parcelhub.service.ParcelService;
 import com.parcelhub.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -12,7 +13,12 @@ public class ParcelController {
     ParcelService parcelService;
 
     @GetMapping("/getReceiveParcel")
-    public Result getReceiveParcel(int userId){
+    public Result getReceiveParcel(@RequestParam int userId){
         return parcelService.getReceiveParcel(userId);
+    }
+
+    @GetMapping("/getMoreParcel")
+    public Result getMoreParcel(@RequestParam int userId){
+        return parcelService.getExtraParcel(userId);
     }
 }

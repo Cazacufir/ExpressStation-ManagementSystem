@@ -6,6 +6,7 @@ import com.parcelhub.entity.Parcel;
 import com.parcelhub.entity.User;
 import com.parcelhub.mapper.ParcelMapper;
 import com.parcelhub.mapper.UserMapper;
+import com.parcelhub.mapper.UserParcelMergeMapper;
 import com.parcelhub.service.ParcelService;
 import com.parcelhub.utils.AppHttpCodeEnum;
 import com.parcelhub.utils.Result;
@@ -23,6 +24,9 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
     @Autowired
     UserMapper userMapper;
 
+    @Autowired
+    UserParcelMergeMapper userParcelMergeMapper;
+
     @Override
     public Result getReceiveParcel(int userId){
         User user = userMapper.selectById(userId);
@@ -37,5 +41,14 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
         else {
             return Result.errorResult(AppHttpCodeEnum.PARCEL_NOT_FOUND);
         }
+    }
+
+    @Override
+    public Result getExtraParcel(int userId){
+        List<Parcel> parcelList = userParcelMergeMapper.getMoreParcel(userId);
+        if(parcelList.size() > 0){
+            return Result.okResult(parcelList);
+        }
+        return Result.errorResult(AppHttpCodeEnum.PARCEL_NOT_FOUND);
     }
 }
