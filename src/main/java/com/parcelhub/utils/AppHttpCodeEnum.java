@@ -16,7 +16,7 @@ public enum AppHttpCodeEnum {
     USERNAME_NOT_NULL(508, "用户名不能为空"),
     NICKNAME_NOT_NULL(509, "昵称不能为空"),
     PASSWORD_NOT_NULL(510, "密码不能为空"),
-    EMAIL_NOT_NULL(511, "邮箱不能为空"),
+    ORDER_NOT_FOUND(5114, "未查询到订单"),
     UPLOAD_ERROR(504, "头像上传错误"),
     ADDRESS_NOT_FOUND(514, "未查询到地址"),
     USER_NOT_FOUND(514, "未查询到用户数据"),
