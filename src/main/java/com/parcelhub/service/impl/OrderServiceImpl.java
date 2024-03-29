@@ -81,4 +81,14 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderList> implem
 
         return Result.okResult();
     }
+
+    @Override
+    public Result cancelSendList(int orderId){
+        OrderList orderList = orderMapper.selectById(orderId);
+        parcelMapper.deleteById(orderList.getParcel_id());
+
+        orderList.setDel_flag(1);
+        orderMapper.updateById(orderList);
+        return Result.okResult();
+    }
 }

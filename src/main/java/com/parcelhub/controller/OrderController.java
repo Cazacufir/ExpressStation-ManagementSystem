@@ -25,4 +25,9 @@ public class OrderController {
     public Result updateSendList(@RequestBody OrderParcelMerge orderParcelMerge){
         return orderService.updateSendList(orderParcelMerge);
     }
+
+    @DeleteMapping("/cancelSendList")
+    public Result cancelSendList(@RequestParam int orderId){
+        return orderService.cancelSendList(orderId);
+    }
 }
