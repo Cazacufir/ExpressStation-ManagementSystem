@@ -4,7 +4,7 @@ target = '/api'
 // #endif
 
 // #ifndef H5
-target = 'https://www.expamle.com'
+target = 'http://localhost:8280'
 // #endif
 
 const baseURL = target
@@ -33,6 +33,8 @@ export default (params) => {
 			'Content-Type': 'application/x-www-form-urlencoded'
 		}
 	}
+	
+	header.type = 'user'
 
 	if (uni.getStorageSync('token')) {
 		header['Authorization'] = 'Bearer ' + uni.getStorageSync('token')

@@ -24,20 +24,21 @@
 				<u-text text="身份码" bold size="20" color="white"></u-text>
 			</div>
 		</view>
-		
+
 		<view class="parcelBar">
 			<div class="parcelHead">
 				<div class="left">
 					<u-text text="在途包裹" bold size="20"></u-text>
 					<u-tabs :list="list" lineColor="#0165fe" activeStyle="font-size:35rpx;color:#0165fe"
-					inactiveStyle="font-size:35rpx;" scrollable="false" @change="switchTab"></u-tabs>
+						inactiveStyle="font-size:35rpx;" scrollable="false" @change="switchTab"></u-tabs>
 				</div>
-				
+
 				<div @click="toAdd">
-					<u-button type="primary" color="#0165fe" shape="circle" icon="plus" size="small" text="添加包裹"></u-button>
+					<u-button type="primary" color="#0165fe" shape="circle" icon="plus" size="small"
+						text="添加包裹"></u-button>
 				</div>
 			</div>
-			
+
 			<div class="parcelBody">
 				<receive v-show="current"></receive>
 				<send v-show="!current"></send>
@@ -51,53 +52,67 @@
 	// import {
 	// 	api
 	// } from '../../api/index.js'
-	// import {
-	// 	onReady,
-	// 	onLoad
-	// } from '@dcloudio/uni-app'
+	import {
+		onReady,
+		onLoad
+	} from '@dcloudio/uni-app'
 	import {
 		ref
 	} from 'vue';
 	import Receive from '../../compoents/receive.vue';
 	import Send from '../../compoents/send.vue';
+	import amap from '../../libs/amap-wx.130.js'
+
+	onLoad(() => {
+		let amapPlugin = new  amap.AMapWX({
+			key: '5a30fd46a68c8ca67069b5bd60ec34f4'
+		})
+		amapPlugin.getRegeo({
+			success: (data) => {
+				console.log(data)
+			},
+			fail(e){
+			console.log(e)
+			}
+		})
+	})
 
 	let searchFor = ref(null)
-	
-	const tabs = [Receive,Send]
-	
+
+	const tabs = [Receive, Send]
+
 	let current = ref(true)
-	
-	const list = ([
-		{
-			name:'收'
+
+	const list = ([{
+			name: '收'
 		},
 		{
-			name:'寄'
+			name: '寄'
 		}
 	])
-	
+
 	const switchTab = () => {
 		// console.log('item',item)
 		// currentIndex.value = item.index
 		// console.log(currentIndex.value)
 		current.value = !current.value
 	}
-	
+
 	const toReceive = () => {
 		uni.navigateTo({
-			url:'/pages/GetParcel/GetParcel'
+			url: '/pages/GetParcel/GetParcel'
 		})
 	}
-	
+
 	const toSend = () => {
 		uni.navigateTo({
-			url:'/pages/SendParcel/SendParcel'
+			url: '/pages/SendParcel/SendParcel'
 		})
 	}
-	
+
 	const toAdd = () => {
 		uni.navigateTo({
-			url:'/pages/Addparcel/Addparcel'
+			url: '/pages/Addparcel/Addparcel'
 		})
 	}
 </script>
@@ -108,7 +123,7 @@
 		flex-direction: column;
 		gap: 20rpx;
 		padding: 10rpx 20rpx;
-		background: linear-gradient(0deg, #f3f6fa 37%,#f3f6fa 37%,#0165fe 55%);
+		background: linear-gradient(0deg, #f3f6fa 37%, #f3f6fa 37%, #0165fe 55%);
 		height: 100%;
 	}
 
@@ -122,8 +137,8 @@
 	.btn {
 		display: flex;
 	}
-	
-	.parcelBar{
+
+	.parcelBar {
 		display: flex;
 		flex-direction: column;
 		background-color: white;
@@ -132,18 +147,18 @@
 		border-radius: 50rpx;
 		padding: 15rpx 25rpx;
 	}
-	
-	.parcelHead{
+
+	.parcelHead {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		
-		.left{
+
+		.left {
 			display: flex;
 		}
 	}
-	
-	.parcelBody{
+
+	.parcelBody {
 		display: flex;
 		flex-direction: column;
 		gap: 10rpx;

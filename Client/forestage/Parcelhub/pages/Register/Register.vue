@@ -9,17 +9,17 @@
 				</u-form-item>
 
 				<u-form-item prop="password">
-					<u-input v-model="user.password" placeholder="请输入密码" clearable prefixIcon="lock" shape="circle"
+					<u-input type="password" v-model="user.password" placeholder="请输入密码" clearable prefixIcon="lock" shape="circle"
 						prefixIconStyle="font-size:30px"></u-input>
 				</u-form-item>
 
 				<u-form-item prop="conf">
-					<u-input v-model="user.conf" placeholder="请输入确认密码" clearable prefixIcon="lock-fill" shape="circle"
+					<u-input type="password" v-model="user.conf" placeholder="请输入确认密码" clearable prefixIcon="lock-fill" shape="circle"
 						prefixIconStyle="font-size:30px"></u-input>
 				</u-form-item>
 			</u-form>
 
-			<u-button text="注 册" type="primary" shape="circle" size="large"></u-button>
+			<u-button text="注 册" type="primary" shape="circle" size="large" @click="toRegister"></u-button>
 
 		</div>
 	</view>
@@ -30,6 +30,9 @@
 		reactive,
 		ref
 	} from 'vue';
+	import {
+		api
+	} from '../../api/index.js'
 
 	let RegisterFormRef = ref()
 
@@ -60,13 +63,39 @@
 			},
 			{
 				validator: (rule, value, callback) => {
-					if(value != user.password) return false
+					if (value != user.password) return false
 					return true
 				},
-				message:'两次输入的密码不一致',
+				message: '两次输入的密码不一致',
 				trigger: ['blur']
 			}
 		]
+	}
+
+	const toRegister = () => {
+		RegisterFormRef.value.validate().then(async () => {
+			await api.register(user)
+				.then(res => {
+					if (res.code == 200) {
+						uni.navigateTo({
+							url: '/pages/Login/Login'
+						})
+						uni.showToast({
+							icon: 'success',
+							title: '注册成功'
+						})
+					} else {
+						uni.showToast({
+							title: res.msg
+						})
+					}
+				})
+				.catch(() => {
+					uni.showToast({
+						title: res.msg
+					})
+				})
+		})
 	}
 </script>
 
