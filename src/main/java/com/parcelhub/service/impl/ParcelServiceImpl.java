@@ -2,9 +2,11 @@ package com.parcelhub.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.parcelhub.dto.OrderParcelMerge;
 import com.parcelhub.entity.Parcel;
 import com.parcelhub.entity.User;
 import com.parcelhub.entity.UserParcelMerge;
+import com.parcelhub.mapper.OrderParcelMergeMapper;
 import com.parcelhub.mapper.ParcelMapper;
 import com.parcelhub.mapper.UserMapper;
 import com.parcelhub.mapper.UserParcelMergeMapper;
@@ -14,6 +16,7 @@ import com.parcelhub.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -28,6 +31,10 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
 
     @Autowired
     UserParcelMergeMapper userParcelMergeMapper;
+
+    @Autowired
+    OrderParcelMergeMapper orderParcelMergeMapper;
+
 
     @Override
     public Result getReceiveParcel(int userId){
@@ -66,6 +73,41 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
         }
         else {
             return Result.errorResult(AppHttpCodeEnum.PARCEL_EXIST);
+        }
+    }
+
+    @Override
+    public Result getRecentSendParcel(int userId){
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime days = now.minusDays(7);
+        LambdaQueryWrapper<OrderParcelMerge> orderParcelMergeLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        orderParcelMergeLambdaQueryWrapper.eq(OrderParcelMerge::getUser_id,userId)
+                .between(OrderParcelMerge::getOrderTime,days,now);
+        List<OrderParcelMerge> orderParcelMergeList = orderParcelMergeMapper.selectList(orderParcelMergeLambdaQueryWrapper);
+
+        if (orderParcelMergeList.size() > 0){
+            return Result.okResult(orderParcelMergeList);
+        }
+        else {
+            return Result.errorResult(AppHttpCodeEnum.PARCEL_NOT_FOUND);
+        }
+    }
+
+    @Override
+    public Result getRecentReceiveParcel(Parcel parcel){
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime days = now.minusDays(7);
+        LambdaQueryWrapper<Parcel> parcelLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        parcelLambdaQueryWrapper.eq(Parcel::getReceiveName,parcel.getReceiveName())
+                .eq(Parcel::getReceiveContact,parcel.getReceiveContact())
+                .between(Parcel::getSendTime,days,now);
+        List<Parcel> parcelList = parcelMapper.selectList(parcelLambdaQueryWrapper);
+
+        if (parcelList.size() > 0){
+            return Result.okResult(parcelList);
+        }
+        else {
+            return Result.errorResult(AppHttpCodeEnum.PARCEL_NOT_FOUND);
         }
     }
 }

@@ -1,13 +1,11 @@
 package com.parcelhub.controller;
 
+import com.parcelhub.entity.Parcel;
 import com.parcelhub.entity.UserParcelMerge;
 import com.parcelhub.service.ParcelService;
 import com.parcelhub.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class ParcelController {
@@ -27,5 +25,15 @@ public class ParcelController {
     @PostMapping("/addExtraParcel")
     public Result addExtraParcel(UserParcelMerge userParcelMerge){
         return parcelService.addExtraParcel(userParcelMerge);
+    }
+
+    @GetMapping("/getRecentSendParcel")
+    public Result getRecentSendParcel(@RequestParam int userId){
+        return parcelService.getRecentSendParcel(userId);
+    }
+
+    @GetMapping("/getRecentReceiveParcel")
+    public Result getRecentReceiveParcel(@RequestBody Parcel parcel){
+        return parcelService.getRecentReceiveParcel(parcel);
     }
 }
