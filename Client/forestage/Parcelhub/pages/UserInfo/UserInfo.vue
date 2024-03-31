@@ -17,9 +17,9 @@
 					<u-input v-if="isModify" v-model="userInfo.name"></u-input>
 				</u-form-item>
 
-				<u-form-item prop="nickname" label="昵称">
-					<u-text v-if="!isModify" :text="userInfo.nickname"></u-text>
-					<u-input v-if="isModify" v-model="userInfo.nickname"></u-input>
+				<u-form-item prop="nickName" label="昵称">
+					<u-text v-if="!isModify" :text="userInfo.nickName"></u-text>
+					<u-input v-if="isModify" v-model="userInfo.nickName"></u-input>
 				</u-form-item>
 
 				<u-form-item prop="contact" label="手机号">
@@ -109,7 +109,7 @@
 			message: '手机号不能为空',
 			trigger: ['blur']
 		},
-		nickname: {
+		nickName: {
 			type: 'string',
 			required: true,
 			message: '昵称不能为空',
@@ -139,7 +139,21 @@
 		}
 	]
 
-	const toSubmit = () => {
+	const toSubmit = async () => {
+		await api.updateUserInfo(userInfo)
+		.then(res => {
+			if(res.code == 200){
+				uni.showToast({
+					icon:'success',
+					title:'修改成功'
+				})
+			}
+		})
+		.catch(res => {
+			uni.showToast({
+				title:res.msg
+			})
+		})
 		isModify.value = false
 	}
 
@@ -205,6 +219,7 @@
 		});
 		closePop()
 	}
+	
 </script>
 
 <style lang="scss" scoped>

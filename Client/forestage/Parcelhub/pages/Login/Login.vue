@@ -76,10 +76,10 @@
 							key:'token',
 							data:res.data.token
 						})
-						// uni.setStorage({
-						// 	key:'user',
-						// 	data:res.data.user
-						// })
+						uni.setStorage({
+							key:'user',
+							data:res.data.user
+						})
 						uni.switchTab({
 							url: '/pages/Home/Home'
 						})

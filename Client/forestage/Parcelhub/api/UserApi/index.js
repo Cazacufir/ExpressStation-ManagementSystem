@@ -24,8 +24,17 @@ const uploadAvatar = (params) => {
 	})
 }
 
+const updateUserInfo = (params) =>{
+	return request({
+		url:'/user/updateUserInfo',
+		method:'post',
+		data:params
+	})
+}
+
 export const UserApi = {
 	login,
 	register,
-	uploadAvatar
+	uploadAvatar,
+	updateUserInfo
 }
