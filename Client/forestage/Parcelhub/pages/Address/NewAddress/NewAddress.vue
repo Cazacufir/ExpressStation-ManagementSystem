@@ -11,7 +11,7 @@
 				</u-form-item>
 
 				<u-form-item label="省市区">
-					<uni-data-picker :placeholder="command.province" popup-title="请选择城市" collection="opendb-city-china"
+					<uni-data-picker :placeholder="command? command.province : '请选择'" popup-title="请选择城市" collection="opendb-city-china"
 						field="code as value, name as text" orderby="value asc" :step-searh="true" self-field="code"
 						parent-field="parent_code" @change="onchange">
 					</uni-data-picker>
@@ -46,7 +46,7 @@
 	let eventChannel = null
 
 	onLoad(option => {
-		if (option.command) {
+		if (Object.keys(option).length) {
 			command = JSON.parse(option.command)
 			eventChannel = getCurrentInstance().proxy.getOpenerEventChannel();
 			const words = command.address.split('_')
@@ -55,6 +55,7 @@
 			address.province = words[0]
 			address.detail = words[1]
 		}
+		console.log(option)
 	})
 
 	const address = reactive({

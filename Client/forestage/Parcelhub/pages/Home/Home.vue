@@ -1,6 +1,9 @@
 <template>
 	<view class="container">
-		<div class="header">地理位置</div>
+		<div class="header btn">
+			<u-icon name="map" color="white"></u-icon>
+			<u-text :text="currentLocation[0].name" bold="true" color="white" size="12"></u-text>
+		</div>
 
 		<div class="searchBar">
 			<u-input v-model="searchFor" placeholder="输入快递单号以查询快递" suffixIcon="search"
@@ -63,16 +66,29 @@
 	import Send from '../../compoents/send.vue';
 	import amap from '../../libs/amap-wx.130.js'
 
+	const currentLocation = ref([])
+	let saveLocation = ''
+
 	onLoad(() => {
-		let amapPlugin = new  amap.AMapWX({
+		let amapPlugin = new amap.AMapWX({
 			key: '5a30fd46a68c8ca67069b5bd60ec34f4'
 		})
 		amapPlugin.getRegeo({
 			success: (data) => {
 				console.log(data)
+				currentLocation.value = [...data]
+				const tmp = data[0].regeocodeData.addressComponent
+				saveLocation = tmp.province + tmp.city + tmp.district 
+				uni.setStorage({
+					key: 'Location',
+					data: saveLocation,
+					success: function() {
+						console.log(saveLocation);
+					}
+				})
 			},
-			fail(e){
-			console.log(e)
+			fail(e) {
+				console.log(e)
 			}
 		})
 	})
