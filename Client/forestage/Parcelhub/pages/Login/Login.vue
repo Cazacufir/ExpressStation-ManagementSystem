@@ -70,7 +70,16 @@
 		LoginFormRef.value.validate().then(async () => {
 			await api.login(user)
 				.then(res => {
+					console.log(res)
 					if (res.code == 200) {
+						uni.setStorage({
+							key:'token',
+							data:res.data.token
+						})
+						// uni.setStorage({
+						// 	key:'user',
+						// 	data:res.data.user
+						// })
 						uni.switchTab({
 							url: '/pages/Home/Home'
 						})

@@ -22,22 +22,22 @@ export default (params) => {
 		}
 	}
 	
-	// else if(method === 'postform'){
-	// 	method = 'post'
-	// 	header = {
-	// 		'Content-Type': 'mutipart/form-data'
-	// 	}
-	// }
-	if(url == '/books/borrow' || url == '/books/return' || url == '/leaveform/id'){
+	else if(method === 'postform'){
+		method = 'post'
 		header = {
-			'Content-Type': 'application/x-www-form-urlencoded'
+			'Content-Type': 'mutipart/form-data'
 		}
 	}
+	// if(url == '/books/borrow' || url == '/books/return' || url == '/leaveform/id'){
+	// 	header = {
+	// 		'Content-Type': 'application/x-www-form-urlencoded'
+	// 	}
+	// }
 	
 	header.type = 'user'
 
 	if (uni.getStorageSync('token')) {
-		header['Authorization'] = 'Bearer ' + uni.getStorageSync('token')
+		header['token'] = uni.getStorageSync('token')
 	}
 
 	return new Promise((resolve, reject) => {
@@ -51,7 +51,7 @@ export default (params) => {
 					resolve(res.data)
 				} else {
 					uni.clearStorage()
-					switch (res.statusCode) {
+					switch (res.code) {
 						case 401:
 							uni.showModal({
 								title: "提示",

@@ -52,12 +52,12 @@
 			</span>
 		</div>
 	</view>
-	
+
 	<u-popup mode="bottom" :show="showPop" @close="closePop" closeable="true">
 		<div style="height: 100vh;width: 100vw;"></div>
 		<qf-image-cropper :src="imgSrc" :width="500" :height="500" :radius="30" @crop="handleCrop"></qf-image-cropper>
 	</u-popup>
-	
+
 </template>
 
 <script setup>
@@ -65,18 +65,35 @@
 		reactive,
 		ref
 	} from 'vue';
+	import {
+		api
+	} from '../../api/index.js'
+	import {
+		onLoad
+	} from '@dcloudio/uni-app'
 
 	let userFormRef = ref()
 
 	let isModify = ref(false)
 
 	const userInfo = reactive({
-		name: '777',
-		contact: '789',
-		nickname: '123',
-		avatar: '/static/person_fill.png',
-		sex: 'M',
-		age: 20
+		// name: '777',
+		// contact: '789',
+		// nickname: '123',
+		// avatar: '/static/person_fill.png',
+		// sex: 'M',
+		// age: 20
+	})
+
+	onLoad(() => {
+		uni.getStorage({
+			key: 'user',
+			success(data) {
+				console.log('data', data)
+				Object.assign(userInfo, data.data)
+			}
+		})
+		console.log(userInfo)
 	})
 
 	const user_rules = {
@@ -147,9 +164,45 @@
 
 	let finalImg = ref('')
 
-	const handleCrop = (e) => {
+	const handleCrop = async (e) => {
 		finalImg.value = e.tempFilePath
-		console.log(finalImg.value)
+		// const upload = {
+		// 	userId:userInfo.userId,
+		// 	file:finalImg.value
+		// }
+		// await api.uploadAvatar(upload)
+		// .then(res => {
+		// 	if(res.code == 200){
+		// 		uni.showToast({
+		// 			icon:'success',
+		// 			title:'修改成功'
+		// 		})
+		// 	}
+		// 	else{
+		// 		uni.showToast({
+		// 			title: res.msg
+		// 		});
+		// 	}
+		// })
+		// .catch(res => {
+		// 	uni.showToast({
+		// 		title: res.msg
+		// 	});
+		// })
+		uni.uploadFile({
+			url: 'http://localhost:8280/user/uploadAvatar', //仅为示例，非真实的接口地址
+			filePath: e.tempFilePath,
+			name: 'file',
+			header:{
+				type:'user'
+			},
+			formData: {
+				userId:userInfo.userId,
+			},
+			success: (uploadFileRes) => {
+				console.log(uploadFileRes.data);
+			}
+		});
 		closePop()
 	}
 </script>

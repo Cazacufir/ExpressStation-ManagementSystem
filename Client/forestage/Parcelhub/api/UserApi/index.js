@@ -16,7 +16,16 @@ const register = (params) => {
 	})
 }
 
+const uploadAvatar = (params) => {
+	return request({
+		url:'/user/uploadAvatar',
+		method:'postform',
+		data:params
+	})
+}
+
 export const UserApi = {
 	login,
-	register
+	register,
+	uploadAvatar
 }
