@@ -8,11 +8,11 @@
 
 		<div class="MainBody">
 
-			<u-checkbox-group @change="changeDeleteList" style="gap: 20rpx;">
+			<u-checkbox-group @change="changeDeleteList">
 				<section class="addressBar" v-for="(item,index) in addressList" :key="index">
 					<div>
-						<u-text :text="item.name" bold size="20"></u-text>
-						<u-text :text="item.contact" bold></u-text>
+						<u-text :text="item.name" bold></u-text>
+						<u-text :text="item.contact" bold size="13"></u-text>
 					</div>
 
 					<div class="tab" v-for="(items,num) in item.address" :key="num">
@@ -62,33 +62,56 @@
 	import {
 		onLoad
 	} from '@dcloudio/uni-app'
+	import {
+		api
+	} from '../../api/index.js'
 
 	let command = null
 	
 	let eventChannel = null
 
-	onLoad(option => {
+	onLoad( async (option) => {
 		if (option.command) {
 			command = JSON.parse(option.command)
 			console.log(command)
 			console.log('gte',getCurrentInstance().proxy.getOpenerEventChannel())
 			eventChannel = getCurrentInstance().proxy.getOpenerEventChannel();
 		}
+		uni.getStorage({
+			key: 'user',
+			success: async function (res) {
+				console.log('res',res.data)
+				await api.getAddressList({ user_id:res.data.userId })
+				.then(res => {
+					if(res.code == 200){
+						addressList.value = [...res.data]
+					}
+				})
+				.catch((res)=>{
+					uni.showToast({
+						title:res.msg
+					})
+				})
+			}
+		})
+		
 	})
 
 	let searchFor = ref()
 
-	const addressList = ref([{
-			name: 'test1',
-			contact: '123',
-			address: ['广西壮族自治区桂林市灵川县_桂林电子科技大学花江校区', 'GUET']
-		},
-		{
-			name: 'test2',
-			contact: "123 1234 1234",
-			address: ['sleepy']
-		}
-	])
+	// const addressList = ref([{
+	// 		name: 'test1',
+	// 		contact: '123',
+	// 		address: ['广西壮族自治区桂林市灵川县_桂林电子科技大学花江校区', 'GUET']
+	// 	},
+	// 	{
+	// 		name: 'test2',
+	// 		contact: "123 1234 1234",
+	// 		address: ['sleepy']
+	// 	}
+	// ])
+	
+	const addressList = ref([])
 
 	const deleteList = ref([])
 
@@ -176,7 +199,7 @@
 		flex-direction: column;
 		// justify-content: space-between;
 		align-items: center;
-		padding: 10rpx 40rpx 0 40rpx;
+		padding: 0rpx 40rpx 0 40rpx;
 		background-color: #ebebef;
 		height: 100%;
 	}
@@ -188,6 +211,7 @@
 		padding: 20rpx;
 		background: white;
 		width: 100%;
+		margin-top: 20rpx;
 	}
 
 	.bottomBar {
