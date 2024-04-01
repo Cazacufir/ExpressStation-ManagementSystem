@@ -13,12 +13,12 @@ public class AddressController {
     AddressService addressService;
 
     @GetMapping("/getAddressList")
-    public Result getAddressList(int user_id){
+    public Result getAddressList(@RequestParam int user_id){
         return addressService.getAddressList(user_id);
     }
 
     @PutMapping("/updateAddress")
-    public Result updateAddress(Map<String,Object> map){
+    public Result updateAddress(@RequestBody Map<String,Object> map){
         return addressService.updateAddress(map);
     }
 

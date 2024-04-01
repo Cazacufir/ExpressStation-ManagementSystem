@@ -58,7 +58,7 @@ public class AddressServiceImpl extends ServiceImpl<AddressMapper, Address> impl
         address.setName(name);
         address.setContact(contact);
         address.setAddress(newAddress);
-        save(address);
+        addressMapper.updateById(address);
         return Result.okResult();
     }
 
