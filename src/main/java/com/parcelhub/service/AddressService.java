@@ -10,4 +10,6 @@ public interface AddressService extends IService<Address> {
     Result getAddressList(int user_id);
 
     Result updateAddress(Map<String,Object> map);
+
+    Result addAddress(Map<String,Object> map);
 }

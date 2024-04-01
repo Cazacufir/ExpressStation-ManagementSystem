@@ -61,4 +61,20 @@ public class AddressServiceImpl extends ServiceImpl<AddressMapper, Address> impl
         save(address);
         return Result.okResult();
     }
+
+    @Override
+    public Result addAddress(Map<String,Object> map){
+        Address address = new Address();
+        String name = (String) map.get("name");
+        String address1 = (String) map.get("address");
+        String contact = (String) map.get("contact");
+        int user_id = (int) map.get("user_id");
+
+        address.setName(name);
+        address.setContact(contact);
+        address.setAddress(address1);
+        address.setUser_id(user_id);
+        save(address);
+        return Result.okResult();
+    }
 }

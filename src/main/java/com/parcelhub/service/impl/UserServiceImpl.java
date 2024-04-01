@@ -82,6 +82,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public Result uploadAvatar(UserAvatarVo userAvatarVo){
+        System.out.println(userAvatarVo);
         String objectName = minioUtil.upload(userAvatarVo.getFile());
         if (null != objectName) {
             String avatar = prop.getEndpoint() + "/" + prop.getBucketName() + "/" + objectName;

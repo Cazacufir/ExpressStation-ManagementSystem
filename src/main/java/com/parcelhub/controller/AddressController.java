@@ -1,12 +1,9 @@
 package com.parcelhub.controller;
 
-import com.parcelhub.entity.Address;
 import com.parcelhub.service.AddressService;
 import com.parcelhub.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -23,5 +20,10 @@ public class AddressController {
     @PutMapping("/updateAddress")
     public Result updateAddress(Map<String,Object> map){
         return addressService.updateAddress(map);
+    }
+
+    @PostMapping("/addAddress")
+    public Result addAddress(@RequestBody Map<String,Object> map){
+        return addressService.addAddress(map);
     }
 }
