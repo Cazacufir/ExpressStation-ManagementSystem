@@ -69,6 +69,8 @@
 	let command = null
 	
 	let eventChannel = null
+	
+	let user_id = null
 
 	onLoad( async (option) => {
 		if (option.command) {
@@ -80,7 +82,7 @@
 		uni.getStorage({
 			key: 'user',
 			success: async function (res) {
-				console.log('res',res.data)
+				user_id = res.data.userId
 				await api.getAddressList({ user_id:res.data.userId })
 				.then(res => {
 					if(res.code == 200){
@@ -165,6 +167,7 @@
 		Newaddress.name = person.name
 		Newaddress.contact = person.contact
 		Newaddress.address = address
+		Newaddress.user_id = user_id
 		uni.navigateTo({
 			url:'/pages/Address/NewAddress/NewAddress?command=' + JSON.stringify(Newaddress),
 			events:{

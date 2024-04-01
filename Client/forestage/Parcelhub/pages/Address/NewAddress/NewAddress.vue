@@ -11,9 +11,9 @@
 				</u-form-item>
 
 				<u-form-item prop="province" label="省市区">
-					<uni-data-picker :placeholder="command? command.province : '请选择'" popup-title="请选择城市"
+					<uni-data-picker v-model="showAddress" :placeholder="command? command.province : '请选择'" popup-title="请选择城市"
 						collection="opendb-city-china" field="code as value, name as text" orderby="value asc"
-						:step-searh="true" self-field="code" parent-field="parent_code" @change="onchange">
+						:step-searh="true" self-field="code" parent-field="parent_code" @change="onchange" @popupclosed="onclosePop">
 					</uni-data-picker>
 				</u-form-item>
 
@@ -35,7 +35,7 @@
 	import {
 		ref,
 		reactive,
-		getCurrentInstance,
+		getCurrentInstance
 	} from 'vue';
 	import {
 		onLoad
@@ -49,6 +49,18 @@
 	let eventChannel = null
 	
 	let addressFormRef = ref()
+	
+	let showAddress = ref()
+	
+	const updateAddress = {
+		user_id:null,
+		oldName:'',
+		oldContact:'',
+		oldAddress:'',
+		newName:'',
+		newContact:'',
+		newAddress:''
+	}
 
 	onLoad(option => {
 		if (Object.keys(option).length) {
@@ -59,6 +71,13 @@
 			command.province = words[0]
 			address.province = words[0]
 			address.detail = words[1]
+			
+			updateAddress.user_id = command.user_id
+			updateAddress.oldName = updateAddress.newName = command.name
+			updateAddress.oldContact = updateAddress.newContact = command.contact
+			updateAddress.oldAddress = updateAddress.newAddress = command.province + '_' + address.detail
+			
+			console.log(updateAddress)
 		}
 		uni.getStorage({
 			key: 'user',
@@ -79,22 +98,52 @@
 
 	const onchange = (e) => {
 		console.log('e', e)
-		if(command != null){
-			command.province = e.detail.value
-		}
+		// if(command != null){
+		// 	command.province = e.detail.value
+		// }
 		address.province = ''
 		e.detail.value.forEach(item => {
 			address.province = address.province + item.text
 		})
-
+		if(e.detail.value.length == 0){
+			showAddress.value = command.province
+		} 
 	}
+	
+	// watch(showAddress,(newValue, oldValue)=>{
+	// 	if(newValue == []){
+	// 		console.log('showAddress',showAddress.value)
+	// 	} 
+	// })
 
 	const toUpdate = () => {
 		address.address = ''
 		address.address = address.province + '_' + address.detail
+		console.log('address.address',address.address)
 		if (command != null) {
-			eventChannel.emit('updateAddress', address);
-			uni.navigateBack()
+			updateAddress.newName = address.name
+			updateAddress.newContact = address.contact
+			updateAddress.newAddress = address.address
+			console.log(updateAddress)
+			addressFormRef.value.validate().then(async()=>{
+				await api.updateAddress(updateAddress)
+				.then(res => {
+					if(res.code == 200){
+						uni.showToast({
+							icon:'success',
+							title:'新增地址成功'
+						})
+					}
+					eventChannel.emit('updateAddress', address);
+					uni.navigateBack()
+				})
+				.catch(res => {
+					uni.showToast({
+						title:res.msg
+					})
+				})
+			})
+			
 			console.log(address, 'address')
 		} else {
 			addressFormRef.value.validate().then(async()=>{

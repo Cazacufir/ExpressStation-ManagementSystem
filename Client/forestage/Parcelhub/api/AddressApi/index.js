@@ -16,7 +16,16 @@ const getAddressList = (params) => {
 	})
 }
 
+const updateAddress = (params) => {
+	return request({
+		url:'/updateAddress',
+		method:'put',
+		data:params
+	})
+}
+
 export const AddressApi = {
 	addAddress,
-	getAddressList
+	getAddressList,
+	updateAddress
 }
