@@ -3,7 +3,7 @@
 		<div class="header">
 			<div class="avatarBar">
 				<u-avatar :src="userInfo.avatar" size="70"></u-avatar>
-				<u-text :text="userInfo.username" color="white" size="28"></u-text>
+				<u-text :text="userInfo.name" color="white" size="28"></u-text>
 			</div>
 			
 		</div>
@@ -28,11 +28,19 @@
 
 <script setup>
 import { reactive } from 'vue';
+import { onLoad	} from '@dcloudio/uni-app'
 
 
-const userInfo = reactive({
-	username:'test',
-	avatar:'/static/person_fill.png'
+const userInfo = reactive({})
+
+onLoad(()=>{
+	uni.getStorage({
+		key:'user',
+		success(res) {
+			console.log(res)
+			Object.assign(userInfo,res.data)
+		}
+	})
 })
 
 const list = [
@@ -87,6 +95,7 @@ const toPage = (url) => {
 	.avatarBar{
 		display: flex;
 		align-items: center;
+		gap: 30rpx;
 	}
 	
 	.btnBar{
