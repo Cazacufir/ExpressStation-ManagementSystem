@@ -10,14 +10,15 @@
 
 			<u-checkbox-group @change="changeDeleteList">
 				<section class="addressBar" v-for="(item,index) in addressList" :key="index">
-					<div>
+					<div v-if="item.address.length">
 						<u-text :text="item.name" bold></u-text>
 						<u-text :text="item.contact" bold size="13"></u-text>
 					</div>
 
 					<div class="tab" v-for="(items,num) in item.address" :key="num">
 						<span v-if="isDelete">
-							<u-checkbox shape="circle" :key="num" :label="formatAddress(items)" :name="items">
+							<u-checkbox shape="circle" :key="num" :label="formatAddress(items)"
+								:name="item.name + '@' + item.contact + '@' + items">
 							</u-checkbox>
 						</span>
 
@@ -60,43 +61,67 @@
 		getCurrentInstance,
 	} from 'vue';
 	import {
-		onLoad
+		onLoad,
+		onShow
 	} from '@dcloudio/uni-app'
 	import {
 		api
 	} from '../../api/index.js'
 
 	let command = null
-	
+
 	let eventChannel = null
-	
+
 	let user_id = null
 
-	onLoad( async (option) => {
+	onLoad(async (option) => {
 		if (option.command) {
 			command = JSON.parse(option.command)
 			console.log(command)
-			console.log('gte',getCurrentInstance().proxy.getOpenerEventChannel())
+			console.log('gte', getCurrentInstance().proxy.getOpenerEventChannel())
 			eventChannel = getCurrentInstance().proxy.getOpenerEventChannel();
 		}
 		uni.getStorage({
 			key: 'user',
-			success: async function (res) {
+			success: async function(res) {
 				user_id = res.data.userId
-				await api.getAddressList({ user_id:res.data.userId })
-				.then(res => {
-					if(res.code == 200){
-						addressList.value = [...res.data]
-					}
-				})
-				.catch((res)=>{
-					uni.showToast({
-						title:res.msg
+				await api.getAddressList({
+						user_id: res.data.userId
 					})
-				})
+					.then(res => {
+						if (res.code == 200) {
+							addressList.value = [...res.data]
+						}
+					})
+					.catch((res) => {
+						uni.showToast({
+							title: res.msg
+						})
+					})
 			}
 		})
-		
+	})
+	
+	onShow(()=>{
+		uni.getStorage({
+			key: 'user',
+			success: async function(res) {
+				user_id = res.data.userId
+				await api.getAddressList({
+						user_id: res.data.userId
+					})
+					.then(res => {
+						if (res.code == 200) {
+							addressList.value = [...res.data]
+						}
+					})
+					.catch((res) => {
+						uni.showToast({
+							title: res.msg
+						})
+					})
+			}
+		})
 	})
 
 	let searchFor = ref()
@@ -112,7 +137,7 @@
 	// 		address: ['sleepy']
 	// 	}
 	// ])
-	
+
 	const addressList = ref([])
 
 	const deleteList = ref([])
@@ -132,15 +157,42 @@
 	let isDelete = ref(false)
 
 	const filterArray = (arr1, arr2) => {
-		const setArr = new Set(arr1)
-		const result = arr2.filter(item => !setArr.has(item))
-		return result
+		const modifiedArr1 = arr1.map(item => item.split('@')[2]);
+		console.log('modified arr1:', modifiedArr1);
+		const setArr = new Set(modifiedArr1);
+		const result = arr2.filter(item => !setArr.has(item));
+		return result;
 	}
 
-	const toDelete = () => {
-		addressList.value.forEach(item => {
-			item.address = [...filterArray(deleteList.value, item.address)]
+	const toDelete = async () => {
+		const modifyList = deleteList.value.map(item => {
+			const obj = {}
+			const words = item.split('@')
+			obj.user_id = user_id
+			obj.name = words[0]
+			obj.contact = words[1]
+			obj.address = words[2]
+			return obj
 		})
+		console.log("modifyList", modifyList)
+		let pv = JSON.stringify(modifyList)
+		await api.deleteAddress(JSON.stringify(modifyList))
+			.then(res => {
+				if (res.code == 200) {
+					addressList.value.forEach(item => {
+						item.address = [...filterArray(deleteList.value, item.address)]
+					})
+					uni.showToast({
+						title:'删除成功'
+					})
+				}
+			})
+			.catch(res => {
+				uni.showToast({
+					title:res.msg
+				})
+			})
+
 		isDelete.value = false
 	}
 
@@ -161,17 +213,17 @@
 		}
 
 	}
-	
-	const toUpdateAddress = (person,address,num) => {
+
+	const toUpdateAddress = (person, address, num) => {
 		const Newaddress = {}
 		Newaddress.name = person.name
 		Newaddress.contact = person.contact
 		Newaddress.address = address
 		Newaddress.user_id = user_id
 		uni.navigateTo({
-			url:'/pages/Address/NewAddress/NewAddress?command=' + JSON.stringify(Newaddress),
-			events:{
-				updateAddress: function(data){
+			url: '/pages/Address/NewAddress/NewAddress?command=' + JSON.stringify(Newaddress),
+			events: {
+				updateAddress: function(data) {
 					person.name = data.name
 					person.contact = data.contact
 					person.address[num] = data.address
@@ -179,7 +231,7 @@
 			}
 		})
 	}
-	
+
 	const formatAddress = (address) => {
 		return address.replace(/_/g, '')
 	}

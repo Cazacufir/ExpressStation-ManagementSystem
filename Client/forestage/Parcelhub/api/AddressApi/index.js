@@ -24,8 +24,17 @@ const updateAddress = (params) => {
 	})
 }
 
+const deleteAddress = (params) => {
+	return request({
+		url:'/deleteAddress',
+		method:'delete',
+		data:params
+	})
+}
+
 export const AddressApi = {
 	addAddress,
 	getAddressList,
-	updateAddress
+	updateAddress,
+	deleteAddress
 }
