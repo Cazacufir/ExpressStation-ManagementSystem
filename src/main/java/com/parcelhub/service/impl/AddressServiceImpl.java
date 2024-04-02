@@ -77,4 +77,17 @@ public class AddressServiceImpl extends ServiceImpl<AddressMapper, Address> impl
         save(address);
         return Result.okResult();
     }
+
+    @Override
+    public Result deleteAddress(List<Address> addresses){
+        addresses.forEach(item -> {
+            LambdaQueryWrapper<Address> addressLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            addressLambdaQueryWrapper.eq(Address::getName,item.getName())
+                            .eq(Address::getContact,item.getContact())
+                            .eq(Address::getAddress,item.getAddress());
+            Address address = addressMapper.selectOne(addressLambdaQueryWrapper);
+            addressMapper.deleteById(address);
+        });
+        return Result.okResult();
+    }
 }
