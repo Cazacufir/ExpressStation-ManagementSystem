@@ -1,7 +1,6 @@
 package com.parcelhub.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.parcelhub.entity.ComHubMerge;
 import com.parcelhub.entity.Company;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 @Service
 public class HubServiceImpl extends ServiceImpl<HubMapper, Hub>  implements HubService {
@@ -30,15 +28,18 @@ public class HubServiceImpl extends ServiceImpl<HubMapper, Hub>  implements HubS
     @Autowired
     private ComHubMergeMapper comHubMergeMapper;
 
+    @Override
     public Result getMainInfo(int Id){
         return Result.okResult(hubMapper.selectById(Id));
     }
 
+    @Override
     public Result updateHubInfo(Hub hub){
         hubMapper.updateById(hub);
         return Result.okResult("更新成功!");
     }
 
+    @Override
     public Result getCompanyList(int hubId){
         List<Company> companyList = comHubMergeMapper.getCompanyByHubId(hubId);
         if(companyList.isEmpty()){
@@ -49,10 +50,12 @@ public class HubServiceImpl extends ServiceImpl<HubMapper, Hub>  implements HubS
         }
     }
 
+    @Override
     public Result getCompanyName(){
         return Result.okResult(companyMapper.getAllName());
     }
 
+    @Override
     public Result deleteCompany(int mapId){
 //        QueryWrapper<ComHubMerge> comHubMergeQueryWrapper = new QueryWrapper<>();
 //        comHubMergeQueryWrapper.eq("com_id",com_id)
@@ -64,6 +67,7 @@ public class HubServiceImpl extends ServiceImpl<HubMapper, Hub>  implements HubS
         return Result.okResult("取消合作成功");
     }
 
+    @Override
     public Result addCompany(Map<String,Integer> map){
         int com_id = map.get("com_id");
         int hub_id = map.get("hub_id");
@@ -78,6 +82,7 @@ public class HubServiceImpl extends ServiceImpl<HubMapper, Hub>  implements HubS
         return Result.okResult(company);
     }
 
+    @Override
     public Result vertifyHub(Map<String,Object> map){
         if(map.get("address") == "" || map.get("name") == ""){
             return Result.errorResult(AppHttpCodeEnum.NAME_OR_ADDRESS_NOT_EXIST);
@@ -97,5 +102,16 @@ public class HubServiceImpl extends ServiceImpl<HubMapper, Hub>  implements HubS
             return Result.errorResult(AppHttpCodeEnum.HUB_NAME_EXIST);
         }
         return Result.okResult();
+    }
+
+    @Override
+    public Result getNearHub(String address){
+        LambdaQueryWrapper<Hub> hubLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        hubLambdaQueryWrapper.like(Hub::getAddress,address);
+        List<Hub> hub = hubMapper.selectList(hubLambdaQueryWrapper);
+        if (hub.size() == 0){
+            return Result.errorResult(AppHttpCodeEnum.HUB_NOT_FOUND);
+        }
+        return Result.okResult(hub);
     }
 }

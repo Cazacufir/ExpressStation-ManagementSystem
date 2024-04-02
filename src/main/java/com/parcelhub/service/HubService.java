@@ -20,4 +20,6 @@ public interface HubService extends IService<Hub> {
     Result addCompany(Map<String,Integer> map);
 
     Result vertifyHub(Map<String,Object> map);
+
+    Result getNearHub(String address);
 }

@@ -45,7 +45,10 @@ public class HubController {
     }
 
     @PostMapping("/vertifyHub")
-    public Result vertifyHub(@RequestBody Map<String,Object> map){
-        return hubService.vertifyHub(map);
+    public Result vertifyHub(@RequestBody Map<String,Object> map){ return hubService.vertifyHub(map); }
+
+    @GetMapping("/getNearHub")
+    public Result getNearHub(@RequestParam String address){
+        return hubService.getNearHub(address);
     }
 }
