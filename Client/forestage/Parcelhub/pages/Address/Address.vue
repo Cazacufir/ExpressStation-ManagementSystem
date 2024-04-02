@@ -42,7 +42,7 @@
 				<u-button v-if="!isDelete" shape="circle" plain type="primary" text="批量删除"
 					@click="isDelete = true"></u-button>
 				<u-button v-if="isDelete" shape="circle" plain type="primary" text="取消"
-					@click="isDelete = false"></u-button>
+					@click="cancelDelete()"></u-button>
 			</span>
 
 			<span style="width: 400rpx;">
@@ -234,6 +234,11 @@
 
 	const formatAddress = (address) => {
 		return address.replace(/_/g, '')
+	}
+	
+	const cancelDelete = () => {
+		deleteList.value = []
+		isDelete.value = false
 	}
 </script>
 

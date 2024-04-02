@@ -13,17 +13,17 @@
 				<span v-else>
 					<span style="display: flex;gap: 10rpx;">
 						<div>
-							<u-text :text="send.name" bold="true" size="18"></u-text>
+							<u-text :text="send.sendName" bold="true"></u-text>
 						</div>
 
 						<div style="display: flex;align-items: center;">
-							<u-text :text="send.contact" bold="true"></u-text>
+							<u-text :text="send.sendContact" bold="true" size="13"></u-text>
 						</div>
 
 					</span>
 
 					<div style="width: 500rpx;">
-						<u-text :text="send.address"></u-text>
+						<u-text :text="send.sendAddress" size="13"></u-text>
 					</div>
 				</span>
 
@@ -46,17 +46,17 @@
 				<span v-else>
 					<span style="display: flex;gap: 10rpx;">
 						<div>
-							<u-text :text="receive.name" bold="true" size="18"></u-text>
+							<u-text :text="receive.receiveName" bold="true"></u-text>
 						</div>
 
 						<div style="display: flex;align-items: center;">
-							<u-text :text="receive.contact" bold="true"></u-text>
+							<u-text :text="receive.receiveContact" bold="true" size="13"></u-text>
 						</div>
 
 					</span>
 
 					<div style="width: 500rpx;">
-						<u-text :text="receive.address"></u-text>
+						<u-text :text="receive.receiveAddress" size="13"></u-text>
 					</div>
 
 				</span>
@@ -72,10 +72,10 @@
 				<u-text text="寄件方式"></u-text>
 
 				<span class="litteBar" style="width: 50%;">
-					<u-button text="上门取件" shape="circle" :color="sendWay? '#1e80ff' : ''"
-						@click="sendWay = true"></u-button>
-					<u-button text="服务点自寄" shape="circle" :color="sendWay? '' : '#1e80ff'"
-						@click="sendWay = false"></u-button>
+					<u-button text="上门取件" shape="circle" :color="sendWay == '上门取件'? '#1e80ff' : ''"
+						@click="sendWay = '上门取件'"></u-button>
+					<u-button text="驿站自寄" shape="circle" :color="sendWay == '驿站自寄'? '#1e80ff' : ''"
+						@click="sendWay = '驿站自寄'"></u-button>
 				</span>
 			</div>
 
@@ -96,15 +96,15 @@
 					<u-icon name="arrow-right"></u-icon>
 				</span>
 			</div>
-			
+
 			<div class="litteBar" style="margin-top: 20rpx;">
 				<u-text text="选择驿站"></u-text>
-			
+
 				<span class="litteBar" @click="isShowHub = true">
-					<u-text :text="hub? hub : '请选择' "></u-text>
+					<u-text :text="hubName? hubName : '请选择' "></u-text>
 					<u-icon name="arrow-right"></u-icon>
 				</span>
-			</div> 
+			</div>
 
 		</div>
 
@@ -116,9 +116,9 @@
 					<u-text color="red" mode="price" :text="price" size="20"></u-text>
 				</div>
 			</div>
-			
+
 			<div class="right">
-				<u-button text="立即下单" shape="circle" type="primary" color="#1e80ff"></u-button>
+				<u-button text="立即下单" shape="circle" type="primary" color="#1e80ff" @click="toSend"></u-button>
 			</div>
 		</div>
 
@@ -155,10 +155,26 @@
 				</div>
 			</div>
 		</u-popup>
-	<u-picker :show="isShowHub" :columns="addressList" closeOnClickOverlay="true"
-	@cancel="closeHubPicker" @close="closeHubPicker" @confirm="confirmHub"></u-picker>
+		<!-- 	<u-picker :show="isShowHub" :columns="addressList" closeOnClickOverlay="true"
+	@cancel="closeHubPicker" @close="closeHubPicker" @confirm="confirmHub"></u-picker> -->
+		<u-popup :show="isShowHub" closeable @close="closeHubPicker" bgColor="#ebebef" class="hubBar">
+			<div style="height: 70rpx;background-color: white;padding: 20rpx;line-height: 70rpx;">
+				<u-text text="选择驿站" bold="true" size="20"></u-text>
+			</div>
+			<div class="tabs hub" v-for="(items,index) in addressList" :key="index" @click="choseHub(items)">
+				<u-text :text="items.name" bold="true"></u-text>
+				<div class="litteBar" style="margin-top: 20rpx;">
+					<u-icon name="phone" color="gray" size="10"></u-icon>
+					<u-text :text="items.contact" size="10" color="gray"></u-text>
+				</div>
+				<u-text :text="items.address" size="10" color="gray"></u-text>
+				<div class="litteBar">
+					<u-icon name="clock" color="gray" size="10"></u-icon>
+					<u-text :text="items.open_time + '-' + items.close_time" size="10" color="gray"></u-text>
+				</div>
+			</div>
+		</u-popup>
 	</view>
-
 </template>
 
 <script setup>
@@ -170,9 +186,39 @@
 	import {
 		onLoad
 	} from '@dcloudio/uni-app'
+	import {
+		api
+	} from '../../api/index.js'
 
 	const receive = reactive({})
 	const send = reactive({})
+
+	let user_id = null
+
+	const addressList = ref([])
+
+	onLoad(() => {
+		uni.getStorage({
+			key: 'user',
+			success(res) {
+				user_id = res.data.userId
+			}
+		})
+		uni.getStorage({
+			key: 'Location',
+			async success(res) {
+				await api.getNearHub({
+						address: res.data
+					})
+					.then(res => {
+						addressList.value = [...res.data]
+						console.log(addressList.value)
+						hubName.value = addressList.value[0].name
+						hub_id = addressList.value[0].id
+					})
+			}
+		})
+	})
 
 	let dateTime = ref('明天09:00-11:00')
 
@@ -182,23 +228,24 @@
 
 	let isShowInfo = ref(false)
 
-	let sendWay = ref(true)
+	let sendWay = ref('上门取件')
 
 	let weight = ref(1)
 
 	let currentType = ref('日用品')
-	
+
 	let isShowHub = ref(false)
-	
-	let hub = ref('')
-	
-	const isComplete = computed(()=> Object.keys(receive).length && Object.keys(send).length && info.value )
-	
+
+	let hubName = ref('')
+
+	let hub_id = null
+
+	const isComplete = computed(() => Object.keys(receive).length && Object.keys(send).length && info.value)
+
 	const price = computed(() => {
-		if(weight.value <= 8){
+		if (weight.value <= 8) {
 			return 8
-		}
-		else{
+		} else {
 			return 8 + (weight.value - 8) * 2
 		}
 	})
@@ -233,7 +280,7 @@
 		dateTime.value = e.value[0] + e.value[1]
 		isShow.value = false;
 	};
-	
+
 	const confirmHub = (e) => {
 		console.log('confirm', e);
 		hub.value = e.value[0]
@@ -243,8 +290,8 @@
 	const closePicker = () => {
 		isShow.value = false;
 	}
-	
-	const closeHubPicker = () =>{
+
+	const closeHubPicker = () => {
 		isShowHub.value = false
 	}
 
@@ -268,20 +315,65 @@
 			url: '/pages/Address/Address?command=' + JSON.stringify(order),
 			events: {
 				getReceive: function(data) {
-					Object.assign(receive, data)
+					// Object.assign(receive, data)
+					receive.receiveName = data.name
+					receive.receiveContact = data.contact
+					receive.receiveAddress = data.address
 					console.log('getR', receive)
 				},
 				getSend: function(data) {
-					Object.assign(send, data)
+					// Object.assign(send, data)
+					send.sendName = data.name
+					send.sendContact = data.contact
+					send.sendAddress = data.address
 					console.log('getSend', send)
 				}
 			}
 		})
 	}
-	
-	const addressList = reactive([
-		['中央食堂','后街']
-	])
+
+	const toSend = async () => {
+		const parcel = {}
+		Object.assign(parcel, send, receive)
+		parcel.orderType = sendWay.value
+		parcel.type = currentType.value
+		parcel.weight = weight.value
+
+		const currentDate = new Date();
+		if (dateTime.value[0] == '明') currentDate.setDate(currentDate.getDate() + 1)
+		else if (dateTime.value[0] == '后') currentDate.setDate(currentDate.getDate() + 2)
+		const year = currentDate.getFullYear();
+		const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+		const day = String(currentDate.getDate()).padStart(2, '0');
+		
+		const words = dateTime.value.split('天')[1]
+
+		parcel.dateTime = `${year}-${month}-${day}` + " " + words
+		parcel.price = price.value
+		parcel.user_id = user_id
+		parcel.hub_id = hub_id
+		console.log('parcel',parcel)
+		await api.addSendList(parcel)
+		.then(res => {
+			if(res.code == 200){
+				uni.navigateBack()
+				uni.showToast({
+					title:'寄送成功'
+				})
+			}
+		})
+		.catch(res => {
+			uni.showToast({
+				title:res.msg
+			})
+		})
+	}
+
+	const choseHub = (item) => {
+		hubName.value = item.name
+		hub_id = item.id
+		closeHubPicker()
+	}
 </script>
 
 <style lang="scss" scoped>
@@ -367,16 +459,32 @@
 		align-items: center;
 		padding: 20rpx;
 	}
-	
-	.right{
+
+	.right {
 		width: 250rpx;
 		padding-right: 20rpx;
 	}
-	
-	.left{
+
+	.left {
 		display: flex;
 		padding-left: 20rpx;
 		align-items: center;
 		gap: 10rpx;
+	}
+
+	.hubBar {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		// gap: 20rpx;
+		// padding: 20rpx;
+		// width: 100%;
+	}
+	
+	.hub{
+		margin-top: 20rpx;
+		margin-left: auto;
+		margin-right: auto;
 	}
 </style>
