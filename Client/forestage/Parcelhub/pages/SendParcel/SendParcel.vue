@@ -161,17 +161,24 @@
 			<div style="height: 70rpx;background-color: white;padding: 20rpx;line-height: 70rpx;">
 				<u-text text="选择驿站" bold="true" size="20"></u-text>
 			</div>
-			<div class="tabs hub" v-for="(items,index) in addressList" :key="index" @click="choseHub(items)">
-				<u-text :text="items.name" bold="true"></u-text>
-				<div class="litteBar" style="margin-top: 20rpx;">
-					<u-icon name="phone" color="gray" size="10"></u-icon>
-					<u-text :text="items.contact" size="10" color="gray"></u-text>
+			<div class="tabs-a hub" v-for="(items,index) in addressList" :key="index" @click="choseHub(items)">
+				<div style="display: flex;justify-content: center;align-items: center;">
+					<u-image src="../static/yz.png" height="50" width="50" style="margin: auto;"></u-image>
 				</div>
-				<u-text :text="items.address" size="10" color="gray"></u-text>
-				<div class="litteBar">
-					<u-icon name="clock" color="gray" size="10"></u-icon>
-					<u-text :text="items.open_time + '-' + items.close_time" size="10" color="gray"></u-text>
+
+				<div style="display: flex;gap: 10rpx;flex-direction: column;">
+					<u-text :text="items.name" bold="true"></u-text>
+					<div class="litteBar">
+						<u-icon name="phone" color="gray" size="10"></u-icon>
+						<u-text :text="items.contact" size="10" color="gray"></u-text>
+					</div>
+					<u-text :text="items.address" size="10" color="gray"></u-text>
+					<div class="litteBar">
+						<u-icon name="clock" color="gray" size="10"></u-icon>
+						<u-text :text="items.open_time + '-' + items.close_time" size="10" color="gray"></u-text>
+					</div>
 				</div>
+
 			</div>
 		</u-popup>
 	</view>
@@ -345,28 +352,28 @@
 		const year = currentDate.getFullYear();
 		const month = String(currentDate.getMonth() + 1).padStart(2, '0');
 		const day = String(currentDate.getDate()).padStart(2, '0');
-		
+
 		const words = dateTime.value.split('天')[1]
 
 		parcel.dateTime = `${year}-${month}-${day}` + " " + words
 		parcel.price = price.value
 		parcel.user_id = user_id
 		parcel.hub_id = hub_id
-		console.log('parcel',parcel)
+		console.log('parcel', parcel)
 		await api.addSendList(parcel)
-		.then(res => {
-			if(res.code == 200){
-				uni.navigateBack()
-				uni.showToast({
-					title:'寄送成功'
-				})
-			}
-		})
-		.catch(res => {
-			uni.showToast({
-				title:res.msg
+			.then(res => {
+				if (res.code == 200) {
+					uni.navigateBack()
+					uni.showToast({
+						title: '寄送成功'
+					})
+				}
 			})
-		})
+			.catch(res => {
+				uni.showToast({
+					title: res.msg
+				})
+			})
 	}
 
 	const choseHub = (item) => {
@@ -391,6 +398,18 @@
 	.tabs {
 		display: flex;
 		flex-direction: column;
+		background-color: white;
+		border-radius: 40rpx;
+		gap: 20rpx;
+		padding: 20rpx;
+		box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+		width: 90%;
+	}
+
+	.tabs-a {
+		display: flex;
+		// flex-direction: column;
+		justify-content: space-around;
 		background-color: white;
 		border-radius: 40rpx;
 		gap: 20rpx;
@@ -477,12 +496,9 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-		// gap: 20rpx;
-		// padding: 20rpx;
-		// width: 100%;
 	}
-	
-	.hub{
+
+	.hub {
 		margin-top: 20rpx;
 		margin-left: auto;
 		margin-right: auto;
