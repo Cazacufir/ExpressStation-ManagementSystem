@@ -16,7 +16,16 @@ const getSendList = (params) => {
 	})
 }
 
+const cancelSendList = (params) => {
+	return request({
+		url:'/cancelSendList',
+		method:'get',
+		data:params
+	})
+}
+
 export const OrderApi = {
 	addSendList,
-	getSendList
+	getSendList,
+	cancelSendList
 }

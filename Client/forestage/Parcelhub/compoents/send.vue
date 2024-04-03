@@ -6,9 +6,9 @@
 			</div>
 
 			<div class="parcelInfo">
-				<u-text :text="items.state" bold></u-text>
-				<u-text :text="'寄给 ' + items.receiveName + ' 的包裹'" size="13"></u-text>
-				<u-text :text="items.route? item.route : '快件等待揽收'" size="13"></u-text>
+				<u-text :text="items.state" bold size="13"></u-text>
+				<u-text :text="'寄给 ' + items.receiveName + ' 的包裹'" size="11"></u-text>
+				<u-text :text="items.route? item.route : '快件等待揽收'" size="11"></u-text>
 			</div>
 
 		</div>
@@ -23,7 +23,6 @@
 		api
 	} from '../api/index.js'
 	import {
-		onReady,
 		onLoad
 	} from '@dcloudio/uni-app'
 

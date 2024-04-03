@@ -25,18 +25,6 @@
 
 	let current = ref(true)
 
-	const addressList = ref([{
-			name: 'test1',
-			contact: '123',
-			address: ['广西壮族自治区桂林市灵川县灵田镇桂林电子科技大学花江校区', 'GUET']
-		},
-		{
-			name: 'test2',
-			contact: "123 1234 1234",
-			address: ['sleepy']
-		}
-	])
-
 	const list = ([{
 			name: '已收取'
 		},
