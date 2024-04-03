@@ -8,6 +8,15 @@ const addSendList = (params) => {
 	})
 }
 
+const getSendList = (params) => {
+	return request({
+		url:'/getSendParcel',
+		method:'get',
+		data:params
+	})
+}
+
 export const OrderApi = {
-	addSendList
+	addSendList,
+	getSendList
 }
