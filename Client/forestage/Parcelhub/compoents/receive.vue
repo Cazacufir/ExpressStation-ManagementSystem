@@ -1,17 +1,21 @@
 <template>
-	<view class="containerR">
+	<view class="containerR" v-if="list.length">
 		<div class="parcelCard" v-for="(items,index) in list" :key="index">
 			<div>
 				<u-image src="../static/sf.png" height="50" width="50"></u-image>
 			</div>
 
 			<div class="parcelInfo">
-				<u-text :text="items.status" bold size="20"></u-text>
-				<u-text :text="items.name"></u-text>
-				<u-text :text="items.location"></u-text>
+				<u-text :text="items.state" bold size="13"></u-text>
+				<u-text :text="'来自 ' + items.sendName + ' 的包裹'" size="11"></u-text>
+				<u-text :text="items.route? item.route : '快件等待揽收'" size="11"></u-text>
 			</div>
 
 		</div>
+	</view>
+	
+	<view class="containerR" v-else>
+		<u-empty mode="list" text="近期无待取包裹" size="13"></u-empty>
 	</view>
 </template>
 
@@ -19,12 +23,30 @@
 	import {
 		ref
 	} from 'vue';
+	import {
+		api
+	} from '../api/index.js'
+	import {
+		onLoad
+	} from '@dcloudio/uni-app'
 
-	const list = ref([{
-		status: '已发货',
-		name: '手机支架',
-		location: '正在等待揽收'
-	}])
+	const list = ref([])
+
+	onLoad(() => {
+		uni.getStorage({
+			key: 'user',
+			async success(res) {
+				await api.getReceiveParcel({
+						userId: res.data.userId
+					})
+					.then(res => {
+						list.value = [...res.data]
+						console.log('list', list.value)
+					})
+			}
+		})
+	})
+	
 </script>
 
 <style lang="scss" scoped>
@@ -32,6 +54,10 @@
 		display: flex;
 		flex-direction: column;
 		gap: 10rpx;
+	}
+	
+	.emptyContent{
+		height: 200rpx;
 	}
 
 	.parcelCard {

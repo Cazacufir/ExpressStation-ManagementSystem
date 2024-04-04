@@ -1,5 +1,5 @@
 <template>
-	<view class="containerS">
+	<view class="containerS" v-if="list.length">
 		<div class="parcelCard" v-for="(items,index) in list" :key="index">
 			<div>
 				<u-image src="../static/sf.png" height="50" width="50"></u-image>
@@ -12,6 +12,10 @@
 			</div>
 
 		</div>
+	</view>
+	
+	<view class="containerS" v-else>
+		<u-empty mode="list" text="暂无寄送包裹" size="13"></u-empty>
 	</view>
 </template>
 
@@ -32,8 +36,8 @@
 		uni.getStorage({
 			key: 'user',
 			async success(res) {
-				await api.getSendList({
-						user_id: res.data.userId
+				await api.getRecentSendParcel({
+						userId: res.data.userId
 					})
 					.then(res => {
 						list.value = [...res.data]

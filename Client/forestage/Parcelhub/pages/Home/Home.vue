@@ -43,8 +43,8 @@
 			</div>
 
 			<div class="parcelBody">
-				<receive v-show="current"></receive>
-				<send v-show="!current"></send>
+				<receive v-show="currentIndex == 0"></receive>
+				<send v-show="currentIndex == 1"></send>
 			</div>
 		</view>
 
@@ -97,7 +97,7 @@
 
 	const tabs = [Receive, Send]
 
-	let current = ref(true)
+	let currentIndex = ref(0)
 
 	const list = ([{
 			name: '收'
@@ -107,11 +107,12 @@
 		}
 	])
 
-	const switchTab = () => {
+	const switchTab = (item) => {
 		// console.log('item',item)
 		// currentIndex.value = item.index
 		// console.log(currentIndex.value)
-		current.value = !current.value
+		console.log('index',item)
+		currentIndex.value = item.index
 	}
 
 	const toReceive = () => {
