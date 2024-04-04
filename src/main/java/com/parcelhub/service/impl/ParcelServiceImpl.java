@@ -79,11 +79,11 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
     @Override
     public Result getRecentSendParcel(int userId){
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime days = now.minusDays(7);
+        LocalDateTime days = now.plusDays(-7);
         LambdaQueryWrapper<OrderParcelMerge> orderParcelMergeLambdaQueryWrapper = new LambdaQueryWrapper<>();
         orderParcelMergeLambdaQueryWrapper.eq(OrderParcelMerge::getUser_id,userId)
                 .between(OrderParcelMerge::getOrderTime,days,now);
-        List<OrderParcelMerge> orderParcelMergeList = orderParcelMergeMapper.selectList(orderParcelMergeLambdaQueryWrapper);
+        List<OrderParcelMerge> orderParcelMergeList = orderParcelMergeMapper.getRecentSend(userId,now,days);
 
         if (orderParcelMergeList.size() > 0){
             return Result.okResult(orderParcelMergeList);
