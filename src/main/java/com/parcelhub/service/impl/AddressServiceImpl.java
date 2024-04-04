@@ -35,9 +35,8 @@ public class AddressServiceImpl extends ServiceImpl<AddressMapper, Address> impl
             for(AdressVo address : adressVos){
                 address.setAddress(mergedAddresses.get(address.getName() + "_" + address.getContact()));
             }
-            Set set = new HashSet();
-            set.addAll(adressVos);
-            return Result.okResult(adressVos);
+            Set<AdressVo> adressVoSet = new HashSet<>(adressVos);
+            return Result.okResult(adressVoSet);
         }
         else {
             return Result.errorResult(AppHttpCodeEnum.ADDRESS_NOT_FOUND);
