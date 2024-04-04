@@ -247,6 +247,7 @@
 		display: flex;
 		flex-direction: column;
 		height: 100%;
+		position: relative;
 	}
 
 	.head {
@@ -280,6 +281,9 @@
 		display: flex;
 		justify-content: space-around;
 		align-items: center;
+		position: fixed;
+		bottom: 0;
+		width: 100%;
 	}
 
 	.tab {
