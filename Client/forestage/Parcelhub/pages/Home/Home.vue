@@ -5,10 +5,10 @@
 			<u-text :text="currentLocation[0].name" bold="true" color="white" size="12"></u-text>
 		</div>
 
-		<div class="searchBar">
+		<div class="searchBar" @click="toSearch">
 			<u-input v-model="searchFor" placeholder="输入快递单号以查询快递" suffixIcon="search"
 				suffixIconStyle="color: #1e80ff;font-size:50rpx" shape="circle" fontSize="30rpx"
-				customStyle="background-color: white;"></u-input>
+				customStyle="background-color: white;" @focus="toSearch"></u-input>
 		</div>
 
 		<view class="btnBar">
@@ -93,7 +93,11 @@
 		})
 	})
 
-	let searchFor = ref(null)
+	const toSearch = () => {
+		uni.navigateTo({
+			url:'/pages/Search/Search'
+		})
+	}
 
 	const tabs = [Receive, Send]
 
