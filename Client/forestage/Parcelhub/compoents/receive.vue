@@ -36,9 +36,11 @@
 		uni.getStorage({
 			key: 'user',
 			async success(res) {
-				await api.getReceiveParcel({
-						userId: res.data.userId
-					})
+				const parcel = {}
+				parcel.receiveName = res.data.name
+				parcel.receiveContact = res.data.contact
+				
+				await api.getRecentReceiveParcel(parcel)
 					.then(res => {
 						list.value = [...res.data]
 						console.log('list', list.value)

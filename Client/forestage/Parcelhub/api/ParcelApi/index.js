@@ -16,7 +16,16 @@ const getRecentSendParcel = (params) => {
 	})
 }
 
+const getRecentReceiveParcel = (params) => {
+	return request({
+		url:'/getRecentReceiveParcel',
+		method:'post',
+		data:params
+	})
+}
+
 export const ParcelApi = {
 	getReceiveParcel,
-	getRecentSendParcel
+	getRecentSendParcel,
+	getRecentReceiveParcel
 }

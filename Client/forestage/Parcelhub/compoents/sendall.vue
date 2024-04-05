@@ -64,27 +64,6 @@ import { ref } from 'vue';
 
 const list = ref([])
 
-// const list = ref([
-// 	{
-// 		orderId:'234567',
-// 		sendName:'test1',
-// 		receiveName:'test2',
-// 		sendAddress:'桂林市',
-// 		receiveAddress:'北京市',
-// 		orderTime:'2024-3-21',
-// 		status:'已签收'
-// 	},
-// 	{
-// 		orderId:'234567',
-// 		sendName:'test1',
-// 		receiveName:'test2',
-// 		sendAddress:'桂林市',
-// 		receiveAddress:'北京市',
-// 		orderTime:'2024-3-21',
-// 		status:'已签收'
-// 	}
-// ])
-
 const toDetail = () => {
 	uni.navigateTo({
 		url:'/pages/Order/OrderDetail/OrderDetail'
