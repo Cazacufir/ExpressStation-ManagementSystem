@@ -32,7 +32,7 @@ public class ParcelController {
         return parcelService.getRecentSendParcel(userId);
     }
 
-    @GetMapping("/getRecentReceiveParcel")
+    @PostMapping("/getRecentReceiveParcel")
     public Result getRecentReceiveParcel(@RequestBody Parcel parcel){
         return parcelService.getRecentReceiveParcel(parcel);
     }
