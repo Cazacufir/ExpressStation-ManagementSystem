@@ -110,4 +110,13 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
             return Result.errorResult(AppHttpCodeEnum.PARCEL_NOT_FOUND);
         }
     }
+
+    @Override
+    public Result getSearchParcel(int parcelId){
+        Parcel parcel = parcelMapper.selectById(parcelId);
+        if(Objects.isNull(parcel)){
+            return Result.errorResult(AppHttpCodeEnum.PARCEL_NOT_FOUND);
+        }
+        return Result.okResult(parcel);
+    }
 }

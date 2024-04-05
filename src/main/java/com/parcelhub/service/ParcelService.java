@@ -15,4 +15,6 @@ public interface ParcelService extends IService<Parcel> {
     Result getRecentSendParcel(int userId);
 
     Result getRecentReceiveParcel(Parcel parcel);
+
+    Result getSearchParcel(int parcelId);
 }

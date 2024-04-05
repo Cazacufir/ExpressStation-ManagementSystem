@@ -36,4 +36,9 @@ public class ParcelController {
     public Result getRecentReceiveParcel(@RequestBody Parcel parcel){
         return parcelService.getRecentReceiveParcel(parcel);
     }
+
+    @GetMapping("/getSearchParcel")
+    public Result getSearchParcel(@RequestParam int parcelId){
+        return parcelService.getSearchParcel(parcelId);
+    }
 }
