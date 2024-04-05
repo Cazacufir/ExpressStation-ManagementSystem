@@ -1,7 +1,7 @@
 <template>
 	<view class="containerS">
-		<div class="parcelCard" v-for="(items,index) in list" :key="index" @click="toDetail">
-			<u-text :text="'快递编号：' + items.parcelId" size="12"></u-text>
+		<div class="parcelCard" v-for="(items,index) in list" :key="index" @click="toDetail(items)">
+			<u-text :text="'快递单号：' + items.parcelId" size="12"></u-text>
 			
 			<div class="centerBar">
 				<div style="width: 40%;" class="parcelInfo">
@@ -54,9 +54,9 @@ import { ref } from 'vue';
 
 const list = ref([])
 
-const toDetail = () => {
+const toDetail = (items) => {
 	uni.navigateTo({
-		url:'/pages/Order/OrderDetail/OrderDetail'
+		url:'/pages/Order/OrderDetail/OrderDetail?parcel=' + JSON.stringify(items)
 	})
 }
 

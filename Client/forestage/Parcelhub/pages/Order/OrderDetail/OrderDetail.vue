@@ -1,21 +1,21 @@
 <template>
 	<view class="container">
 		<div class="card header">
-			<u-text text="已签收" bold="true" size="17"></u-text>
-			<u-text text="订单编号: 123" size="13" color="gray"></u-text>
-			<u-text text="下单时间: 2024-03-27" size="13" color="gray"></u-text>
+			<u-text :text="parcel.state" bold="true" size="17"></u-text>
+			<u-text v-if="parcel.orderId" :text="parcel.orderId" size="13" color="gray"></u-text>
+			<u-text v-if="parcel.orderId" :text="parcel.orderTime" size="13" color="gray"></u-text>
 		</div>
 
 		<div class="card header">
-			<u-text text="中通快递" bold="true"></u-text>
-			<u-text text="快递编号: 321"></u-text>
+			<u-text :text="parcel.company? parcel.company : '百世' " bold="true"></u-text>
+			<u-text :text="'快递单号：' +  parcel.parcelId"></u-text>
 		</div>
 
 		<div class="card header">
 			<div class="parcelCard">
 				<div class="right">
 					<u-text text="2024-03-27" color="#0165fe"></u-text>
-					<u-text text="快件已接收"></u-text>
+					<u-text :text="parcel.state"></u-text>
 				</div>
 
 				<div class="left">
@@ -25,54 +25,58 @@
 		</div>
 
 		<div class="card">
-			<div style="display: flex; gap: 10rpx;">
+			<div style="display: flex; gap: 10rpx;justify-content: center;align-items: center;width: 100%;">
 				<span>
 					<u-button type="primary" text="寄"></u-button>
 				</span>
 
-				<span style="addressBar">
-					<div>
-						<u-text text="收件人" bold="true" size="18"></u-text>
+				<div style="display: flex;flex-direction: column;gap: 10rpx;">
+					<div class="addressBar">
+						<span>
+							<u-text :text="parcel.sendName" bold="true"></u-text>
+						</span>
+						<span style="padding-top: 10rpx;">
+							<u-text :text="parcel.sendContact" bold="true" size="11"></u-text>
+						</span>
+						
 					</div>
 
 					<div>
-						<u-text text="123" bold="true"></u-text>
+						<u-text :text="parcel.sendAddress" size="11" color="gray"></u-text>
 					</div>
-
-				</span>
-				<div>
-					<u-text text="send.address"></u-text>
 				</div>
 			</div>
 
-			<div style="display: flex; gap: 10rpx;">
+			<div style="display: flex; gap: 10rpx;margin-top: 15rpx;justify-content: center;align-items: center;">
 				<span>
 					<u-button type="primary" text="收" color="#0ab99c"></u-button>
 				</span>
 
-				<span style="addressBar">
-					<div>
-						<u-text text="收件人" bold="true" size="18"></u-text>
+				<div style="display: flex;flex-direction: column;gap: 10rpx;width: 100%;">
+					<div class="addressBar">
+						<span>
+							<u-text :text="parcel.receiveName" bold="true"></u-text>
+						</span>
+						<span style="padding-top: 10rpx;">
+							<u-text :text="parcel.receiveContact" bold="true" size="11"></u-text>
+						</span>
+						
 					</div>
 
 					<div>
-						<u-text text="123" bold="true"></u-text>
+						<u-text :text="parcel.receiveAddress" size="11" color="gray"></u-text>
 					</div>
-
-				</span>
-				<div>
-					<u-text text="send.address"></u-text>
 				</div>
 			</div>
 
 		</div>
 
-		<div class="card" style="display: flex;gap: 5rpx">
+		<div v-if="parcel.orderId" class="card" style="display: flex;gap: 5rpx">
 			<div>
 				<u-text text="已支付运费" bold="true"></u-text>
 			</div>
 			<div>
-				<u-text text="7" mode="price" color="#0165fe"></u-text>
+				<u-text :text="parcel.price" mode="price" color="#0165fe"></u-text>
 			</div>
 
 		</div>
@@ -80,7 +84,20 @@
 </template>
 
 <script setup>
+	import {
+		onLoad
+	} from '@dcloudio/uni-app'
+	import {
+		reactive
+	} from 'vue';
 
+	const parcel = reactive({})
+
+	onLoad(option => {
+		console.log('op', option)
+		Object.assign(parcel, JSON.parse(option.parcel))
+		console.log('parcel', parcel)
+	})
 </script>
 
 <style lang="scss" scoped>
@@ -121,7 +138,7 @@
 
 	.addressBar {
 		display: flex;
-		gap: 5rpx;
+		gap: 10rpx;
 		// align-items: center;
 	}
 </style>
