@@ -65,7 +65,7 @@
 	.containerS {
 		display: flex;
 		flex-direction: column;
-		gap: 10rpx;
+		gap: 40rpx;
 		background-color: #f3f6fa;
 		border-radius: 40rpx;
 	}

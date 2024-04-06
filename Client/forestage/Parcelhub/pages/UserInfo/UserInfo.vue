@@ -215,6 +215,11 @@
 			},
 			success: (uploadFileRes) => {
 				console.log(uploadFileRes.data);
+				userInfo.avatar = uploadFileRes.data
+				uni.setStorage({
+					key:'user',
+					data:userInfo
+				})
 			}
 		});
 		closePop()

@@ -20,10 +20,10 @@
 	let current = ref(true)
 
 	const list = ([{
-			name: '已收取'
+			name: '收件列表'
 		},
 		{
-			name: '已寄出'
+			name: '寄件列表'
 		}
 	])
 </script>

@@ -55,7 +55,7 @@
 	.containerR {
 		display: flex;
 		flex-direction: column;
-		gap: 10rpx;
+		gap: 40rpx;
 	}
 	
 	.emptyContent{

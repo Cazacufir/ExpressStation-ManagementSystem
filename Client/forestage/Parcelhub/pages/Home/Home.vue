@@ -56,7 +56,6 @@
 	// 	api
 	// } from '../../api/index.js'
 	import {
-		onReady,
 		onLoad
 	} from '@dcloudio/uni-app'
 	import {
@@ -91,6 +90,7 @@
 				console.log(e)
 			}
 		})
+		
 	})
 
 	const toSearch = () => {

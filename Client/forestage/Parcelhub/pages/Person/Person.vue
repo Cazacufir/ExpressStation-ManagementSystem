@@ -2,7 +2,7 @@
 	<view class="container">
 		<div class="header">
 			<div class="avatarBar">
-				<u-avatar :src="userInfo.avatar" size="70"></u-avatar>
+				<u-avatar :src="userInfo.avatar" size="70" shape="circle"></u-avatar>
 				<u-text :text="userInfo.name" color="white" size="28"></u-text>
 			</div>
 			
@@ -28,12 +28,22 @@
 
 <script setup>
 import { reactive } from 'vue';
-import { onLoad	} from '@dcloudio/uni-app'
+import { onLoad,onShow	} from '@dcloudio/uni-app'
 
 
 const userInfo = reactive({})
 
 onLoad(()=>{
+	uni.getStorage({
+		key:'user',
+		success(res) {
+			console.log(res)
+			Object.assign(userInfo,res.data)
+		}
+	})
+})
+
+onShow(()=>{
 	uni.getStorage({
 		key:'user',
 		success(res) {
