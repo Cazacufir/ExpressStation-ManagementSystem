@@ -64,6 +64,14 @@ public class Result<T> implements Serializable {
         return result;
     }
 
+    public static Result okResult2(Object data) {
+        Result result = setAppHttpCodeEnum(AppHttpCodeEnum.PARCEL_EXIST, AppHttpCodeEnum.SUCCESS.getMsg());
+        if(data!=null) {
+            result.setData(data);
+        }
+        return result;
+    }
+
     public static Result errorResult(AppHttpCodeEnum enums){
         return setAppHttpCodeEnum(enums,enums.getMsg());
     }

@@ -64,6 +64,8 @@ public class OrderParcelMerge implements Serializable {
 
     private Date receiveTime;
 
+    private int belonged_id;
+
     private int deliver_id;
 
     private int carrier_id;

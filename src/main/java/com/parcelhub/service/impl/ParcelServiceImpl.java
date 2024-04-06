@@ -69,13 +69,20 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
 
     @Override
     public Result addExtraParcel(UserParcelMerge userParcelMerge){
+        Parcel parcel = parcelMapper.selectById(userParcelMerge.getParcel_id());
+        if(Objects.isNull(parcel)){
+            return Result.errorResult(AppHttpCodeEnum.PARCEL_NOT_FOUND);
+        }
+        if(parcel.getBelonged_id() == userParcelMerge.getUser_id()){
+            return Result.okResult2(parcel);
+        }
         LambdaQueryWrapper<UserParcelMerge> userParcelMergeLambdaQueryWrapper = new LambdaQueryWrapper<>();
         userParcelMergeLambdaQueryWrapper.eq(UserParcelMerge::getUser_id,userParcelMerge.getUser_id())
                 .eq(UserParcelMerge::getParcel_id,userParcelMerge.getParcel_id());
         UserParcelMerge userParcelMerge1 = userParcelMergeMapper.selectOne(userParcelMergeLambdaQueryWrapper);
         if(Objects.isNull(userParcelMerge1)){
             userParcelMergeMapper.insert(userParcelMerge);
-            return Result.okResult();
+            return Result.okResult(parcel);
         }
         else {
             return Result.errorResult(AppHttpCodeEnum.PARCEL_EXIST);

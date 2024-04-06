@@ -46,6 +46,8 @@ public class Parcel implements Serializable {
 
     private Date receiveTime;
 
+    private int belonged_id;
+
     private int hub_id;
 
     private int deliver_id;

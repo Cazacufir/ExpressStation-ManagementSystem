@@ -24,7 +24,7 @@ public class ParcelController {
     }
 
     @PostMapping("/addExtraParcel")
-    public Result addExtraParcel(UserParcelMerge userParcelMerge){
+    public Result addExtraParcel(@RequestBody UserParcelMerge userParcelMerge){
         return parcelService.addExtraParcel(userParcelMerge);
     }
 
