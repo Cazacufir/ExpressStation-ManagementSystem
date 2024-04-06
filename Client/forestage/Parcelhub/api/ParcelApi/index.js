@@ -63,6 +63,14 @@ const getExtraParcel = () => {
 	})
 }
 
+const deleteExtraParcel = (params) => {
+	return request({
+		url:'/deleteExtraParcel',
+		method:'delete',
+		data:params
+	})
+}
+
 export const ParcelApi = {
 	getReceiveParcel,
 	getRecentSendParcel,
@@ -71,5 +79,6 @@ export const ParcelApi = {
 	getSearchSendList,
 	getSearchReceiveList,
 	addExtraParcel,
-	getExtraParcel
+	getExtraParcel,
+	deleteExtraParcel
 }

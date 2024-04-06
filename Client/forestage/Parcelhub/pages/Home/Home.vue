@@ -46,9 +46,9 @@
 				<receive v-show="currentIndex == 0"></receive>
 				<send v-show="currentIndex == 1"></send>
 				
-				<u-divider text="添加的包裹" text-color="#0165fe" lineColor="#0165fe" hairline="true"></u-divider>
+				<u-divider v-if="parcelList.length" text="添加的包裹" text-color="#0165fe" lineColor="#0165fe" hairline="true"></u-divider>
 				
-				<div class="parcelCard" v-for="(items,index) in parcelList" :key="index">
+				<div v-if="parcelList.length" class="parcelCard" v-for="(items,index) in parcelList" :key="index">
 					<div>
 						<u-image src="../static/sf.png" height="50" width="50"></u-image>
 					</div>
@@ -58,11 +58,16 @@
 						<u-text :text="'来自 ' + items.sendName + ' 的包裹'" size="11"></u-text>
 						<u-text :text="items.route? item.route : '快件等待揽收'" size="11"></u-text>
 					</div>
+					
+					<div class="deleteBtn">
+						<u-icon name="close" @click="toDelete(items,index)"></u-icon>
+					</div>
 				
 				</div>
 			</div>
 		</view>
-
+		<u-modal :show="isShowModal" title="删除额外包裹" content='确定删除此包裹？' showCancelButton="true" 
+		@cancel="isShowModal = false" @confirm="confirmDelete"></u-modal>
 	</view>
 </template>
 
@@ -84,6 +89,8 @@
 	let saveLocation = ''
 	
 	const parcelList = ref([])
+	
+	const deleteItem = {}
 
 	onLoad(async () => {
 		let amapPlugin = new amap.AMapWX({
@@ -138,6 +145,8 @@
 		console.log('index',item)
 		currentIndex.value = item.index
 	}
+	
+	let isShowModal = ref(false)
 
 	const toReceive = () => {
 		uni.navigateTo({
@@ -155,6 +164,31 @@
 		uni.navigateTo({
 			url: '/pages/Addparcel/Addparcel'
 		})
+	}
+	
+	let deleteIndex = null
+	
+	const toDelete = (items,index) => {
+		deleteIndex = index
+		deleteItem.parcel_id = items.parcelId
+		isShowModal.value = true
+	}
+	
+	const confirmDelete = async () => {
+		await api.deleteExtraParcel(deleteItem)
+		.then(()=> {
+			uni.showToast({
+				icon:'success',
+				title:'删除成功'
+			})
+			parcelList.value.splice(deleteIndex,1)
+		})
+		.catch(()=> {
+			uni.showToast({
+				title:'删除失败'
+			})
+		})
+		.finally(()=> isShowModal.value = false)
 	}
 </script>
 
@@ -216,5 +250,9 @@
 		display: flex;
 		flex-direction: column;
 		gap: 10rpx;
+	}
+	
+	.deleteBtn{
+		margin-left: auto;
 	}
 </style>
