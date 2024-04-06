@@ -18,9 +18,14 @@ public class ParcelController {
         return parcelService.getReceiveParcel(userId);
     }
 
-    @GetMapping("/getMoreParcel")
-    public Result getMoreParcel(@RequestParam int userId){
-        return parcelService.getExtraParcel(userId);
+    @GetMapping("/getExtraParcel")
+    public Result getExtraParcel(HttpServletRequest request){
+        return parcelService.getExtraParcel(request);
+    }
+
+    @DeleteMapping("/deleteExtraParcel")
+    public Result deleteExtraParcel(HttpServletRequest request,@RequestBody UserParcelMerge userParcelMerge){
+        return parcelService.deleteExtraParcel(request,userParcelMerge);
     }
 
     @PostMapping("/addExtraParcel")

@@ -59,7 +59,13 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
     }
 
     @Override
-    public Result getExtraParcel(int userId){
+    public Result getExtraParcel(HttpServletRequest request){
+        int userId = -1;
+        try {
+            userId = JwtUtil.getUserId(request);
+        } catch (Exception e) {
+            return Result.okResult(AppHttpCodeEnum.NEED_LOGIN);
+        }
         List<Parcel> parcelList = userParcelMergeMapper.getMoreParcel(userId);
         if(parcelList.size() > 0){
             return Result.okResult(parcelList);
@@ -162,5 +168,20 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
             }
             return Result.okResult(parcelList);
         }
+    }
+
+    @Override
+    public Result deleteExtraParcel(HttpServletRequest request,UserParcelMerge userParcelMerge){
+        int userId = -1;
+        try {
+            userId = JwtUtil.getUserId(request);
+        } catch (Exception e) {
+            return Result.okResult(AppHttpCodeEnum.NEED_LOGIN);
+        }
+        LambdaQueryWrapper<UserParcelMerge> userParcelMergeLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        userParcelMergeLambdaQueryWrapper.eq(UserParcelMerge::getUser_id,userId)
+                .eq(UserParcelMerge::getParcel_id,userParcelMerge.getParcel_id());
+        userParcelMergeMapper.delete(userParcelMergeLambdaQueryWrapper);
+        return Result.okResult();
     }
 }
