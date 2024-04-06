@@ -3,6 +3,7 @@ package com.parcelhub.controller;
 import com.parcelhub.dto.OrderParcelMerge;
 import com.parcelhub.service.OrderService;
 import com.parcelhub.utils.Result;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,5 +30,10 @@ public class OrderController {
     @GetMapping("/cancelSendList")
     public Result cancelSendList(@RequestParam int orderId){
         return orderService.cancelSendList(orderId);
+    }
+
+    @GetMapping("/getSearchSendList")
+    public Result getSearchSendList(HttpServletRequest request,Integer parcelId,String word){
+        return orderService.getSearchSendList(request,parcelId,word);
     }
 }

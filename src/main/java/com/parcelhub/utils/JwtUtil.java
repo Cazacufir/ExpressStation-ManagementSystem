@@ -106,7 +106,7 @@ public class JwtUtil {
                 .getBody();
     }
 
-    public static long getUserId(HttpServletRequest request) throws Exception {
+    public static int getUserId(HttpServletRequest request) throws Exception {
         try
         {
             String token = request.getHeader("token");

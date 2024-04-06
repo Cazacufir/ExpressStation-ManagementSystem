@@ -8,11 +8,14 @@ import com.parcelhub.mapper.OrderMapper;
 import com.parcelhub.mapper.ParcelMapper;
 import com.parcelhub.service.OrderService;
 import com.parcelhub.utils.AppHttpCodeEnum;
+import com.parcelhub.utils.JwtUtil;
+import com.parcelhub.utils.RedisCache;
 import com.parcelhub.utils.Result;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
 
 @Service
 public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderList> implements OrderService {
@@ -22,9 +25,13 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderList> implem
     @Autowired
     ParcelMapper parcelMapper;
 
+    @Autowired
+    private RedisCache redisCache;
+
     @Override
     public Result getSendList(int user_id){
         List<OrderParcelMerge> orderParcelMerges = orderMapper.getSendParcel(user_id);
+        redisCache.setCacheList("sendList:"+user_id,orderParcelMerges);
         if (orderParcelMerges.size() > 0){
             return Result.okResult(orderParcelMerges);
         }
@@ -90,5 +97,34 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderList> implem
         orderList.setDel_flag(1);
         orderMapper.updateById(orderList);
         return Result.okResult();
+    }
+
+    @Override
+    public Result getSearchSendList(HttpServletRequest request,Integer parcelId,String word){
+        int userId = -1;
+        try {
+            userId = JwtUtil.getUserId(request);
+        } catch (Exception e) {
+            return Result.okResult(AppHttpCodeEnum.NEED_LOGIN);
+        }
+        if(parcelId == 0){
+            List<OrderParcelMerge> orderParcelMergeList = redisCache.getCacheList("sendList:"+userId);
+            List<OrderParcelMerge> orderParcelMerges = new ArrayList<>();
+            for(OrderParcelMerge orderParcelMerge : orderParcelMergeList){
+                if(orderParcelMerge.getSendName().contains(word) || orderParcelMerge.getSendAddress().contains(word) ||
+                orderParcelMerge.getReceiveName().contains(word) || orderParcelMerge.getReceiveAddress().contains(word)){
+                    orderParcelMerges.add(orderParcelMerge);
+                }
+            }
+            Set<OrderParcelMerge> orderParcelMergeSet = new HashSet<>(orderParcelMerges);
+            return Result.okResult(orderParcelMergeSet);
+        }
+        else {
+            List<OrderParcelMerge> orderParcelMerge = orderMapper.getSendParcelByParcelId(parcelId);
+            if(Objects.isNull(orderParcelMerge)){
+                return Result.errorResult(AppHttpCodeEnum.PARCEL_NOT_FOUND);
+            }
+            return Result.okResult(orderParcelMerge);
+        }
     }
 }
