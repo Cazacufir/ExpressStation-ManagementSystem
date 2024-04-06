@@ -40,10 +40,19 @@ const getSearchSendList = (params) => {
 	})
 }
 
+const getSearchReceiveList = (params) => {
+	return request({
+		url:'/getSearchReceiveList',
+		method:'get',
+		data:params
+	})
+}
+
 export const ParcelApi = {
 	getReceiveParcel,
 	getRecentSendParcel,
 	getRecentReceiveParcel,
 	getSearchParcel,
-	getSearchSendList
+	getSearchSendList,
+	getSearchReceiveList
 }

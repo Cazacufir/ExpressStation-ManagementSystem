@@ -65,7 +65,7 @@
 	.parcelCard {
 		display: flex;
 		// flex-direction: column;
-		gap: 20rpx;
+		gap: 30rpx;
 		align-items: center;
 	}
 

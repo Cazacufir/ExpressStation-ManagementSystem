@@ -3,9 +3,9 @@
 		<div style="margin-bottom: 20rpx; width: 95%;margin-left: auto;margin-right: auto;">
 			<u-input v-model="searchFor" placeholder="输入快递单号以查询快递" suffixIcon="search"
 				suffixIconStyle="color: #1e80ff;font-size:50rpx" shape="circle" fontSize="30rpx"
-				customStyle="background: white;"></u-input>
+				customStyle="background: white;" @confirm="toSearch"></u-input>
 		</div>
-		<div class="parcelCard" v-for="(items,index) in list" :key="index" @click="toDetail(items)">
+		<div class="parcelCard" v-for="(items,index) in (isShowSearch? searchList : list )" :key="index" @click="toDetail(items)">
 			<u-text :text="'快递单号：' + items.parcelId" size="12"></u-text>
 			
 			<div class="centerBar">
@@ -112,6 +112,56 @@ const formatDate = (dateString) => {
 		currentId.value = null
 		currentIndex = null
 		isShowModal.value = false
+	}
+	
+	let isShowSearch = ref(false)
+	const searchList = ref([])
+	let searchFor = ref()
+	
+	const toSearch = async () => {
+		console.log('search', searchFor.value)
+		if (searchFor.value == '') {
+			isShowSearch.value = false
+			return
+		}
+		searchList.value = []
+		const words = parseInt(searchFor.value)
+		if (words) {
+			await api.getSearchReceiveList({
+					parcelId: words,
+					word: null
+				})
+				.then(res => {
+					if (res.code == 200) {
+						searchList.value = [...res.data]
+						isShowSearch.value = true
+						console.log('searchList.value',searchList.value)
+					}
+					else{
+						uni.showToast({
+							title:res.msg
+						})
+					}
+				})
+		} else {
+			const word = searchFor.value
+			await api.getSearchReceiveList({
+				parcelId: 0,
+				word: word
+			})
+				.then(res => {
+					if (res.code == 200) {
+						searchList.value = [...res.data]
+						isShowSearch.value = true
+						console.log('searchList.value',searchList.value)
+					}
+					else{
+						uni.showToast({
+							title:res.msg
+						})
+					}
+				})
+		}
 	}
 </script>
 

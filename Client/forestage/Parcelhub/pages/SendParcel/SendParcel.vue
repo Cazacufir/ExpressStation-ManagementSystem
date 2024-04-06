@@ -340,6 +340,18 @@
 	}
 
 	const toSend = async () => {
+		if(!Object.keys(send).length){
+			uni.showToast({
+				title:'请填写寄件地址'
+			})
+			return
+		}
+		if(!Object.keys(receive).length){
+			uni.showToast({
+				title:'请填写收件地址'
+			})
+			return
+		}
 		const parcel = {}
 		Object.assign(parcel, send, receive)
 		parcel.orderType = sendWay.value
