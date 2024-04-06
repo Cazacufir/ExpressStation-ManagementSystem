@@ -1,5 +1,10 @@
 <template>
 	<view class="containerS">
+		<div style="margin-bottom: 20rpx; width: 95%;margin-left: auto;margin-right: auto;">
+			<u-input v-model="searchFor" placeholder="输入快递单号以查询快递" suffixIcon="search"
+				suffixIconStyle="color: #1e80ff;font-size:50rpx" shape="circle" fontSize="30rpx"
+				customStyle="background: white;"></u-input>
+		</div>
 		<div class="parcelCard" v-for="(items,index) in list" :key="index" @click="toDetail(items)">
 			<u-text :text="'快递单号：' + items.parcelId" size="12"></u-text>
 			
