@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.parcelhub.entity.Parcel;
 import com.parcelhub.entity.UserParcelMerge;
 import com.parcelhub.utils.Result;
+import jakarta.servlet.http.HttpServletRequest;
 
 public interface ParcelService extends IService<Parcel> {
     Result getReceiveParcel(int userId);
@@ -17,4 +18,6 @@ public interface ParcelService extends IService<Parcel> {
     Result getRecentReceiveParcel(Parcel parcel);
 
     Result getSearchParcel(int parcelId);
+
+    Result getSearchReceiveList(HttpServletRequest request, Integer parcelId, String word);
 }

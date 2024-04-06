@@ -12,13 +12,15 @@ import com.parcelhub.mapper.UserMapper;
 import com.parcelhub.mapper.UserParcelMergeMapper;
 import com.parcelhub.service.ParcelService;
 import com.parcelhub.utils.AppHttpCodeEnum;
+import com.parcelhub.utils.JwtUtil;
+import com.parcelhub.utils.RedisCache;
 import com.parcelhub.utils.Result;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> implements ParcelService {
@@ -35,6 +37,9 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
     @Autowired
     OrderParcelMergeMapper orderParcelMergeMapper;
 
+    @Autowired
+    private RedisCache redisCache;
+
 
     @Override
     public Result getReceiveParcel(int userId){
@@ -44,6 +49,7 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
         parcelLambdaQueryWrapper.eq(Parcel::getReceiveName,user.getName())
                 .eq(Parcel::getReceiveContact,user.getContact());
         List<Parcel> parcelList = parcelMapper.selectList(parcelLambdaQueryWrapper);
+        redisCache.setCacheList("receiveList:" + userId,parcelList);
         if(parcelList.size() > 0){
             return Result.okResult(parcelList);
         }
@@ -118,5 +124,36 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
             return Result.errorResult(AppHttpCodeEnum.PARCEL_NOT_FOUND);
         }
         return Result.okResult(parcel);
+    }
+
+    @Override
+    public Result getSearchReceiveList(HttpServletRequest request, Integer parcelId, String word){
+        int userId = -1;
+        try {
+            userId = JwtUtil.getUserId(request);
+        } catch (Exception e) {
+            return Result.okResult(AppHttpCodeEnum.NEED_LOGIN);
+        }
+        if(parcelId == 0){
+            List<Parcel> parcelList = redisCache.getCacheList("receiveList:" + userId);
+            List<Parcel> parcels = new ArrayList<>();
+            for(Parcel parcel : parcelList){
+                if(parcel.getSendName().contains(word)||parcel.getSendAddress().contains(word)||
+                parcel.getReceiveName().contains(word)||parcel.getReceiveAddress().contains(word)){
+                    parcels.add(parcel);
+                }
+            }
+            Set<Parcel> parcelSet = new HashSet<>(parcels);
+            return Result.okResult(parcelSet);
+        }
+        else {
+            LambdaQueryWrapper<Parcel> parcelLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            parcelLambdaQueryWrapper.eq(Parcel::getParcelId,parcelId);
+            List<Parcel> parcelList = parcelMapper.selectList(parcelLambdaQueryWrapper);
+            if(parcelList.size() == 0){
+                return Result.errorResult(AppHttpCodeEnum.PARCEL_NOT_FOUND);
+            }
+            return Result.okResult(parcelList);
+        }
     }
 }

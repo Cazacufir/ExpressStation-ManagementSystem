@@ -121,7 +121,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderList> implem
         }
         else {
             List<OrderParcelMerge> orderParcelMerge = orderMapper.getSendParcelByParcelId(parcelId);
-            if(Objects.isNull(orderParcelMerge)){
+            if(orderParcelMerge.size() == 0){
                 return Result.errorResult(AppHttpCodeEnum.PARCEL_NOT_FOUND);
             }
             return Result.okResult(orderParcelMerge);

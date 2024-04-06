@@ -17,5 +17,5 @@ public interface OrderService extends IService<OrderList> {
 
     Result cancelSendList(int orderId);
 
-    Result getSearchSendList(HttpServletRequest request, Integer parcelId,String name);
+    Result getSearchSendList(HttpServletRequest request, Integer parcelId,String word);
 }

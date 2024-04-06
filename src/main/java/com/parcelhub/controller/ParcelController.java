@@ -4,6 +4,7 @@ import com.parcelhub.entity.Parcel;
 import com.parcelhub.entity.UserParcelMerge;
 import com.parcelhub.service.ParcelService;
 import com.parcelhub.utils.Result;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,5 +41,10 @@ public class ParcelController {
     @GetMapping("/getSearchParcel")
     public Result getSearchParcel(@RequestParam int parcelId){
         return parcelService.getSearchParcel(parcelId);
+    }
+
+    @GetMapping("/getSearchReceiveList")
+    public Result getSearchReceiveList(HttpServletRequest request, Integer parcelId, String word){
+        return parcelService.getSearchReceiveList(request,parcelId,word);
     }
 }
