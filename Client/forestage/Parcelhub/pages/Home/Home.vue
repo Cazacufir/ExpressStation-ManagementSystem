@@ -45,6 +45,21 @@
 			<div class="parcelBody">
 				<receive v-show="currentIndex == 0"></receive>
 				<send v-show="currentIndex == 1"></send>
+				
+				<u-divider text="添加的包裹" text-color="#0165fe" lineColor="#0165fe" hairline="true"></u-divider>
+				
+				<div class="parcelCard" v-for="(items,index) in parcelList" :key="index">
+					<div>
+						<u-image src="../static/sf.png" height="50" width="50"></u-image>
+					</div>
+				
+					<div class="parcelInfo">
+						<u-text :text="items.state" bold size="13"></u-text>
+						<u-text :text="'来自 ' + items.sendName + ' 的包裹'" size="11"></u-text>
+						<u-text :text="items.route? item.route : '快件等待揽收'" size="11"></u-text>
+					</div>
+				
+				</div>
 			</div>
 		</view>
 
@@ -52,9 +67,9 @@
 </template>
 
 <script setup>
-	// import {
-	// 	api
-	// } from '../../api/index.js'
+	import {
+		api
+	} from '../../api/index.js'
 	import {
 		onLoad
 	} from '@dcloudio/uni-app'
@@ -67,8 +82,10 @@
 
 	const currentLocation = ref([])
 	let saveLocation = ''
+	
+	const parcelList = ref([])
 
-	onLoad(() => {
+	onLoad(async () => {
 		let amapPlugin = new amap.AMapWX({
 			key: '5a30fd46a68c8ca67069b5bd60ec34f4'
 		})
@@ -90,7 +107,10 @@
 				console.log(e)
 			}
 		})
-		
+		await api.getExtraParcel()
+		.then(res => {
+			parcelList.value = [...res.data]
+		})
 	})
 
 	const toSearch = () => {
@@ -180,6 +200,19 @@
 	}
 
 	.parcelBody {
+		display: flex;
+		flex-direction: column;
+		gap: 25rpx;
+	}
+	
+	.parcelCard {
+		display: flex;
+		// flex-direction: column;
+		gap: 30rpx;
+		align-items: center;
+	}
+	
+	.parcelInfo {
 		display: flex;
 		flex-direction: column;
 		gap: 10rpx;

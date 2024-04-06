@@ -56,6 +56,13 @@ const addExtraParcel = (params) => {
 	})
 }
 
+const getExtraParcel = () => {
+	return request({
+		url:'/getExtraParcel',
+		method:'get'
+	})
+}
+
 export const ParcelApi = {
 	getReceiveParcel,
 	getRecentSendParcel,
@@ -63,5 +70,6 @@ export const ParcelApi = {
 	getSearchParcel,
 	getSearchSendList,
 	getSearchReceiveList,
-	addExtraParcel
+	addExtraParcel,
+	getExtraParcel
 }
