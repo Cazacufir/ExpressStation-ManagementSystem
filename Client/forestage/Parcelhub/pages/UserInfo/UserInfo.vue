@@ -4,7 +4,7 @@
 			<u-form labelPosition="left" labelWidth="70" :model="userInfo" :rules="user_rules" ref="userFormRef">
 				<u-form-item prop="avatar" label="头像">
 					<div class="itemBar">
-						<u-avatar :src="userInfo.avatar"></u-avatar>
+						<u-avatar v-if="userInfo.avatar" :src="userInfo.avatar"></u-avatar>
 						<span>
 							<u-button type="primary" plain text="修改头像" shape="circle" size="small"
 								@click="selectImg"></u-button>
@@ -214,8 +214,9 @@
 				userId:userInfo.userId,
 			},
 			success: (uploadFileRes) => {
-				console.log(uploadFileRes.data);
-				userInfo.avatar = uploadFileRes.data
+				console.log('u',uploadFileRes.data);
+				userInfo.avatar = JSON.parse(uploadFileRes.data).data 
+				console.log('userInfo.avatar',userInfo.avatar)
 				uni.setStorage({
 					key:'user',
 					data:userInfo
