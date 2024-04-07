@@ -12,7 +12,7 @@
 		</div>
 
 		<div class="card header">
-			<div class="parcelCard">
+			<div class="parcelCard" @click="toDetail">
 				<div class="right">
 					<u-text text="2024-03-27" color="#0165fe"></u-text>
 					<u-text :text="parcel.state"></u-text>
@@ -38,7 +38,7 @@
 						<span style="padding-top: 10rpx;">
 							<u-text :text="parcel.sendContact" bold="true" size="11"></u-text>
 						</span>
-						
+
 					</div>
 
 					<div>
@@ -60,7 +60,7 @@
 						<span style="padding-top: 10rpx;">
 							<u-text :text="parcel.receiveContact" bold="true" size="11"></u-text>
 						</span>
-						
+
 					</div>
 
 					<div>
@@ -98,6 +98,12 @@
 		Object.assign(parcel, JSON.parse(option.parcel))
 		console.log('parcel', parcel)
 	})
+
+	const toDetail = () => {
+		uni.navigateTo({
+			url: '/pages/ParcelDetail/ParcelDetail?item=' + JSON.stringify(parcel)
+		})
+	}
 </script>
 
 <style lang="scss" scoped>

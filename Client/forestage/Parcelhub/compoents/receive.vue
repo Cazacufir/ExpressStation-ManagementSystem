@@ -1,6 +1,6 @@
 <template>
 	<view class="containerR" v-if="list.length">
-		<div class="parcelCard" v-for="(items,index) in list" :key="index">
+		<div class="parcelCard" v-for="(items,index) in list" :key="index" @click="toDetail(items)">
 			<div>
 				<u-image src="../static/sf.png" height="50" width="50"></u-image>
 			</div>
@@ -49,6 +49,11 @@
 		})
 	})
 	
+	const toDetail = (items) => {
+		uni.navigateTo({
+			url:'/pages/ParcelDetail/ParcelDetail?item=' + JSON.stringify(items)
+		})
+	}
 </script>
 
 <style lang="scss" scoped>
