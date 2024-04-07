@@ -3,6 +3,11 @@
 		<!-- 		<view class="img_box">
 		  <image :src="damnImg.src"></image>
 		</view> -->
+		<view class="map_box">
+			<map id="navi_map" :longitude="centerLon" :latitude="centerLat" scale="3" :markers="markers"
+				:polyline="polyline"></map>
+		</view>
+
 		<div class="parcelContainer">
 			<div class="header">
 				<div>
@@ -26,11 +31,10 @@
 						<u-steps-item title="已签收"></u-steps-item>
 					</u-steps>
 				</div>
-				
+
 				<div style="margin-left: 30rpx;">
 					<u-text :text="parcel.state" bold></u-text>
 				</div>
-				
 			</div>
 		</div>
 	</view>
@@ -55,11 +59,108 @@
 
 	const parcel = reactive({})
 
+	const send = {
+		key: 'd90eacaa502d8e6e1faee8767b8bc53d'
+	}
+	const receive = {
+		key: 'd90eacaa502d8e6e1faee8767b8bc53d'
+	}
+
+	let start = ref('')
+	let end = ref('')
+
+	let distance = ''
+	let polyline = ref([])
+
+	let centerLon = ref(null)
+	let centerLat = ref(null)
+
+	const markers = ref([{
+		iconPath: "../../static/start.png",
+		id: 1,
+		latitude: null,
+		longitude: null,
+		width: 23,
+		height: 23
+	}, {
+		iconPath: "../../static/end.png",
+		id: 0,
+		latitude: null,
+		longitude: null,
+		width: 23,
+		height: 23
+	}])
+
 	onLoad(async (option) => {
 		let amapPlugin = new amap.AMapWX({
-			key: '5a30fd46a68c8ca67069b5bd60ec34f4'
+			key: '5a30fd46a68c8ca67069b5bd60ec34f4',
 		})
 		Object.assign(parcel, JSON.parse(option.item))
+		send.address = parcel.sendAddress.split('_')[0]
+		receive.address = parcel.receiveAddress.split('_')[0]
+		console.log('send', send)
+		uni.request({
+			url: "https://restapi.amap.com/v3/geocode/geo",
+			method: "GET",
+			data: send,
+			success(res) {
+				console.log('res', res)
+				start.value = res.data.geocodes[0].location
+				markers.value[0].latitude = parseFloat(start.value.split(',')[1])
+				markers.value[0].longitude = parseFloat(start.value.split(',')[0])
+			}
+		})
+		uni.request({
+			url: "https://restapi.amap.com/v3/geocode/geo",
+			method: "GET",
+			data: receive,
+			success(res) {
+				console.log('res', res)
+				end.value = res.data.geocodes[0].location
+				markers.value[1].latitude = parseFloat(end.value.split(',')[1])
+				markers.value[1].longitude = parseFloat(end.value.split(',')[0])
+				console.log('marker', markers.value)
+				centerLon.value = (markers.value[0].longitude + markers.value[1].longitude) / 2
+				centerLat.value = (markers.value[0].latitude + markers.value[1].latitude) / 2
+
+				console.log('centerLon.value', centerLon.value)
+				console.log('centerLat.value', centerLat.value)
+				
+				amapPlugin.getDrivingRoute({
+					origin: start.value,
+					destination: end.value,
+					success(data) {
+						console.log('data', data)
+						let points = [];
+						if (data.paths && data.paths[0] && data.paths[0].steps) {
+							let steps = data.paths[0].steps;
+							for (let i = 0; i < steps.length; i++) {
+								let poLen = steps[i].polyline.split(';');
+								for (let j = 0; j < poLen.length; j++) {
+									points.push({
+										longitude: parseFloat(poLen[j].split(',')[0]),
+										latitude: parseFloat(poLen[j].split(',')[1])
+									})
+								}
+							}
+						}
+						polyline.value.push({
+							points: points,
+							color: "#0091ff",
+							width: 6
+						})
+						console.log('points', points)
+
+						if (data.paths[0] && data.paths[0].distance) {
+							distance = data.paths[0].distance + '米'
+						}
+					}
+				})
+			}
+		})
+
+		
+		console.log('poly', polyline.value)
 	})
 </script>
 
@@ -105,10 +206,23 @@
 		flex-direction: column;
 		gap: 20rpx;
 	}
-	
-	.route{
+
+	.route {
 		display: flex;
 		flex-direction: column;
 		gap: 20rpx;
+	}
+
+	.map_box {
+		position: absolute;
+		top: 35px;
+		bottom: 90px;
+		left: 0px;
+		right: 0px;
+	}
+
+	#navi_map {
+		width: 100%;
+		height: 100%;
 	}
 </style>
