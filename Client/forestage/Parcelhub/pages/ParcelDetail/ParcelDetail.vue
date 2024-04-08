@@ -1,10 +1,7 @@
 <template>
 	<view class="container">
-		<!-- 		<view class="img_box">
-		  <image :src="damnImg.src"></image>
-		</view> -->
 		<view class="map_box">
-			<map id="navi_map" :longitude="centerLon" :latitude="centerLat" scale="3" :markers="markers"
+			<map id="navi_map" :longitude="centerLon" :latitude="centerLat" scale="5" :markers="markers"
 				:polyline="polyline"></map>
 		</view>
 
@@ -23,7 +20,7 @@
 			<u-divider hairline="true"></u-divider>
 
 			<div class="route">
-				<div style="margin: auto;width: 100%;">
+				<div style="margin: auto;width: 90%;">
 					<u-steps current="0" dot>
 						<u-steps-item title="已下单"></u-steps-item>
 						<u-steps-item title="已出库"></u-steps-item>
@@ -90,6 +87,8 @@
 		width: 23,
 		height: 23
 	}])
+	
+	let cities = []
 
 	onLoad(async (option) => {
 		let amapPlugin = new amap.AMapWX({
@@ -134,8 +133,11 @@
 						let points = [];
 						if (data.paths && data.paths[0] && data.paths[0].steps) {
 							let steps = data.paths[0].steps;
+							let citySet = new Set()
 							for (let i = 0; i < steps.length; i++) {
 								let poLen = steps[i].polyline.split(';');
+								// cities.push(steps[i].cities[0].name)
+								citySet.add(steps[i].cities[0].name)
 								for (let j = 0; j < poLen.length; j++) {
 									points.push({
 										longitude: parseFloat(poLen[j].split(',')[0]),
@@ -143,13 +145,15 @@
 									})
 								}
 							}
+							cities = [...citySet]
 						}
+						
 						polyline.value.push({
 							points: points,
 							color: "#0091ff",
 							width: 6
 						})
-						console.log('points', points)
+						console.log('city', cities)
 
 						if (data.paths[0] && data.paths[0].distance) {
 							distance = data.paths[0].distance + '米'
@@ -171,19 +175,7 @@
 		align-items: center;
 		height: 100%;
 		background-color: #f3f6fa;
-	}
-
-	.img_box {
-		position: absolute;
-		top: 0;
-		bottom: 0;
-		left: 0;
-		right: 0;
-	}
-
-	.img_box image {
-		width: 100%;
-		height: 50%;
+		position: relative;
 	}
 
 	.parcelContainer {
@@ -193,6 +185,9 @@
 		width: 90%;
 		border-radius: 40rpx;
 		padding: 20rpx;
+		background-color: white;
+		bottom: 0;
+		position: absolute;
 	}
 
 	.header {
@@ -211,11 +206,12 @@
 		display: flex;
 		flex-direction: column;
 		gap: 20rpx;
+		width: 90%;
 	}
 
 	.map_box {
 		position: absolute;
-		top: 35px;
+		top: 0px;
 		bottom: 90px;
 		left: 0px;
 		right: 0px;
@@ -223,6 +219,6 @@
 
 	#navi_map {
 		width: 100%;
-		height: 100%;
+		height: 100vh;
 	}
 </style>

@@ -556,6 +556,7 @@ AMapWX.prototype.getDrivingRoute = function(a) {
 	a.waypoints && (b.waypoints = a.waypoints);
 	a.avoidpolygons && (b.avoidpolygons = a.avoidpolygons);
 	a.avoidroad && (b.avoidroad = a.avoidroad);
+	a.extensions = 'all'
 	wx.request({
 		url: "https://restapi.amap.com/v3/direction/driving",
 		data: b,
