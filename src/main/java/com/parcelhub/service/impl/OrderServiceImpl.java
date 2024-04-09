@@ -128,12 +128,13 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderList> implem
 
     @Override
     public Result getSendListByHub(Integer pageNum, Integer pageSize, int hub_id){
-    List<OrderParcelMerge> orderParcelMergeList = orderMapper.getSendParcelByHub(hub_id);
-    int startIndex = (pageNum - 1) * pageSize;
-    int endIndex = Math.min(startIndex + pageSize, orderParcelMergeList.size());
-    List<OrderParcelMerge> orderParcelMergeList1 = orderParcelMergeList.subList(startIndex,endIndex);
-    PagesDto<OrderParcelMerge> orderParcelMergePagesDto = PageUtils.listToPageDTO(orderParcelMergeList1,pageNum,pageSize);
-    return Result.okResult(orderParcelMergePagesDto.getDataList());
-}
+        List<OrderParcelMerge> orderParcelMergeList = orderMapper.getSendParcelByHub(hub_id);
+        int startIndex = (pageNum - 1) * pageSize;
+        int endIndex = Math.min(startIndex + pageSize, orderParcelMergeList.size());
+        List<OrderParcelMerge> orderParcelMergeList1 = orderParcelMergeList.subList(startIndex,endIndex);
+        PagesDto<OrderParcelMerge> orderParcelMergePagesDto = PageUtils.listToPageDTO(orderParcelMergeList,pageNum,pageSize);
+        orderParcelMergePagesDto.setDataList(orderParcelMergeList1);
+        return Result.okResult(orderParcelMergePagesDto);
+    }
 
 }
