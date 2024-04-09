@@ -3,6 +3,7 @@ import { hubApi } from "./hubApi";
 import { staffApi } from "./staffApi";
 import { companyApi } from "./companyApi";
 import { deliverApi } from "./deliverApi";
+import { ParcelApi } from "./ParcelApi";
 
 export const api = {
     ...adminApi,
@@ -10,4 +11,5 @@ export const api = {
     ...staffApi,
     ...companyApi,
     ...deliverApi,
+    ...ParcelApi
 }

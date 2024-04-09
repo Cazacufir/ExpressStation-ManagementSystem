@@ -1,8 +1,8 @@
 <template>
     <el-form ref="login_ruleFormRef" :model="user" :rules="rules" size="large"
         class="h-full w-full flex flex-1 flex-col pt-40">
-        <el-form-item prop="contact">
-            <el-input v-model="user.contact" placeholder="请输入您的手机号" style="width:250px"></el-input>
+        <el-form-item prop="showContact">
+            <el-input v-model="user.showContact" placeholder="请输入您的手机号" style="width:250px"></el-input>
         </el-form-item>
 
         <el-form-item prop="password">
@@ -27,14 +27,15 @@ import { ElMessage } from 'element-plus'
 const store = adminStore();
 const router = useRouter();
 const user = reactive({
-    contact: '',
+    contact: 'ad@',
+    showContact:'',
     password: ''
 })
 
 const login_ruleFormRef = ref()
 
 const rules = reactive({
-    contact: [
+    showContact: [
         { required: true, message: '手机号不能为空！', trigger: 'blur' }
     ],
     password: [
@@ -43,6 +44,8 @@ const rules = reactive({
 })
 
 const toValidate = async () => {
+    user.contact = 'ad@'
+    user.contact += user.showContact    
     const [e, r] = await api.login(user)
     console.log('res', r)
     if (r.code == '200') {

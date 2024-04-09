@@ -63,21 +63,21 @@ const routes = [
               icon: 'SoldOut'
             }
           },
-          {
-            path: "out",
-            name: "Out",
-            component: async () => await import("@/views/parcel/views/out.vue"),
-            meta:{
-              title:'快递出库',
-              icon: 'Sell'
-            }
-          },
+          // {
+          //   path: "out",
+          //   name: "Out",
+          //   component: async () => await import("@/views/parcel/views/out.vue"),
+          //   meta:{
+          //     title:'快递出库',
+          //     icon: 'Sell'
+          //   }
+          // },
           {
             path: "send",
             name: "Send",
             component: async () => await import("@/views/parcel/views/send.vue"),
             meta:{
-              title:'寄送快递',
+              title:'快递出库',
               icon: 'Van'
             }
           },
