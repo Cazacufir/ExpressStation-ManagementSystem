@@ -2,15 +2,13 @@ package com.parcelhub.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.parcelhub.dto.OrderParcelMerge;
+import com.parcelhub.dto.PagesDto;
 import com.parcelhub.entity.OrderList;
 import com.parcelhub.entity.Parcel;
 import com.parcelhub.mapper.OrderMapper;
 import com.parcelhub.mapper.ParcelMapper;
 import com.parcelhub.service.OrderService;
-import com.parcelhub.utils.AppHttpCodeEnum;
-import com.parcelhub.utils.JwtUtil;
-import com.parcelhub.utils.RedisCache;
-import com.parcelhub.utils.Result;
+import com.parcelhub.utils.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -127,4 +125,15 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderList> implem
             return Result.okResult(orderParcelMerge);
         }
     }
+
+    @Override
+    public Result getSendListByHub(Integer pageNum, Integer pageSize, int hub_id){
+    List<OrderParcelMerge> orderParcelMergeList = orderMapper.getSendParcelByHub(hub_id);
+    int startIndex = (pageNum - 1) * pageSize;
+    int endIndex = Math.min(startIndex + pageSize, orderParcelMergeList.size());
+    List<OrderParcelMerge> orderParcelMergeList1 = orderParcelMergeList.subList(startIndex,endIndex);
+    PagesDto<OrderParcelMerge> orderParcelMergePagesDto = PageUtils.listToPageDTO(orderParcelMergeList1,pageNum,pageSize);
+    return Result.okResult(orderParcelMergePagesDto.getDataList());
+}
+
 }

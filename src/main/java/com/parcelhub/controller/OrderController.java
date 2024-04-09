@@ -12,6 +12,7 @@ public class OrderController {
     @Autowired
     OrderService orderService;
 
+
     @GetMapping("/getSendParcel")
     public Result getSendParcel(@RequestParam int user_id){
         return orderService.getSendList(user_id);
@@ -35,5 +36,10 @@ public class OrderController {
     @GetMapping("/getSearchSendList")
     public Result getSearchSendList(HttpServletRequest request,Integer parcelId,String word){
         return orderService.getSearchSendList(request,parcelId,word);
+    }
+
+    @GetMapping("/getSendListByHub")
+    public Result getSendListByHub(Integer pageNum,Integer pageSize,int hub_id){
+        return orderService.getSendListByHub(pageNum,pageSize,hub_id);
     }
 }

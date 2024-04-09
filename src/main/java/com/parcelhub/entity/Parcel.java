@@ -40,6 +40,8 @@ public class Parcel implements Serializable {
 
     private String route;
 
+    private String currentCity;
+
     private Date arrivalTime;
 
     private int arrivalNum;

@@ -1,6 +1,7 @@
 package com.parcelhub.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.parcelhub.dto.OrderParcelMerge;
 import com.parcelhub.entity.Parcel;
@@ -183,5 +184,16 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
                 .eq(UserParcelMerge::getParcel_id,userParcelMerge.getParcel_id());
         userParcelMergeMapper.delete(userParcelMergeLambdaQueryWrapper);
         return Result.okResult();
+    }
+
+    @Override
+    public Result getRoute(int parcelId){
+        QueryWrapper<Parcel> parcelQueryWrapper = new QueryWrapper<>();
+        parcelQueryWrapper.select("route").eq("parcelId",parcelId);
+        Parcel parcel = parcelMapper.selectOne(parcelQueryWrapper);
+        if (Objects.isNull(parcel)){
+            return Result.errorResult(AppHttpCodeEnum.PARCEL_NOT_FOUND);
+        }
+        return Result.okResult(parcel);
     }
 }

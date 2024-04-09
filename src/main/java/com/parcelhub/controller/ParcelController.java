@@ -52,4 +52,9 @@ public class ParcelController {
     public Result getSearchReceiveList(HttpServletRequest request, Integer parcelId, String word){
         return parcelService.getSearchReceiveList(request,parcelId,word);
     }
+
+    @GetMapping("/getRoute")
+    public Result getRoute(@RequestParam int parcelId){
+        return parcelService.getRoute(parcelId);
+    }
 }

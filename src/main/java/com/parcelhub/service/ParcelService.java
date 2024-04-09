@@ -22,4 +22,6 @@ public interface ParcelService extends IService<Parcel> {
     Result getSearchParcel(int parcelId);
 
     Result getSearchReceiveList(HttpServletRequest request, Integer parcelId, String word);
+
+    Result getRoute(int parcelId);
 }
