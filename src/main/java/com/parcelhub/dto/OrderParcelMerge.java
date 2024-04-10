@@ -58,6 +58,8 @@ public class OrderParcelMerge implements Serializable {
 
     private String route;
 
+    private Date currentDate;
+
     private String currentCity;
 
     private Date arrivalTime;

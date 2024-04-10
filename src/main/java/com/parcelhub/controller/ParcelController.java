@@ -8,6 +8,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 public class ParcelController {
     @Autowired
@@ -56,5 +58,10 @@ public class ParcelController {
     @GetMapping("/getRoute")
     public Result getRoute(@RequestParam int parcelId){
         return parcelService.getRoute(parcelId);
+    }
+
+    @PostMapping("/sendParcelByHub")
+    public Result sendParcelByHub(@RequestBody Map<String,Integer> map){
+        return parcelService.sendParcelByHub(map);
     }
 }

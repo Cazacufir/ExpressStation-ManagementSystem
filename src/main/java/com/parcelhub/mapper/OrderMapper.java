@@ -26,6 +26,6 @@ public interface OrderMapper extends BaseMapper<OrderList> {
     @Select("SELECT o.*, p.* " +
             "FROM orderlist o " +
             "INNER JOIN parcel p ON o.parcel_id = p.parcelId " +
-            "WHERE o.hub_id = #{hub_id} AND o.del_flag = 0;")
+            "WHERE o.hub_id = #{hub_id} AND o.del_flag = 0 AND p.state = '等待揽收' ;")
     List<OrderParcelMerge> getSendParcelByHub(int hub_id);
 }

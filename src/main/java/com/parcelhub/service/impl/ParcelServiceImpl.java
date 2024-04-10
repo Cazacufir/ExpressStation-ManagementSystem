@@ -4,18 +4,10 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.parcelhub.dto.OrderParcelMerge;
-import com.parcelhub.entity.Parcel;
-import com.parcelhub.entity.User;
-import com.parcelhub.entity.UserParcelMerge;
-import com.parcelhub.mapper.OrderParcelMergeMapper;
-import com.parcelhub.mapper.ParcelMapper;
-import com.parcelhub.mapper.UserMapper;
-import com.parcelhub.mapper.UserParcelMergeMapper;
+import com.parcelhub.entity.*;
+import com.parcelhub.mapper.*;
 import com.parcelhub.service.ParcelService;
-import com.parcelhub.utils.AppHttpCodeEnum;
-import com.parcelhub.utils.JwtUtil;
-import com.parcelhub.utils.RedisCache;
-import com.parcelhub.utils.Result;
+import com.parcelhub.utils.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,6 +32,15 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
 
     @Autowired
     private RedisCache redisCache;
+
+    @Autowired
+    DeliverHubMergeMapper deliverHubMergeMapper;
+
+    @Autowired
+    CompanyMapper companyMapper;
+
+    @Autowired
+    DeliverMapper deliverMapper;
 
 
     @Override
@@ -194,6 +195,38 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
         if (Objects.isNull(parcel)){
             return Result.errorResult(AppHttpCodeEnum.PARCEL_NOT_FOUND);
         }
+        return Result.okResult(parcel);
+    }
+
+    @Override
+    public Result sendParcelByHub(Map<String,Integer> map){
+        int parcelId = map.get("parcelId");
+        int hub_id = map.get("hub_id");
+        Parcel parcel = parcelMapper.selectById(parcelId);
+
+        List<Deliver> deliverList =  redisCache.getCacheList("deliver_hub" + hub_id);
+        if(deliverList.size() == 0){
+            deliverList = deliverHubMergeMapper.getAllDeliverByHubId(hub_id);
+            redisCache.setCacheList("deliver_hub" + hub_id,deliverList);
+        }
+        int index = (int) (Math.random()* deliverList.size());
+        Deliver deliver = deliverList.get(index);
+        deliver.setAffair("正在运送快递单号为 " + parcelId + " 的包裹");
+        Company company = companyMapper.selectById(deliver.getCom_id());
+        parcel.setCompany(company.getName());
+        deliverMapper.updateById(deliver);
+
+        Date now = new Date();
+        parcel.setSendTime(now);
+        parcel.setState("运输中");
+        String address = parcel.getSendAddress();
+        List<Map<String, String>> result = AddressUtil.addressResolution(address);
+        parcel.setCurrentDate(now);
+        String city=  result.get(0).get("city");
+        parcel.setCurrentCity(city);
+        parcel.setRoute(parcel.getCurrentDate() + "_" + city);
+        parcelMapper.updateById(parcel);
+
         return Result.okResult(parcel);
     }
 }
