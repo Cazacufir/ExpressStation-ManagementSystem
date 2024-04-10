@@ -40,6 +40,7 @@ import { onMounted, reactive, ref } from "vue";
 import { Search } from '@element-plus/icons-vue'
 import { adminStore } from "@/stores/admin.js";
 import { api } from "@/api"
+import { ElMessage } from 'element-plus'
 
 const store = adminStore();
 const list = ref([])
@@ -61,7 +62,7 @@ let totalPage = null
 const getList = async () => {
     const [e, r] = await api.getSendListByHub(
         pageNum,
-        1,
+        6,
         hub_id
     )
     list.value = [...r.data.dataList]
@@ -69,8 +70,20 @@ const getList = async () => {
     console.log("🚀 ~ getList ~ list.value:", list.value)
 }
 
-const toSend = async () => {
-
+const toSend = async (scope) => {
+    console.log("🚀 ~ toSend ~ scope:", scope.row.parcelId)
+    console.log("🚀 ~ toSend ~ scope:", scope.$index)
+    const [e,r] = await api.sendParcelByHub(scope.row.parcelId,hub_id)
+    if(r.code == 200){
+        list.value.splice(scope.$index,1)
+        ElMessage({
+            message: '出库成功，物流已更新',
+            type: 'success',
+        })
+    }
+    else {
+        ElMessage.error(r.msg)
+    }
 }
 
 function formatDate(dateString) {
