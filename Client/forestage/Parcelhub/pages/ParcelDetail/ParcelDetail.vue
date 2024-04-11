@@ -21,16 +21,39 @@
 
 			<div class="route">
 				<div style="margin: auto;width: 90%;">
-					<u-steps current="0" dot>
+					<u-steps :current="judgeState" dot>
 						<u-steps-item title="已下单"></u-steps-item>
 						<u-steps-item title="已出库"></u-steps-item>
 						<u-steps-item title="运输中"></u-steps-item>
 						<u-steps-item title="已签收"></u-steps-item>
 					</u-steps>
 				</div>
+				
+				<div class="routeDateil" v-if="isShowRoute">
+					<div v-for="(item,index) in parcelRoute" :key="index">
+						<div style="display: flex;gap: 10rpx;">
+							<div>
+								<u-text :text="item.state" bold block="false" color="gray" size="13"></u-text>
+							</div>
+							<u-text :text="item.dateTime" size="11" color="gray" block="false"></u-text>
+						</div>
+						<u-text :text="'快递已到达[' + item.city + ']'" style="margin-top: 10rpx;" size="11" color="gray"></u-text>
+					</div>
+				</div>
 
-				<div style="margin-left: 30rpx;">
-					<u-text :text="parcel.state" bold></u-text>
+				<div class="routeBar">
+					<div>
+						<u-text :text="parcel.state" bold block="false"></u-text>
+						<u-text :text="'快递到达[' + parcel.currentCity + ']'" block="false" size="12"></u-text>
+						<u-text :text="formatDate(parcel.currentDate)" size="11" color="gray"></u-text>
+					</div>
+					
+					<div v-if="parcel.route" style="display: flex;gap: 10rpx;" @click="isShowRoute = !isShowRoute">
+						<u-text text="查看详情" size="11" color="gray"></u-text>
+						<u-icon v-if="!isShowRoute" name="arrow-up" color="gray" size="11"></u-icon>
+						<u-icon v-else name="arrow-down" color="gray" size="11"></u-icon>
+					</div>
+
 				</div>
 			</div>
 		</div>
@@ -55,6 +78,8 @@
 	})
 
 	const parcel = reactive({})
+	
+	let isShowRoute = ref(false)
 
 	const send = {
 		key: 'd90eacaa502d8e6e1faee8767b8bc53d'
@@ -182,6 +207,40 @@
 
 		console.log('poly', polyline.value)
 	})
+
+	const formatDate = (dateString) => {
+		const date = new Date(dateString)
+		const year = date.getFullYear();
+		const month = String(date.getMonth() + 1).padStart(2, '0');
+		const day = String(date.getDate()).padStart(2, '0');
+		const hours = String(date.getHours()).padStart(2, '0')
+		const min = String(date.getMinutes()).padStart(2, '0')
+		const sec = String(date.getSeconds()).padStart(2, '0')
+
+		return `${year}-${month}-${day} ${hours}:${min}:${sec}`
+	}
+	
+	// const formatDate2 = (dateString) => {
+	// 	const parsedDate = new Date(dateString);
+	// 	const year = parsedDate.getFullYear();
+	// 	const month = ('0' + (parsedDate.getMonth() + 1)).slice(-2);
+	// 	const day = ('0' + parsedDate.getDate()).slice(-2);
+	// 	const hours = ('0' + parsedDate.getHours()).slice(-2);
+	// 	const min = ('0' + parsedDate.getMinutes()).slice(-2);
+	// 	const sec = ('0' + parsedDate.getSeconds()).slice(-2);
+	// 	console.log('parsedDate',parsedDate)
+	// 	return `${year}-${month}-${day} ${hours}:${min}:${sec}`
+		
+	// }
+	
+	const judgeState = () => {
+		if(parcel.state == '等待揽收') return 0
+		else if(parcel.state == '已揽收') return 1
+		else if(parcel.state == '运输中') return 2
+		else{
+			return 3
+		}
+	}
 </script>
 
 <style lang="scss">
@@ -236,5 +295,25 @@
 	#navi_map {
 		width: 100%;
 		height: 100vh;
+	}
+
+	.routeBar {
+		margin-left: 30rpx;
+		display: flex;
+		justify-content: space-around;
+		align-items: center;
+	}
+	
+	.routeDateil{
+		display: flex;
+		flex-direction: column;
+		gap: 20rpx;
+		background-color: white;
+		justify-content: center;
+		// align-items: center;
+		// align-items: center;
+		padding-left: 80rpx;
+		width: 100%;
+		// margin-left: 30rpx;
 	}
 </style>
