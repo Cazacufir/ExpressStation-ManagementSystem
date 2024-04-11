@@ -89,13 +89,20 @@
 						})
 					} else {
 						uni.showToast({
-							title: res.msg
+							title: '用户或密码错误'
 						})
 					}
 				})
 				.catch(res => {
 					uni.showToast({
-						title: res.msg
+						title: '用户或密码错误'
+					})
+					uni.setStorage({
+						key:'token',
+						data:'',
+						success() {
+							toHome()
+						}
 					})
 				})
 		})

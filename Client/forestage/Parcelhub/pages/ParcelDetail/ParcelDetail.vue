@@ -87,14 +87,30 @@
 		width: 23,
 		height: 23
 	}])
-	
+
 	let cities = []
+
+	const parcelRoute = ref([])
 
 	onLoad(async (option) => {
 		let amapPlugin = new amap.AMapWX({
 			key: '5a30fd46a68c8ca67069b5bd60ec34f4',
 		})
 		Object.assign(parcel, JSON.parse(option.item))
+
+		if (parcel.route) {
+			parcelRoute.value = parcel.route.split(',').map(item => {
+				const info = item.split('_')
+				return {
+					state: info[0],
+					dateTime: info[1],
+					city: info[2]
+				}
+			})
+			console.log('parcelRoute.value', parcelRoute.value)
+		}
+
+
 		send.address = parcel.sendAddress.split('_')[0]
 		receive.address = parcel.receiveAddress.split('_')[0]
 		console.log('send', send)
@@ -124,7 +140,7 @@
 
 				console.log('centerLon.value', centerLon.value)
 				console.log('centerLat.value', centerLat.value)
-				
+
 				amapPlugin.getDrivingRoute({
 					origin: start.value,
 					destination: end.value,
@@ -147,7 +163,7 @@
 							}
 							cities = [...citySet]
 						}
-						
+
 						polyline.value.push({
 							points: points,
 							color: "#0091ff",
@@ -163,7 +179,7 @@
 			}
 		})
 
-		
+
 		console.log('poly', polyline.value)
 	})
 </script>

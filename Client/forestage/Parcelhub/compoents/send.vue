@@ -8,7 +8,8 @@
 			<div class="parcelInfo">
 				<u-text :text="items.state" bold size="13"></u-text>
 				<u-text :text="'寄给 ' + items.receiveName + ' 的包裹'" size="11"></u-text>
-				<u-text :text="items.route? item.route : '快件等待揽收'" size="11"></u-text>
+				<u-text :text="items.route? ('快递已到达' + '[' + items.currentCity + ']' ) : '快件等待揽收'" size="11"
+				color="gray"></u-text>
 			</div>
 
 		</div>

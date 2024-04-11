@@ -71,6 +71,14 @@ const deleteExtraParcel = (params) => {
 	})
 }
 
+const getRoute = (params) => {
+	return request({
+		url:'/getRoute',
+		method:'get',
+		data:params
+	})
+}
+
 export const ParcelApi = {
 	getReceiveParcel,
 	getRecentSendParcel,
@@ -80,5 +88,6 @@ export const ParcelApi = {
 	getSearchReceiveList,
 	addExtraParcel,
 	getExtraParcel,
-	deleteExtraParcel
+	deleteExtraParcel,
+	getRoute
 }

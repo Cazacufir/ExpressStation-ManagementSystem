@@ -8,7 +8,8 @@
 			<div class="parcelInfo">
 				<u-text :text="items.state" bold size="13"></u-text>
 				<u-text :text="'来自 ' + items.sendName + ' 的包裹'" size="11"></u-text>
-				<u-text :text="items.route? item.route : '快件等待揽收'" size="11"></u-text>
+				<u-text :text="items.route? ('快递已到达' + '[' + items.currentCity + ']' ) : '快件等待揽收'" size="11"
+				color="gray"></u-text>
 			</div>
 
 		</div>
@@ -54,6 +55,17 @@
 			url:'/pages/ParcelDetail/ParcelDetail?item=' + JSON.stringify(items)
 		})
 	}
+	
+	// const foramtDate = (dateString) => {
+	// 	const parcelDate = new Date(dateString)
+	// 	const month = parcelDate.getUTCMonth() + 1;
+	// 	const day = parcelDate.getUTCDate();
+	// 	const hours = parcelDate.getUTCHours();
+	// 	const minutes = parcelDate.getUTCMinutes();
+	// 	const seconds = parcelDate.getUTCSeconds();
+		
+	// 	return `${month}-${day} ${hours}:${minutes}:${seconds}`
+	// }
 </script>
 
 <style lang="scss" scoped>
