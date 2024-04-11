@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -218,13 +219,15 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
 
         Date now = new Date();
         parcel.setSendTime(now);
-        parcel.setState("运输中");
+        parcel.setState("已揽收");
         String address = parcel.getSendAddress();
         List<Map<String, String>> result = AddressUtil.addressResolution(address);
         parcel.setCurrentDate(now);
         String city=  result.get(0).get("city");
         parcel.setCurrentCity(city);
-        parcel.setRoute(parcel.getCurrentDate() + "_" + city);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String strDate = sdf.format(now);
+        parcel.setRoute("已揽收" + "_" +  strDate + "_" + city);
         parcelMapper.updateById(parcel);
 
         return Result.okResult(parcel);

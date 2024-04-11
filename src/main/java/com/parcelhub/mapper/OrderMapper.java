@@ -22,10 +22,14 @@ public interface OrderMapper extends BaseMapper<OrderList> {
             "INNER JOIN parcel p ON o.parcel_id = p.parcelId " +
             "WHERE p.parcelId = #{parcelId} AND o.del_flag = 0;")
     List<OrderParcelMerge> getSendParcelByParcelId(int parcelId);
-
+// TODO:
+//    @Select("SELECT o.*, p.* " +
+//            "FROM orderlist o " +
+//            "INNER JOIN parcel p ON o.parcel_id = p.parcelId " +
+//            "WHERE o.hub_id = #{hub_id} AND o.del_flag = 0 AND p.state = '等待揽收' ;") 调试完毕改回来
     @Select("SELECT o.*, p.* " +
             "FROM orderlist o " +
             "INNER JOIN parcel p ON o.parcel_id = p.parcelId " +
-            "WHERE o.hub_id = #{hub_id} AND o.del_flag = 0 AND p.state = '等待揽收' ;")
+            "WHERE o.hub_id = #{hub_id} AND o.del_flag = 0 ;")
     List<OrderParcelMerge> getSendParcelByHub(int hub_id);
 }
