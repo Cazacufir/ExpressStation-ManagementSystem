@@ -64,4 +64,9 @@ public class ParcelController {
     public Result sendParcelByHub(@RequestBody Map<String,Integer> map){
         return parcelService.sendParcelByHub(map);
     }
+
+    @PutMapping("/updateRoute")
+    public Result updateRoute(@RequestBody Parcel parcel){
+        return parcelService.updateRoute(parcel);
+    }
 }

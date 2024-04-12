@@ -43,6 +43,9 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
     @Autowired
     DeliverMapper deliverMapper;
 
+    @Autowired
+    HubMapper hubMapper;
+
 
     @Override
     public Result getReceiveParcel(int userId){
@@ -231,5 +234,48 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
         parcelMapper.updateById(parcel);
 
         return Result.okResult(parcel);
+    }
+
+    @Override
+    public Result updateRoute(Parcel parcel){
+        Parcel parcel1 = parcelMapper.selectById(parcel.getParcelId());
+        String affair = null;
+        if(parcel.getState().equals("派送中")){
+            LambdaQueryWrapper<Company> companyLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            companyLambdaQueryWrapper.eq(Company::getName,parcel.getCompany());
+            Company company = companyMapper.selectOne(companyLambdaQueryWrapper);
+            String address = parcel.getReceiveAddress().split("_")[0];
+            List<Hub> hubList = hubMapper.getReceiveHub(company.getComId(),address);
+            System.out.println("+++++++++++");
+
+            int hubIndex = (int)(Math.random()* hubList.size());
+            Hub hub = hubList.get(hubIndex);
+            System.out.println(hub);
+            List<Deliver> deliverList =  redisCache.getCacheList("deliver_hub" + hub.getId());
+            if(deliverList.size() == 0){
+                deliverList = deliverHubMergeMapper.getAllDeliverByHubId(hub.getId());
+                redisCache.setCacheList("deliver_hub" + hub.getId(),deliverList);
+            }
+            int index = (int) (Math.random()* deliverList.size());
+            Deliver deliver = deliverList.get(index);
+            deliver.setAffair("正在派送快递单号为 " + parcel1.getParcelId() + " 的包裹");
+            affair = "快件正在派送中，有疑问请联系快递员【" + deliver.getName() + "，电话" + deliver.getContact() + "】";
+            String newRoute = parcel1.getRoute() + "," + parcel.getRoute() + "_" + affair;
+            parcel1.setDeliver_id(deliver.getDeliverId());
+            parcel1.setHub_id(hub.getId());
+            parcel1.setRoute(newRoute);
+        }
+        else {
+            String newRoute = parcel1.getRoute() + "," + parcel.getRoute();
+            parcel1.setRoute(newRoute);
+        }
+
+        parcel1.setCurrentCity(parcel.getCurrentCity());
+        parcel1.setCurrentDate(parcel.getCurrentDate());
+
+        parcel1.setState(parcel.getState());
+
+        parcelMapper.updateById(parcel1);
+        return Result.okResult(affair);
     }
 }
