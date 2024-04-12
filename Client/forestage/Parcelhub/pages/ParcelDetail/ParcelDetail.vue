@@ -12,8 +12,12 @@
 				</div>
 
 				<div class="parcelInfo">
-					<u-text :text="'快递公司：' + parcel.comapny? parcel.comapny : '顺丰'" bold size="13"></u-text>
+					<u-text :text="'快递公司：' + parcel.company? parcel.company : '顺丰'" bold size="13"></u-text>
 					<u-text :text="'快递单号： ' + parcel.parcelId" size="11"></u-text>
+				</div>
+
+				<div v-if="parcel.state != '等待揽收' && cityIndex != cities.length" style="margin-left: auto;">
+					<u-button shape="circle" text="+ 推进流程" type="primary" size="small" @click="pushRoute"></u-button>
 				</div>
 			</div>
 
@@ -28,7 +32,7 @@
 						<u-steps-item title="已签收"></u-steps-item>
 					</u-steps>
 				</div>
-				
+
 				<div class="routeDateil" v-if="isShowRoute">
 					<div v-for="(item,index) in parcelRoute" :key="index">
 						<div style="display: flex;gap: 10rpx;">
@@ -37,17 +41,31 @@
 							</div>
 							<u-text :text="item.dateTime" size="11" color="gray" block="false"></u-text>
 						</div>
-						<u-text :text="'快递已到达[' + item.city + ']'" style="margin-top: 10rpx;" size="11" color="gray"></u-text>
+
+						<div style="display: flex;margin-top: 10rpx;">
+							<div style="display: flex;">
+								<div>
+									<u-text :text="'[' + item.city + ']'" size="11" color="gray"></u-text>
+								</div>
+								<div>
+									<u-text v-if="!item.affair" :text="'快递现已到达' + item.city" size="11"
+										color="gray"></u-text>
+									<u-text v-else :text="item.affair" size="11" color="gray"></u-text>	
+								</div>
+							</div>	
+						</div>
+
 					</div>
 				</div>
 
-				<div class="routeBar">
+				<div :class="[parcel.route? 'routeBar' : '']" style="margin-left: 30rpx;">
 					<div>
 						<u-text :text="parcel.state" bold block="false"></u-text>
-						<u-text :text="'快递到达[' + parcel.currentCity + ']'" block="false" size="12"></u-text>
-						<u-text :text="formatDate(parcel.currentDate)" size="11" color="gray"></u-text>
+						<u-text v-if="parcel.route" :text="'快递现已到达[' + currentCity + ']'" block="false"
+							size="12"></u-text>
+						<u-text v-if="parcel.route" :text="currentDate" size="11" color="gray"></u-text>
 					</div>
-					
+
 					<div v-if="parcel.route" style="display: flex;gap: 10rpx;" @click="isShowRoute = !isShowRoute">
 						<u-text text="查看详情" size="11" color="gray"></u-text>
 						<u-icon v-if="!isShowRoute" name="arrow-up" color="gray" size="11"></u-icon>
@@ -69,16 +87,13 @@
 		onLoad
 	} from '@dcloudio/uni-app'
 	import {
+		computed,
 		reactive,
 		ref
 	} from 'vue';
 
-	let damnImg = reactive({
-		src: ''
-	})
-
 	const parcel = reactive({})
-	
+
 	let isShowRoute = ref(false)
 
 	const send = {
@@ -96,6 +111,10 @@
 
 	let centerLon = ref(null)
 	let centerLat = ref(null)
+
+	let cityIndex = 0
+	let currentCity = ref()
+	let currentDate = ref()
 
 	const markers = ref([{
 		iconPath: "../../static/start.png",
@@ -123,18 +142,7 @@
 		})
 		Object.assign(parcel, JSON.parse(option.item))
 
-		if (parcel.route) {
-			parcelRoute.value = parcel.route.split(',').map(item => {
-				const info = item.split('_')
-				return {
-					state: info[0],
-					dateTime: info[1],
-					city: info[2]
-				}
-			})
-			console.log('parcelRoute.value', parcelRoute.value)
-		}
-
+		if (parcel.route) updateRouteList()
 
 		send.address = parcel.sendAddress.split('_')[0]
 		receive.address = parcel.receiveAddress.split('_')[0]
@@ -187,6 +195,8 @@
 								}
 							}
 							cities = [...citySet]
+							cityIndex = cities.findIndex(item => item == parcel.currentCity)
+							console.log('cities',cities)
 						}
 
 						polyline.value.push({
@@ -194,7 +204,6 @@
 							color: "#0091ff",
 							width: 6
 						})
-						console.log('city', cities)
 
 						if (data.paths[0] && data.paths[0].distance) {
 							distance = data.paths[0].distance + '米'
@@ -208,38 +217,95 @@
 		console.log('poly', polyline.value)
 	})
 
-	const formatDate = (dateString) => {
-		const date = new Date(dateString)
-		const year = date.getFullYear();
-		const month = String(date.getMonth() + 1).padStart(2, '0');
-		const day = String(date.getDate()).padStart(2, '0');
-		const hours = String(date.getHours()).padStart(2, '0')
-		const min = String(date.getMinutes()).padStart(2, '0')
-		const sec = String(date.getSeconds()).padStart(2, '0')
+	// const formatDate = (dateString) => {
+	// 	const date = new Date(dateString)
+	// 	const year = date.getFullYear();
+	// 	const month = String(date.getMonth() + 1).padStart(2, '0');
+	// 	const day = String(date.getDate()).padStart(2, '0');
+	// 	const hours = String(date.getHours()).padStart(2, '0')
+	// 	const min = String(date.getMinutes()).padStart(2, '0')
+	// 	const sec = String(date.getSeconds()).padStart(2, '0')
 
-		return `${year}-${month}-${day} ${hours}:${min}:${sec}`
-	}
-	
-	// const formatDate2 = (dateString) => {
-	// 	const parsedDate = new Date(dateString);
-	// 	const year = parsedDate.getFullYear();
-	// 	const month = ('0' + (parsedDate.getMonth() + 1)).slice(-2);
-	// 	const day = ('0' + parsedDate.getDate()).slice(-2);
-	// 	const hours = ('0' + parsedDate.getHours()).slice(-2);
-	// 	const min = ('0' + parsedDate.getMinutes()).slice(-2);
-	// 	const sec = ('0' + parsedDate.getSeconds()).slice(-2);
-	// 	console.log('parsedDate',parsedDate)
 	// 	return `${year}-${month}-${day} ${hours}:${min}:${sec}`
-		
 	// }
-	
-	const judgeState = () => {
-		if(parcel.state == '等待揽收') return 0
-		else if(parcel.state == '已揽收') return 1
-		else if(parcel.state == '运输中') return 2
-		else{
+
+	const judgeState = computed(() => {
+		if (parcel.state == '等待揽收') return 0
+		else if (parcel.state == '已揽收') return 1
+		else if (parcel.state == '运输中') return 2
+		else {
 			return 3
 		}
+	})
+
+	const pushRoute = async () => {
+		if(cityIndex >= cities.length) return
+		console.log('cityIndex',cityIndex)
+		const subParcel = {}
+		Object.assign(subParcel, parcel)
+		if (cityIndex == cities.length - 1) {
+			currentCity.value = cities[cityIndex++]
+			subParcel.state = '派送中'
+		} else {
+			currentCity.value = cities[++cityIndex]
+			subParcel.state = '运输中'
+		}
+		console.log('currentCity.value',currentCity.value)
+		console.log('cityIndex',cityIndex)
+		console.log('subParcel.state',subParcel.state)
+		let newDate = new Date(currentDate.value)
+		newDate.setDate(newDate.getDate() + 1)
+		currentDate.value = newDate.toISOString().slice(0, 19).replace("T", " ");
+		subParcel.route = subParcel.state + '_' + currentDate.value + '_' + currentCity.value
+		subParcel.currentDate = new Date(currentDate.value)
+		subParcel.currentCity = currentCity.value
+		console.log('subParcel', subParcel)
+
+		await api.updateRoute(subParcel)
+			.then(res => {
+				if (res.code == 200) {
+					parcel.state = subParcel.state
+					parcel.route = parcel.route + ',' + subParcel.route
+					if (res.data) {
+						parcelRoute.value.unshift({
+							state: parcel.state,
+							dateTime: currentDate.value,
+							city: currentCity.value,
+							affair: res.data
+						})
+					} else {
+						parcelRoute.value.unshift({
+							state: parcel.state,
+							dateTime: currentDate.value,
+							city: currentCity.value
+						})
+					}
+					currentCity.value = parcelRoute.value[0].city
+					currentDate.value = parcelRoute.value[0].dateTime
+				}
+			})
+			.catch(res => {
+				uni.showToast({
+					title: res.msg
+				})
+			})
+	}
+
+	const updateRouteList = () => {
+		parcelRoute.value = parcel.route.split(',').map(item => {
+			const info = item.split('_')
+			let affair = null
+			if (info[3]) affair = info[3]
+			return {
+				state: info[0],
+				dateTime: info[1],
+				city: info[2],
+				affair: info[3]
+			}
+		}).reverse()
+		console.log('parcelRoute.value', parcelRoute.value)
+		currentCity.value = parcelRoute.value[0].city
+		currentDate.value = parcelRoute.value[0].dateTime
 	}
 </script>
 
@@ -298,13 +364,13 @@
 	}
 
 	.routeBar {
-		margin-left: 30rpx;
+		// margin-left: 30rpx;
 		display: flex;
 		justify-content: space-around;
 		align-items: center;
 	}
-	
-	.routeDateil{
+
+	.routeDateil {
 		display: flex;
 		flex-direction: column;
 		gap: 20rpx;
