@@ -15,7 +15,16 @@ export function sendParcelByHub(parcelId,hub_id){
     })
 }
 
+export function  getSendingParcel(pageNum,pageSize,hub_id){
+    return Get("/getSendingParcel",{
+        pageNum,
+        pageSize,
+        hub_id
+    })
+}
+
 export const ParcelApi = {
     getSendListByHub,
-    sendParcelByHub
+    sendParcelByHub,
+    getSendingParcel
 }
