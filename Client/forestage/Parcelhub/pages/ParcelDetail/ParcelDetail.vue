@@ -43,16 +43,11 @@
 						</div>
 
 						<div style="display: flex;margin-top: 10rpx;">
-							<div style="display: flex;">
-								<div>
-									<u-text :text="'[' + item.city + ']'" size="11" color="gray"></u-text>
-								</div>
-								<div>
-									<u-text v-if="!item.affair" :text="'快递现已到达' + item.city" size="11"
-										color="gray"></u-text>
-									<u-text v-else :text="item.affair" size="11" color="gray"></u-text>	
-								</div>
-							</div>	
+
+							<u-text v-if="!item.affair" :text="'[' + item.city + ']' + '快递现已到达' + item.city" size="11"
+								color="gray"></u-text>
+							<u-text v-else :text="'[' + item.city + ']' + item.affair" size="11" color="gray"></u-text>
+
 						</div>
 
 					</div>
@@ -196,7 +191,7 @@
 							}
 							cities = [...citySet]
 							cityIndex = cities.findIndex(item => item == parcel.currentCity)
-							console.log('cities',cities)
+							console.log('cities', cities)
 						}
 
 						polyline.value.push({
@@ -239,8 +234,8 @@
 	})
 
 	const pushRoute = async () => {
-		if(cityIndex >= cities.length) return
-		console.log('cityIndex',cityIndex)
+		if (cityIndex >= cities.length) return
+		console.log('cityIndex', cityIndex)
 		const subParcel = {}
 		Object.assign(subParcel, parcel)
 		if (cityIndex == cities.length - 1) {
@@ -250,9 +245,9 @@
 			currentCity.value = cities[++cityIndex]
 			subParcel.state = '运输中'
 		}
-		console.log('currentCity.value',currentCity.value)
-		console.log('cityIndex',cityIndex)
-		console.log('subParcel.state',subParcel.state)
+		console.log('currentCity.value', currentCity.value)
+		console.log('cityIndex', cityIndex)
+		console.log('subParcel.state', subParcel.state)
 		let newDate = new Date(currentDate.value)
 		newDate.setDate(newDate.getDate() + 1)
 		currentDate.value = newDate.toISOString().slice(0, 19).replace("T", " ");

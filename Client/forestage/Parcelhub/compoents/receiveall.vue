@@ -1,5 +1,5 @@
 <template>
-	<view class="containerS">
+	<view class="containerS" v-if="list.length">
 		<div style="margin-bottom: 20rpx; width: 95%;margin-left: auto;margin-right: auto;">
 			<u-input v-model="searchFor" placeholder="输入快递单号以查询快递" suffixIcon="search"
 				suffixIconStyle="color: #1e80ff;font-size:50rpx" shape="circle" fontSize="30rpx"
@@ -30,6 +30,10 @@
 			</div>
 			
 		</div>
+	</view>
+	
+	<view class="containerR" v-else>
+		<u-empty mode="list" text="无取件记录" size="13"></u-empty>
 	</view>
 </template>
 
@@ -198,5 +202,11 @@ const formatDate = (dateString) => {
 		justify-content: center;
 		align-items: center;
 		gap: 10rpx;
+	}
+	
+	.containerR {
+		display: flex;
+		flex-direction: column;
+		gap: 40rpx;
 	}
 </style>

@@ -15,8 +15,8 @@
 			<div class="parcelCard" @click="toDetail">
 				<div class="right">
 					<u-text :text="parcel.state" color="#0165fe"></u-text>
-					<u-text :text="'快递已到达' + '[' + parcel.currentCity + ']'" color="#0165fe" size="12"></u-text>
-					<u-text :text="formatDate(parcel.currentDate)" size="11" color="#0165fe"></u-text>
+					<u-text v-if="parcel.state != '等待揽收'" :text="'快递已到达' + '[' + parcel.currentCity + ']'" color="#0165fe" size="12"></u-text>
+					<u-text v-if="parcel.state != '等待揽收'" :text="formatDate(parcel.currentDate)" size="11" color="#0165fe"></u-text>
 				</div>
 
 				<div class="left">

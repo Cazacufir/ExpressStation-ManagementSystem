@@ -79,7 +79,7 @@
 				</span>
 			</div>
 
-			<div class="litteBar">
+			<div class="litteBar" v-if="sendWay == '上门取件'">
 				<u-text text="上门时间"></u-text>
 
 				<span class="litteBar" @click="isShow = true">
