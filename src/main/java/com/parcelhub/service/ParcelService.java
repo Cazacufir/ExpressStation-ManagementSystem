@@ -29,4 +29,6 @@ public interface ParcelService extends IService<Parcel> {
 
     Result sendParcelByHub(Map<String,Integer> map);
     Result updateRoute(Parcel parcel);
+
+    Result getSendingParcel(Integer pageNum,Integer pageSize,int hub_id);
 }

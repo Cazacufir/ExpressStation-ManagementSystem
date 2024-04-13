@@ -2,6 +2,7 @@ package com.parcelhub.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.parcelhub.dto.OrderParcelMerge;
 import com.parcelhub.entity.*;
@@ -55,8 +56,9 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
         parcelLambdaQueryWrapper.eq(Parcel::getReceiveName,user.getName())
                 .eq(Parcel::getReceiveContact,user.getContact());
         List<Parcel> parcelList = parcelMapper.selectList(parcelLambdaQueryWrapper);
-        redisCache.setCacheList("receiveList:" + userId,parcelList);
+
         if(parcelList.size() > 0){
+            redisCache.setCacheList("receiveList:" + userId,parcelList);
             return Result.okResult(parcelList);
         }
         else {
@@ -277,5 +279,19 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
 
         parcelMapper.updateById(parcel1);
         return Result.okResult(affair);
+    }
+
+    @Override
+    public Result getSendingParcel(Integer pageNum,Integer pageSize,int hub_id){
+        LambdaQueryWrapper<Parcel> parcelLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        parcelLambdaQueryWrapper.eq(Parcel::getHub_id,hub_id)
+                .eq(Parcel::getState,"派送中");
+        Page<Parcel> parcelPage = new Page<>(pageNum,pageSize);
+        page(parcelPage,parcelLambdaQueryWrapper);
+        int total = (int) parcelPage.getTotal();
+        if (total == 0){
+            return Result.errorResult(AppHttpCodeEnum.PARCEL_NOT_FOUND);
+        }
+        return Result.okResult(parcelPage);
     }
 }

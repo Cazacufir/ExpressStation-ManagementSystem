@@ -69,4 +69,9 @@ public class ParcelController {
     public Result updateRoute(@RequestBody Parcel parcel){
         return parcelService.updateRoute(parcel);
     }
+
+    @GetMapping("/getSendingParcel")
+    public Result getSendingParcel(Integer pageNum,Integer pageSize,int hub_id){
+        return parcelService.getSendingParcel(pageNum,pageSize,hub_id);
+    }
 }
