@@ -44,9 +44,7 @@ public class Parcel implements Serializable {
 
     private String currentCity;
 
-    private Date arrivalTime;
-
-    private int arrivalNum;
+    private String arrivalTime;
 
     private Date receiveTime;
 
@@ -56,5 +54,5 @@ public class Parcel implements Serializable {
 
     private int deliver_id;
 
-    private int carrier_id;
+    private String code;
 }

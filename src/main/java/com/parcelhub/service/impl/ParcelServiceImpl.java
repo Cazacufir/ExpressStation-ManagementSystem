@@ -47,6 +47,12 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
     @Autowired
     HubMapper hubMapper;
 
+    @Autowired
+    CarrierMapper carrierMapper;
+
+    @Autowired
+    CarrierFlatMapper carrierFlatMapper;
+
 
     @Override
     public Result getReceiveParcel(int userId){
@@ -248,11 +254,9 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
             Company company = companyMapper.selectOne(companyLambdaQueryWrapper);
             String address = parcel.getReceiveAddress().split("_")[0];
             List<Hub> hubList = hubMapper.getReceiveHub(company.getComId(),address);
-            System.out.println("+++++++++++");
 
             int hubIndex = (int)(Math.random()* hubList.size());
             Hub hub = hubList.get(hubIndex);
-            System.out.println(hub);
             List<Deliver> deliverList =  redisCache.getCacheList("deliver_hub" + hub.getId());
             if(deliverList.size() == 0){
                 deliverList = deliverHubMergeMapper.getAllDeliverByHubId(hub.getId());
@@ -293,5 +297,66 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
             return Result.errorResult(AppHttpCodeEnum.PARCEL_NOT_FOUND);
         }
         return Result.okResult(parcelPage);
+    }
+
+    @Override
+    public Result receiveParcel(Parcel parcel){
+        LambdaQueryWrapper<Carrier> carrierLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        carrierLambdaQueryWrapper.eq(Carrier::getHub_id,parcel.getHub_id());
+        List<Carrier> carrierList = carrierMapper.selectList(carrierLambdaQueryWrapper);
+        Carrier carrier1 = null;
+        for(Carrier carrier : carrierList){
+            if (carrier.getCurrentCount() < (carrier.getFlats() * carrier.getMaxCount())){
+                carrier1 = carrier;
+                break;
+            }
+        }
+        if(Objects.isNull(carrier1)){
+            return Result.errorResult(AppHttpCodeEnum.HUB_FULL);
+        }
+
+        CarrierFlat carrierFlat = new CarrierFlat();
+        double currentCount =  carrier1.getCurrentCount();
+        double maxCount =  carrier1.getMaxCount();
+        int flatNum = (int) Math.ceil(currentCount / maxCount);
+        if(flatNum == 0){
+            flatNum = 1;
+        }
+
+        StringBuilder result = new StringBuilder();
+        Random random = new Random();
+        for (int i = 0; i < 4; i++) {
+            // 生成随机数，范围为 0-9
+            int randomNumber = random.nextInt(10);
+            result.append(randomNumber);
+        }
+        String code = carrier1.getNum() + "-" + flatNum + "-" + result;
+
+        carrierFlat.setFlat(flatNum);
+        carrierFlat.setParcelCode(code);
+        carrierFlat.setParcel_id(parcel.getParcelId());
+        carrierFlat.setCarrier_id(carrier1.getCarrierId());
+        carrierFlatMapper.insert(carrierFlat);
+        carrier1.setCurrentCount(carrier1.getCurrentCount() + 1);
+        carrierMapper.updateById(carrier1);
+
+        Deliver deliver = deliverMapper.selectById(parcel.getDeliver_id());
+        deliver.setAffair("快递单号" + parcel.getParcelId() + "的包裹已派送完毕");
+        deliverMapper.updateById(deliver);
+
+        Date now = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String strDate = sdf.format(now);
+        parcel.setArrivalTime(strDate);
+        parcel.setCode(code);
+        parcel.setState("待取件");
+
+        Hub hub = hubMapper.selectById(parcel.getHub_id());
+        String hubStr = "您的快递已派送至<" + hub.getName() + "代收点;自提点联系方式:" + hub.getContact()
+                + ">,请凭取件码" + code + "及时到代收点领取";
+        String newRoute = parcel.getRoute() + "," + hubStr;
+        parcel.setRoute(newRoute);
+        parcelMapper.updateById(parcel);
+        return Result.okResult();
     }
 }

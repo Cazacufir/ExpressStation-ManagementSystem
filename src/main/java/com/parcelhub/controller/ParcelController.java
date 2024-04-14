@@ -74,4 +74,9 @@ public class ParcelController {
     public Result getSendingParcel(Integer pageNum,Integer pageSize,int hub_id){
         return parcelService.getSendingParcel(pageNum,pageSize,hub_id);
     }
+
+    @PostMapping("/receiveParcel")
+    public Result receiveParcel(@RequestBody Parcel parcel){
+        return parcelService.receiveParcel(parcel);
+    }
 }

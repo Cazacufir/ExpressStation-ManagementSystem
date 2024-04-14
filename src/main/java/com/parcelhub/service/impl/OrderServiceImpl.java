@@ -49,6 +49,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderList> implem
         parcel.setReceiveContact(orderParcelMerge.getReceiveContact());
         parcel.setType(orderParcelMerge.getType());
         parcel.setWeight(orderParcelMerge.getWeight());
+        parcel.setBelonged_id(orderParcelMerge.getUser_id());
         parcelMapper.insert(parcel);
         int parcelId = parcel.getParcelId();
 

@@ -62,9 +62,7 @@ public class OrderParcelMerge implements Serializable {
 
     private String currentCity;
 
-    private Date arrivalTime;
-
-    private int arrivalNum;
+    private String arrivalTime;
 
     private Date receiveTime;
 
@@ -72,5 +70,5 @@ public class OrderParcelMerge implements Serializable {
 
     private int deliver_id;
 
-    private int carrier_id;
+    private String code;
 }
