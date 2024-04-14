@@ -100,7 +100,17 @@ const changePage = (value) => {
     getList()
 }
 
-const toReceive = () => {
-
+const toReceive = async (scope) => {
+    const [e,r] = await api.receiveParcel(scope.row)
+    if(r.code == 200){
+        list.value.splice(scope.$index,1)
+        ElMessage({
+            message: '入库成功',
+            type: 'success',
+        })
+    }
+    else {
+        ElMessage.error(r.msg)
+    }
 }
 </script>

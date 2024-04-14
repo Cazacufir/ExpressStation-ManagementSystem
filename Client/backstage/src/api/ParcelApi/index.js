@@ -23,8 +23,13 @@ export function  getSendingParcel(pageNum,pageSize,hub_id){
     })
 }
 
+export function receiveParcel(parcel){
+    return Post("/receiveParcel",parcel)
+}
+
 export const ParcelApi = {
     getSendListByHub,
     sendParcelByHub,
-    getSendingParcel
+    getSendingParcel,
+    receiveParcel
 }
