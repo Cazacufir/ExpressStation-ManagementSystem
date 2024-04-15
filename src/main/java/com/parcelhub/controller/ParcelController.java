@@ -79,4 +79,9 @@ public class ParcelController {
     public Result receiveParcel(@RequestBody Parcel parcel){
         return parcelService.receiveParcel(parcel);
     }
+
+    @GetMapping("/getAllParcelByHub")
+    public Result getAllParcelByHub(Integer pageNum,Integer pageSize,int hub_id){
+        return parcelService.getAllParcelByHub(pageNum,pageSize,hub_id);
+    }
 }

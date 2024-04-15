@@ -352,11 +352,24 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
         parcel.setState("待取件");
 
         Hub hub = hubMapper.selectById(parcel.getHub_id());
-        String hubStr = "您的快递已派送至<" + hub.getName() + "代收点;自提点联系方式:" + hub.getContact()
+        String hubStr = "已入库" + "_" + now + "您的快递已派送至<" + hub.getName() + "代收点;自提点联系方式:" + hub.getContact()
                 + ">,请凭取件码" + code + "及时到代收点领取";
         String newRoute = parcel.getRoute() + "," + hubStr;
         parcel.setRoute(newRoute);
         parcelMapper.updateById(parcel);
         return Result.okResult();
+    }
+
+    @Override
+    public Result getAllParcelByHub(Integer pageNum,Integer pageSize,int hub_id){
+        LambdaQueryWrapper<Parcel> parcelLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        parcelLambdaQueryWrapper.eq(Parcel::getHub_id,hub_id);
+        Page<Parcel> parcelPage = new Page<>(pageNum,pageSize);
+        page(parcelPage,parcelLambdaQueryWrapper);
+        int total = (int) parcelPage.getTotal();
+        if(total == 0){
+            return Result.errorResult(AppHttpCodeEnum.PARCEL_NOT_FOUND);
+        }
+        return Result.okResult(parcelPage);
     }
 }

@@ -33,4 +33,6 @@ public interface ParcelService extends IService<Parcel> {
     Result getSendingParcel(Integer pageNum,Integer pageSize,int hub_id);
 
     Result receiveParcel(Parcel parcel);
+
+    Result getAllParcelByHub(Integer pageNum,Integer pageSize,int hub_id);
 }
