@@ -55,6 +55,15 @@ const routes = [
         component: async () => await import("@/views/parcel/parcel.vue"),
         children:[
           {
+            path:'all',
+            name:'All',
+            component: async () => await import("@/views/parcel/views/all.vue"),
+            meta:{
+              title:'快递总览',
+              icon: 'Search'
+            }
+          },
+          {
             path: "receive",
             name: "Receive",
             component: async () => await import("@/views/parcel/views/receive.vue"),
@@ -79,15 +88,6 @@ const routes = [
             meta:{
               title:'快递出库',
               icon: 'Van'
-            }
-          },
-          {
-            path:'search',
-            name:'Search',
-            component: async () => await import("@/views/parcel/views/search.vue"),
-            meta:{
-              title:'快递查询',
-              icon: 'Search'
             }
           }
         ],

@@ -27,9 +27,18 @@ export function receiveParcel(parcel){
     return Post("/receiveParcel",parcel)
 }
 
+export function getAllParcelByHub(pageNum,pageSize,hub_id){
+    return Get("/getAllParcelByHub",{
+        pageNum,
+        pageSize,
+        hub_id
+    })
+}
+
 export const ParcelApi = {
     getSendListByHub,
     sendParcelByHub,
     getSendingParcel,
-    receiveParcel
+    receiveParcel,
+    getAllParcelByHub
 }
