@@ -75,13 +75,18 @@ public class ParcelController {
         return parcelService.getSendingParcel(pageNum,pageSize,hub_id);
     }
 
-    @PostMapping("/receiveParcel")
-    public Result receiveParcel(@RequestBody Parcel parcel){
-        return parcelService.receiveParcel(parcel);
+    @PostMapping("/receiveParcelByHub")
+    public Result receiveParcelByHub(@RequestBody Parcel parcel){
+        return parcelService.receiveParcelByHub(parcel);
     }
 
     @GetMapping("/getAllParcelByHub")
     public Result getAllParcelByHub(Integer pageNum,Integer pageSize,int hub_id){
         return parcelService.getAllParcelByHub(pageNum,pageSize,hub_id);
+    }
+
+    @PostMapping("/getReceivedParcel")
+    public Result getReceivedParcel(@RequestBody Parcel parcel){
+        return parcelService.getReceivedParcel(parcel);
     }
 }

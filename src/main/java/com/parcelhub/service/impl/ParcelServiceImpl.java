@@ -9,6 +9,7 @@ import com.parcelhub.entity.*;
 import com.parcelhub.mapper.*;
 import com.parcelhub.service.ParcelService;
 import com.parcelhub.utils.*;
+import com.parcelhub.vo.ReceiveParcelVo;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -300,7 +301,7 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
     }
 
     @Override
-    public Result receiveParcel(Parcel parcel){
+    public Result receiveParcelByHub(Parcel parcel){
         LambdaQueryWrapper<Carrier> carrierLambdaQueryWrapper = new LambdaQueryWrapper<>();
         carrierLambdaQueryWrapper.eq(Carrier::getHub_id,parcel.getHub_id());
         List<Carrier> carrierList = carrierMapper.selectList(carrierLambdaQueryWrapper);
@@ -371,5 +372,39 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
             return Result.errorResult(AppHttpCodeEnum.PARCEL_NOT_FOUND);
         }
         return Result.okResult(parcelPage);
+    }
+
+    @Override
+    public Result getReceivedParcel(Parcel parcel){
+        LambdaQueryWrapper<Parcel> parcelLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        parcelLambdaQueryWrapper.eq(Parcel::getReceiveName,parcel.getReceiveName())
+                .eq(Parcel::getReceiveContact,parcel.getReceiveContact())
+                .eq(Parcel::getState,"待取件");
+        List<Parcel> parcelList = parcelMapper.selectList(parcelLambdaQueryWrapper);
+        if(parcelList.size() == 0){
+            return Result.errorResult(AppHttpCodeEnum.PARCEL_NOT_FOUND);
+        }
+        List<ReceiveParcelVo> receiveParcelVos = BeanCopyUtils.copyBeanList(parcelList, ReceiveParcelVo.class);
+        Map<String,List<Parcel>> mergedParcel = new HashMap<>();
+        for (Parcel parcel1 : parcelList){
+            String[] route = parcel1.getRoute().split(",");
+            String hubName = route[route.length - 2];
+            int startIndex = hubName.indexOf("<") + 1;
+            int endIndex = hubName.indexOf("代");
+            String key = hubName.substring(startIndex,endIndex);
+//            String key = parcel1.getReceiveName() + "_" + parcel1.getReceiveContact();
+            mergedParcel.computeIfAbsent(key, k -> new ArrayList<>()).add(parcel1);
+        }
+        for (ReceiveParcelVo receiveParcelVo : receiveParcelVos){
+            String[] route = receiveParcelVo.getRoute().split(",");
+            String hubName = route[route.length - 2];
+            int startIndex = hubName.indexOf("<") + 1;
+            int endIndex = hubName.indexOf("代");
+            String key = hubName.substring(startIndex,endIndex);
+            receiveParcelVo.setParcel(mergedParcel.get(key));
+            receiveParcelVo.setHubName(key);
+        }
+        Set<ReceiveParcelVo> receiveParcelVoSet = new HashSet<>(receiveParcelVos);
+        return Result.okResult(receiveParcelVoSet);
     }
 }
