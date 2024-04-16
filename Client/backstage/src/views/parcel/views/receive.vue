@@ -101,7 +101,7 @@ const changePage = (value) => {
 }
 
 const toReceive = async (scope) => {
-    const [e,r] = await api.receiveParcel(scope.row)
+    const [e,r] = await api.receiveParcelByHub(scope.row)
     if(r.code == 200){
         list.value.splice(scope.$index,1)
         ElMessage({

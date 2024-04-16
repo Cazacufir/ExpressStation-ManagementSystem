@@ -87,23 +87,16 @@
 							icon: 'success',
 							title: '登录成功'
 						})
-					} else {
+					}
+					else if(res.code == 401){
+						uni.removeStorageSync('token');
+						toHome()
+					}
+					else {
 						uni.showToast({
 							title: '用户或密码错误'
 						})
 					}
-				})
-				.catch(res => {
-					uni.showToast({
-						title: '用户或密码错误'
-					})
-					uni.setStorage({
-						key:'token',
-						data:'',
-						success() {
-							toHome()
-						}
-					})
 				})
 		})
 	}

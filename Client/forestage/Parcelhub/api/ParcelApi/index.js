@@ -87,6 +87,14 @@ const updateRoute = (params) => {
 	})
 }
 
+const getReceivedParcel = (params) => {
+	return request({
+		url:'/getReceivedParcel',
+		method:'post',
+		data:params
+	})
+}
+
 export const ParcelApi = {
 	getReceiveParcel,
 	getRecentSendParcel,
@@ -98,5 +106,6 @@ export const ParcelApi = {
 	getExtraParcel,
 	deleteExtraParcel,
 	getRoute,
-	updateRoute
+	updateRoute,
+	getReceivedParcel
 }
