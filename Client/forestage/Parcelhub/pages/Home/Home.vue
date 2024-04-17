@@ -22,7 +22,7 @@
 				<u-text text="寄包裹" bold size="20" color="white"></u-text>
 			</div>
 
-			<div class="btn">
+			<div class="btn" @click="toCode">
 				<u-icon name="account-fill" color="white" size="40"></u-icon>
 				<u-text text="身份码" bold size="20" color="white"></u-text>
 			</div>
@@ -189,6 +189,12 @@
 			})
 		})
 		.finally(()=> isShowModal.value = false)
+	}
+	
+	const toCode = () => {
+		uni.navigateTo({
+			url:'/pages/UserCode/UserCode'
+		})
 	}
 </script>
 
