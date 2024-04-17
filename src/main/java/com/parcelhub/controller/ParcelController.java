@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -88,5 +89,15 @@ public class ParcelController {
     @PostMapping("/getReceivedParcel")
     public Result getReceivedParcel(@RequestBody Parcel parcel){
         return parcelService.getReceivedParcel(parcel);
+    }
+
+    @GetMapping("/receiveSingleParcel")
+    public Result receiveSingleParcel(@RequestParam int parcelId){
+        return parcelService.receiveSingleParcel(parcelId);
+    }
+
+    @PostMapping("/receiveParcelByUser")
+    public Result receiveParcelByUser(@RequestBody List<Parcel> parcels){
+        return parcelService.receiveParcelByUser(parcels);
     }
 }

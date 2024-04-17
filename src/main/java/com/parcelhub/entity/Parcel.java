@@ -46,7 +46,7 @@ public class Parcel implements Serializable {
 
     private String arrivalTime;
 
-    private Date receiveTime;
+    private String receiveTime;
 
     private int belonged_id;
 

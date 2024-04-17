@@ -407,4 +407,38 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
         Set<ReceiveParcelVo> receiveParcelVoSet = new HashSet<>(receiveParcelVos);
         return Result.okResult(receiveParcelVoSet);
     }
+
+    @Override
+    public Result receiveSingleParcel(int parcelId){
+        Parcel parcel = parcelMapper.selectById(parcelId);
+        Date now = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String strDate = sdf.format(now);
+
+        parcel.setReceiveTime(strDate);
+        parcel.setState("已签收");
+        String str = "已签收" + "_" + now + "已签收，收件人已取走";
+        String newRoute = parcel.getRoute() + "," + str;
+        parcel.setRoute(newRoute);
+        parcelMapper.updateById(parcel);
+        return Result.okResult();
+    }
+
+    @Override
+    public Result receiveParcelByUser(List<Parcel> parcels){
+        Date now = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String strDate = sdf.format(now);
+
+        for(Parcel parcel : parcels){
+            Parcel parcel1 = parcelMapper.selectById(parcel.getParcelId());
+            parcel1.setReceiveTime(strDate);
+            parcel1.setState("已签收");
+            String str = "已签收" + "_" + now + "已签收，收件人已取走";
+            String newRoute = parcel.getRoute() + "," + str;
+            parcel1.setRoute(newRoute);
+            parcelMapper.updateById(parcel1);
+        }
+        return Result.okResult();
+    }
 }

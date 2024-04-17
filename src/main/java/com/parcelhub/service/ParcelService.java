@@ -6,6 +6,7 @@ import com.parcelhub.entity.UserParcelMerge;
 import com.parcelhub.utils.Result;
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.List;
 import java.util.Map;
 
 public interface ParcelService extends IService<Parcel> {
@@ -37,4 +38,8 @@ public interface ParcelService extends IService<Parcel> {
     Result getAllParcelByHub(Integer pageNum,Integer pageSize,int hub_id);
 
     Result getReceivedParcel(Parcel parcel);
+
+    Result receiveSingleParcel(int parcelId);
+
+    Result receiveParcelByUser(List<Parcel> parcels);
 }
