@@ -12,7 +12,7 @@ public enum AppHttpCodeEnum {
     REQUIRE_USERNAME(504, "必需填写用户名"),
     LOGIN_ERROR(505,"用户名或密码错误"),
     HUB_FULL(506, "驿站存放包裹数已达到最大值"),
-    FILE_TYPE_ERROR(507, "文件类型错误，请上传png文件"),
+    CARRIER_EXIST(507, "货架序号不能重复"),
     USERNAME_NOT_NULL(508, "用户名不能为空"),
     PARCEL_EXIST(515, "快递已存在"),
     PARCEL_NOT_FOUND(514, "未查询到快递"),

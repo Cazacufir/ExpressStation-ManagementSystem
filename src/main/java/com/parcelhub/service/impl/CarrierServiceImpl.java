@@ -54,4 +54,22 @@ public class CarrierServiceImpl extends ServiceImpl<CarrierMapper, Carrier> impl
         }
         return Result.okResult(parcelPagesDto);
     }
+
+    @Override
+    public Result addCarrier(Carrier carrier){
+        LambdaQueryWrapper<Carrier> carrierLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        carrierLambdaQueryWrapper.eq(Carrier::getHub_id,carrier.getHub_id())
+                .eq(Carrier::getNum,carrier.getNum());
+        List<Carrier> carrierList = carrierMapper.selectList(carrierLambdaQueryWrapper);
+        if(carrierList.size() > 0){
+            return Result.errorResult(AppHttpCodeEnum.CARRIER_EXIST);
+        }
+        Carrier carrier1 = new Carrier();
+        carrier1.setHub_id(carrier.getHub_id());
+        carrier1.setNum(carrier.getNum());
+        carrier1.setFlats(carrier.getFlats());
+        carrier1.setMaxCount(carrier.getMaxCount());
+        save(carrier1);
+        return Result.okResult();
+    }
 }
