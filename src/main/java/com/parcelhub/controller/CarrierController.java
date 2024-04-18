@@ -4,10 +4,7 @@ import com.parcelhub.entity.Carrier;
 import com.parcelhub.service.CarrierService;
 import com.parcelhub.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class CarrierController {
@@ -27,5 +24,10 @@ public class CarrierController {
     @PostMapping("/addCarrier")
     public Result addCarrier(@RequestBody Carrier carrier){
         return carrierService.addCarrier(carrier);
+    }
+
+    @PutMapping("/updateCarrier")
+    public Result updateCarrier(@RequestBody Carrier carrier){
+        return carrierService.updateCarrier(carrier);
     }
 }

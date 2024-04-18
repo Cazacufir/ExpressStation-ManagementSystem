@@ -13,6 +13,7 @@ import com.parcelhub.utils.AppHttpCodeEnum;
 import com.parcelhub.utils.PageUtils;
 import com.parcelhub.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -70,6 +71,12 @@ public class CarrierServiceImpl extends ServiceImpl<CarrierMapper, Carrier> impl
         carrier1.setFlats(carrier.getFlats());
         carrier1.setMaxCount(carrier.getMaxCount());
         save(carrier1);
+        return Result.okResult();
+    }
+
+    @Override
+    public Result updateCarrier(Carrier carrier){
+        carrierMapper.updateById(carrier);
         return Result.okResult();
     }
 }

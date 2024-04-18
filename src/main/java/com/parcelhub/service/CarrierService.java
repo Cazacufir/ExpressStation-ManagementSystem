@@ -10,4 +10,6 @@ public interface CarrierService extends IService<Carrier> {
     Result getCarrierParcel(Integer pageNum,Integer pageSize,int carrierId);
 
     Result addCarrier(Carrier carrier);
+
+    Result updateCarrier(Carrier carrier);
 }

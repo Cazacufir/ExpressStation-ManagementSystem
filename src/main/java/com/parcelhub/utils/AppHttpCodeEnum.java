@@ -27,9 +27,10 @@ public enum AppHttpCodeEnum {
     STAFF_NOT_EXIST(403,"员工不存在"),
     HUB_ID_NOT_EXIST(416, "驿站ID不存在"),
     HUB_NAME_EXIST(403, "驿站名称已被注册"),
-
     PASSWORD_EXITST(914,"新密码与原密码一致"),
-    ADDRESS_EXIST(403,"地址已被使用");
+    ADDRESS_EXIST(403,"地址已被使用"),
+
+    PARCEL_REMAIN(403,"货架仍存放快件，无法删除");
 
 
     int code;
