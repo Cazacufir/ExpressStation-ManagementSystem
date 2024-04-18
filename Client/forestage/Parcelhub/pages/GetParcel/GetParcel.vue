@@ -1,10 +1,14 @@
 <template>
-	<div class="container">
+	<div class="container" v-if="list.length">
 		<div class="parcel" v-for="(item,index) in list" :key="index">
-			<div class="parcelHead" style="display: flex;gap:10rpx">
+			<div class="parcelHead" style="display: flex;gap:10rpx" v-if="item.parcel.length">
 				<u-icon name="pushpin" color="#1e80ff" size="16"></u-icon>
 				<u-text :text="item.hubName" bold="true" size="13"></u-text>
 			</div>
+			
+			<view class="containerR" v-else>
+				<u-empty text="该站点包裹已全部取出" size="13"></u-empty>
+			</view>
 
 			<div class="parcelBody" v-for="(child,num) in item.parcel" :key="num">
 				<div class="parcelChild">
@@ -19,8 +23,8 @@
 					</rudon-rowMenuDotDotDot>
 				</div>
 			</div>
-
-			<div class="parcelBottom">
+			
+			<div class="parcelBottom" @click="toReceiveAll(item.parcel)">
 				<u-button text="身份码取件" shape="circle" type="primary"></u-button>
 			</div>
 		</div>
@@ -28,14 +32,22 @@
 		<u-modal :show="isShowMoal" title="包裹条形码" closeOnClickOverlay="true" @confirm="isShowMoal = false" @close="isShowMoal = false">
 			<view class="slot-content">
 				<canvas canvas-id="barcode" class="code"></canvas>
+				<div style="margin-top: 20rpx;">
+					<u-button shape="circle" type="primary" text="领取此包裹" @click="toReceiveSingle"></u-button>
+				</div>
 			</view>
 		</u-modal>
 	</div>
+	
+	<view class="containerR" v-else>
+		<u-empty text="近期无待取包裹" size="13"></u-empty>
+	</view>
 </template>
 
 <script setup>
 	import {
-		ref
+		ref,
+		getCurrentInstance,
 	} from 'vue';
 	import {
 		api
@@ -45,32 +57,11 @@
 	} from '@dcloudio/uni-app'
 	import wxbarcode from 'wxbarcode'
 
-	// const list = ref([{
-	// 		hub_name: '桂电花江校区食堂菜鸟驿站',
-	// 		parcel: [{
-	// 				parcel_code: '16-1-5515',
-	// 				contact: '123456',
-	// 				time: '2024-03-22 21:31'
-	// 			},
-	// 			{
-	// 				parcel_code: '16-2-5515',
-	// 				contact: '123456',
-	// 				time: '2024-03-22 21:31'
-	// 			}
-	// 		]
-	// 	},
-	// 	{
-	// 		hub_name: '桂电花江校区后街菜鸟驿站',
-	// 		parcel: [{
-	// 			parcel_code: '16-1-5515',
-	// 			contact: '123456',
-	// 			time: '2024-03-22 21:31'
-	// 		}]
-	// 	}
-	// ])
 	const list = ref([])
+	let eventChannel = null
 
 	onLoad(() => {
+		eventChannel = getCurrentInstance().proxy.getOpenerEventChannel();
 		uni.getStorage({
 			key: 'user',
 			async success(res) {
@@ -111,8 +102,41 @@
 		if(action == 0){
 			isShowMoal.value = true
 			currentVal.value = rowId
-			wxbarcode.barcode('barcode', rowId, 200, 80)
+			wxbarcode.barcode('barcode', rowId, 250, 80)
 		}
+	}
+	
+	const toReceiveSingle = async () => {
+		await api.receiveSingleParcel({ parcelId:currentVal.value })
+		.then(res => {
+			if(res.code == 200){
+				let startIndex = 0
+				list.value.forEach(item => {
+					item.parcel.forEach((child,index)=> {
+						if(child.parcelId == currentVal.value) startIndex = index
+						item.parcel.splice(startIndex,1)
+					})
+				})
+				uni.showToast({
+					icon:'success',
+					title:'领取成功'
+				})
+			}
+		})
+	}
+	
+	const toReceiveAll = (parcel) => {
+		uni.navigateTo({
+			url:'/pages/UserCode/UserCode?parcelList=' + JSON.stringify(parcel),
+			events:{
+				updateParcelList: function(data){
+					console.log('111',data)
+					list.value = list.value.filter(item => {
+						JSON.stringify(item.parcel) == JSON.stringify(data)
+					})
+				}
+			}
+		})
 	}
 </script>
 
@@ -176,5 +200,18 @@
 		align-items: center;
 		height: 80rpx;
 		width: 200rpx;
+	}
+	
+	.slot-content{
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+	}
+	
+	.containerR {
+		display: flex;
+		flex-direction: column;
+		gap: 40rpx;
 	}
 </style>

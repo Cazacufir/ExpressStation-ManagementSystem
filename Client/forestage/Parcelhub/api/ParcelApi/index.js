@@ -95,6 +95,22 @@ const getReceivedParcel = (params) => {
 	})
 }
 
+const receiveSingleParcel = (params) => {
+	return request({
+		url:'/receiveSingleParcel',
+		method:'get',
+		data:params
+	})
+}
+
+const receiveParcelByUser = (params) => {
+	return request({
+		url:'/receiveParcelByUser',
+		method:'post',
+		data:params
+	})
+}
+
 export const ParcelApi = {
 	getReceiveParcel,
 	getRecentSendParcel,
@@ -107,5 +123,7 @@ export const ParcelApi = {
 	deleteExtraParcel,
 	getRoute,
 	updateRoute,
-	getReceivedParcel
+	getReceivedParcel,
+	receiveSingleParcel,
+	receiveParcelByUser
 }
