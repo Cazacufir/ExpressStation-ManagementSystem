@@ -416,6 +416,16 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String strDate = sdf.format(now);
 
+        LambdaQueryWrapper<CarrierFlat> carrierFlatLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        carrierFlatLambdaQueryWrapper.eq(CarrierFlat::getParcel_id,parcelId);
+        CarrierFlat carrierFlat = carrierFlatMapper.selectOne(carrierFlatLambdaQueryWrapper);
+        int carrierId = carrierFlat.getCarrier_id();
+        carrierFlatMapper.deleteById(carrierFlat);
+
+        Carrier carrier = carrierMapper.selectById(carrierId);
+        carrier.setCurrentCount(carrier.getCurrentCount() - 1);
+        carrierMapper.updateById(carrier);
+
         parcel.setReceiveTime(strDate);
         parcel.setState("已签收");
         String str = "已签收" + "_" + now + "已签收，收件人已取走";
@@ -439,6 +449,16 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
             String newRoute = parcel.getRoute() + "," + str;
             parcel1.setRoute(newRoute);
             parcelMapper.updateById(parcel1);
+
+            LambdaQueryWrapper<CarrierFlat> carrierFlatLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            carrierFlatLambdaQueryWrapper.eq(CarrierFlat::getParcel_id,parcel.getParcelId());
+            CarrierFlat carrierFlat = carrierFlatMapper.selectOne(carrierFlatLambdaQueryWrapper);
+            int carrierId = carrierFlat.getCarrier_id();
+            carrierFlatMapper.deleteById(carrierFlat);
+
+            Carrier carrier = carrierMapper.selectById(carrierId);
+            carrier.setCurrentCount(carrier.getCurrentCount() - 1);
+            carrierMapper.updateById(carrier);
         }
         return Result.okResult();
     }
