@@ -364,7 +364,8 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
     @Override
     public Result getAllParcelByHub(Integer pageNum,Integer pageSize,int hub_id){
         LambdaQueryWrapper<Parcel> parcelLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        parcelLambdaQueryWrapper.eq(Parcel::getHub_id,hub_id);
+        parcelLambdaQueryWrapper.eq(Parcel::getHub_id,hub_id)
+                .ne(Parcel::getState,"已签收");
         Page<Parcel> parcelPage = new Page<>(pageNum,pageSize);
         page(parcelPage,parcelLambdaQueryWrapper);
         int total = (int) parcelPage.getTotal();
