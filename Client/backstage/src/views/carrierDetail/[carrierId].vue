@@ -50,6 +50,7 @@ let pageNum = 1
 let totalPage
 const list = ref([])
 
+
 onBeforeMount(async ()=> {
     console.log("🚀 ~ carrierId:", carrierId)
     getList()
@@ -95,4 +96,5 @@ const formatAddress = (address) => {
 const backTo = () => {
     router.go(-1)
 }
+
 </script>

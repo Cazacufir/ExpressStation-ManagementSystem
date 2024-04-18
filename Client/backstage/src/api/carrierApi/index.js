@@ -16,7 +16,12 @@ export function getCarrierParcel(pageNum,pageSize,carrierId){
     })
 }
 
+export function addCarrier(carrier){
+    return Post("/addCarrier",carrier)
+}
+
 export const carrierApi = {
     getCarrier,
-    getCarrierParcel
+    getCarrierParcel,
+    addCarrier
 }

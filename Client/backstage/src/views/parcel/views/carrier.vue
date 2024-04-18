@@ -1,7 +1,7 @@
 <template>
     <div class="container w-full flex flex-col gap-10">
         <div>
-            <el-button size="large" type="primary">+ 新增货架</el-button>
+            <el-button size="large" type="primary" @click="openForm = true">+ 新增货架</el-button>
         </div>
         <div class="flex w-full gap-20 flex-wrap">
             <el-card v-for="(item, index) in carrierList" :key="index" class="card">
@@ -34,6 +34,28 @@
         </div>
 
         <el-pagination class="m-auto" layout="prev, pager, next" :page-count="totalPage" @current-change="changePage" />
+
+        <el-dialog v-model="openForm" title="添加货架" class="flex flex-col justify-center items-center" width="400px">
+        <el-form :model="carrier" label-width="120px">
+            <el-form-item prop="num" label="货架序号：">
+                <el-input-number v-model="carrier.num" :min="1" />
+            </el-form-item>
+
+            <el-form-item prop="flats" label="货架层数：">
+                <el-input-number v-model="carrier.flats" :min="1" />
+            </el-form-item>
+
+            <el-form-item prop="maxCount" label="最大存放数/层：">
+                <el-input-number v-model="carrier.maxCount" :min="5" />
+            </el-form-item>
+        </el-form>
+
+        <template #footer>
+            <el-button @click="closeForm">取消</el-button>
+            <el-button type="primary" @click="addCarrier">新增货架</el-button>
+        </template>
+    </el-dialog>
+
     </div>
 </template>
 
@@ -53,8 +75,18 @@ let hub_id = null
 let pageNum = 1
 let totalPage = null
 
-onMounted(async () => {
+let openForm = ref(false)
+const carrier = reactive({
+    num: 1,
+    flats: 1,
+    maxCount: 1,
+    hub_id: null
+})
+
+onMounted(() => {
     hub_id = store.getAdminInfo().hub_id
+    carrier.hub_id = hub_id
+    console.log("🚀 ~ onMounted ~ hub_id:", hub_id)
     getList()
 })
 
@@ -77,6 +109,46 @@ const changePage = (value) => {
     pageNum = value
     console.log("🚀 ~ changePage ~ page:", value)
     getList()
+}
+
+const addCarrier = async () => {
+    const [e,r] = await api.addCarrier(carrier)
+    if(r.code == 200){
+        ElMessage({
+            message: '添加货架成功',
+            type: 'success',
+        })
+        carrierList.value.push(carrier)
+        closeForm()
+    }
+    else{
+        ElMessage.error(r.msg)
+    } 
+}
+
+const checkNum = (role,value,callback) => {
+    if(value <= 0) {
+        callback(new Error('此项必须为正整数'))
+    }
+}
+
+const carrier_rules = {
+    num: [
+        { validator: checkNum, trigger: 'blur' }
+    ],
+    flats: [
+        { validator: checkNum, trigger: 'blur' }
+    ],
+    maxCount: [
+        { validator: checkNum, trigger: 'blur' }
+    ]
+}
+
+const closeForm = () => {
+    carrier.num = 1
+    carrier.flats = 1
+    carrier.maxCount = 1
+    openForm.value = false
 }
 </script>
 
