@@ -54,7 +54,6 @@
 
 <script setup>
 import { onMounted, reactive, ref } from "vue";
-import { Search } from '@element-plus/icons-vue'
 import { adminStore } from "@/stores/admin.js";
 import { api } from "@/api"
 import { ElMessage } from 'element-plus'

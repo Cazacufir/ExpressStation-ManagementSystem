@@ -89,6 +89,15 @@ const routes = [
               title:'快递出库',
               icon: 'Van'
             }
+          },
+          {
+            path:"carrier",
+            name:"Carrier",
+            component: async () => await import("@/views/parcel/views/carrier.vue"),
+            meta:{
+              title:'货架一览',
+              icon: 'MessageBox'
+            }
           }
         ],
         meta: {
