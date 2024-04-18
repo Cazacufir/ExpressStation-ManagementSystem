@@ -133,6 +133,11 @@ const routes = [
         path: "/password",
         name: "Password",
         component: async () => await import("@/views/password/password.vue")
+      },
+      {
+        path:"/:carrierId",
+        name:"CarrierId",
+        component: async () => await import("@/views/carrierDetail/[carrierId].vue")
       }
     ],
   },

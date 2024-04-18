@@ -1,28 +1,9 @@
 <template>
-    <!-- <div class="container flex justify-center items-center h-50vh">
-        <article class="h-100% w-500 flex flex-col justify-center items-center gap-20 h-50vh">
-            <el-input v-model="parcelId" placeholder="请输入快递ID码">
-                <template #append>
-                    <el-button :icon="Search" />
-                </template>
-            </el-input>
-
-            <el-button round>点击此处上传快递条形码</el-button>
-
-            <el-radio-group v-model="receive">
-                <el-radio label="1" size="large">自动入库</el-radio>
-                <el-radio label="2" size="large">手动入库</el-radio>
-            </el-radio-group>
-
-            <section class="flex" v-show="receive == '2'">
-                <label for="carrier" class="w-90 leading-32px">货架号：</label>
-                <el-input id="carrier"></el-input>
-            </section>
-
-            <el-button type="primary">点击入库</el-button>
-
-        </article>
-    </div> -->
+    <div class="container w-full flex flex-col gap-10">
+        <div>
+            <el-button size="large" type="info" @click="backTo">< 返回</el-button>
+        </div>
+    </div>
     <div class="w-full flex flex-col items-center">
         <el-table :data="list" stripe>
             <el-table-column prop="parcelId" label="快递单号" width="100" align="center" />
@@ -48,7 +29,7 @@
 
             <el-table-column fixed="right" label="操作" width="80" align="center">
                 <template #default="scope">
-                    <el-button link type="primary" @click.prevent="toReceive(scope)">入库</el-button>
+                    <el-button link type="primary">出库</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -58,42 +39,35 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, ref } from "vue";
-import { Search } from '@element-plus/icons-vue'
-import { adminStore } from "@/stores/admin.js";
-import { api } from "@/api"
-import { ElMessage } from 'element-plus'
+import { ref, onMounted,onBeforeMount,reactive } from 'vue'
+import { api } from "@/api";
+import { useRouter } from 'vue-router';
 
-const store = adminStore();
-const list = ref([])
-let hub_id = null
-
-onMounted(()=> {
-    init()
-})
-
-const init = async () => {
-    hub_id = store.getAdminInfo().hub_id
-    getList()
-}
+const router = useRouter();
+const carrierId = parseInt(router.currentRoute.value.params.carrierId)
 
 let pageNum = 1
-let totalPage = null
+let totalPage
+const list = ref([])
+
+onBeforeMount(async ()=> {
+    console.log("🚀 ~ carrierId:", carrierId)
+    getList()
+})
 
 const getList = async () => {
-    const [e, r] = await api.getSendingParcel(
+    const [e, r] = await api.getCarrierParcel(
         pageNum,
         6,
-        hub_id
+        carrierId
     )
-    list.value = [...r.data.records]
-    totalPage = Math.ceil(r.data.total/r.data.size) 
-    // console.log("🚀 ~ getList ~ list.value:", list.value)
-    console.log("🚀 ~ getList ~ r:", r)
-}
-
-const formatAddress = (address) => {
-    return address.replace(/_/g, '')
+    if(r.code == 200){
+        list.value = [...r.data.dataList]
+        totalPage = r.data.totalPages
+    }
+    else{
+        ElMessage.error(r.msg)
+    }
 }
 
 const changePage = (value) => {
@@ -102,17 +76,23 @@ const changePage = (value) => {
     getList()
 }
 
-const toReceive = async (scope) => {
-    const [e,r] = await api.receiveParcelByHub(scope.row)
-    if(r.code == 200){
-        list.value.splice(scope.$index,1)
-        ElMessage({
-            message: '入库成功',
-            type: 'success',
-        })
-    }
-    else {
-        ElMessage.error(r.msg)
-    }
+function formatDate(dateString) {
+    let date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0')
+    const min = String(date.getMinutes()).padStart(2, '0')
+    const sec = String(date.getSeconds()).padStart(2, '0')
+
+    return `${year}-${month}-${day} ${hours}:${min}:${sec}`;
+}
+
+const formatAddress = (address) => {
+    return address.replace(/_/g, '')
+}
+
+const backTo = () => {
+    router.go(-1)
 }
 </script>
