@@ -19,7 +19,7 @@
         </div>
     </div>
 
-    <el-dialog v-model="isShow" title="修改个人信息" width="600px" @close="isShow = false">
+    <el-dialog v-model="isShow" title="修改个人信息" width="600px" @close="isShow = false" ref="userInfo_RefForm">
         <el-form :model="Staff" label-width="120px" :rules="staff_rules">
             <el-form-item prop="name" label="姓名：">
                 <el-input v-model="Staff.name"></el-input>
@@ -47,7 +47,7 @@
 
         <template #footer>
             <el-button @click="isShow = false">取消</el-button>
-            <el-button type="primary" @click="submitStaff">确认</el-button>
+            <el-button type="primary" @click="toValidate">确认</el-button>
         </template>
     </el-dialog>
 
@@ -62,6 +62,8 @@ import { useRouter } from "vue-router";
 
 const store = adminStore()
 const router = useRouter();
+
+let userInfo_RefForm = ref()
 
 onMounted(() => {
     init()
@@ -146,5 +148,16 @@ const submitStaff = async () => {
     else{
         ElMessage.error('修改失败，请检查网络连接')
     }
+}
+
+const toValidate = () => {
+    userInfo_RefForm.value.validate((vaild) => {
+        if(vaild){
+            submitStaff()
+        }
+        else {
+            return false
+        }
+    })
 }
 </script>

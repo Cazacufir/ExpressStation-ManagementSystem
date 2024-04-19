@@ -28,7 +28,7 @@
             </el-table-column>
         </el-table>
 
-        <el-dialog v-model="isShow" :title="showTitile" width="600px" @close="closeForm">
+        <el-dialog v-model="isShow" :title="showTitile" width="600px" @close="closeForm" ref="staffForm_Ref">
             <el-form :model="Staff" label-width="120px" :rules="staff_rules">
                 <el-form-item prop="name" label="员工姓名：">
                     <el-input v-model="Staff.name"></el-input>
@@ -75,6 +75,8 @@ import { ElMessage } from 'element-plus'
 const store = adminStore();
 
 const staffList = ref([])
+
+let staffForm_Ref = ref()
 
 let currentIndex = null
 
@@ -208,6 +210,17 @@ const updateForm = async () => {
     }
 }
 
+const toValidateUpdate = () => {
+    staffForm_Ref.value.validate((vaild) => {
+        if(vaild){
+            updateForm()
+        }
+        else {
+            return false
+        }
+    })
+}
+
 const addStaff = async () => {
     const[e,r] = await api.addStaff(Staff)
     if (r.code == 200) {
@@ -223,6 +236,17 @@ const addStaff = async () => {
     else{
         ElMessage.error('修改失败，请检查网络连接')
     }
+}
+
+const toValidate = () => {
+    staffForm_Ref.value.validate((vaild) => {
+        if(vaild){
+            addStaff()
+        }
+        else {
+            return false
+        }
+    })
 }
 
 const deleteRow = async (scope) => {
@@ -243,10 +267,10 @@ const deleteRow = async (scope) => {
 
 const submitStaff = () =>{
     if(showTitile.value == '新增员工'){
-        addStaff()
+        toValidate()
     }
     else{
-        updateForm()
+        toValidateUpdate()
     }
 }
 

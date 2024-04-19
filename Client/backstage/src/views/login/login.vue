@@ -43,7 +43,18 @@ const rules = reactive({
     ]
 })
 
-const toValidate = async () => {
+const toValidate = () => {
+    login_ruleFormRef.value.validate((vaild) => {
+        if(vaild){
+            toLogin()
+        }
+        else {
+            return false
+        }
+    })
+}
+
+const toLogin = async () => {
     user.contact = 'ad@'
     user.contact += user.showContact    
     const [e, r] = await api.login(user)

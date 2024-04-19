@@ -57,7 +57,7 @@
             
             <template #footer>
                 <el-button @click="closeForm">取消</el-button>
-                <el-button type="primary" @click="toJudge" v-if="!isDelete">新增货架</el-button>
+                <el-button type="primary" @click="toJudge" v-if="!isDelete">{{ isModify? '确定' : '新增货架' }}</el-button>
                 <el-button type="danger" @click="toDelete" v-else>确定</el-button>
             </template>
         </el-dialog>

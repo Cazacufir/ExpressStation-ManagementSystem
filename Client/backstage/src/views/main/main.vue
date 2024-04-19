@@ -42,7 +42,7 @@
             <div class="btnBar">
                 <el-button type="primary" v-show="!isModify" size="large" @click="isModify = true">修改信息</el-button>
                 <el-button type="danger" v-show="isModify" @click="isModify = false">取消</el-button>
-                <el-button type="primary" v-show="isModify" @click="submitForm">确定</el-button>
+                <el-button type="primary" v-show="isModify" @click="toValidate">确定</el-button>
             </div>
 
         </div>
@@ -134,6 +134,17 @@ const submitForm = async () => {
     else {
         ElMessage.error('修改失败，请检查网络连接')
     }
+}
+
+const toValidate = () => {
+    ruleFormRef.value.validate((vaild) => {
+        if(vaild){
+            submitForm()
+        }
+        else {
+            return false
+        }
+    })
 }
 </script>
 

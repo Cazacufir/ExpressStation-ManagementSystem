@@ -21,7 +21,7 @@
         </el-form-item>
 
         <el-form-item>
-            <el-button type="primary m-auto" @click="toSubmit">已完成，下一步</el-button>
+            <el-button type="primary m-auto" @click="toValidate">已完成，下一步</el-button>
         </el-form-item>
 
         </el-form>
@@ -67,5 +67,16 @@ const rules_info = reactive({
 
 const toSubmit = () => {
     emit('getAdmin',info,true)
+}
+
+const toValidate = () => {
+    info_ruleFormRef.value.validate((vaild) => {
+        if(vaild){
+            toSubmit()
+        }
+        else {
+            return false
+        }
+    })
 }
 </script>

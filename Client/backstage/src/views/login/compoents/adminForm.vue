@@ -13,7 +13,7 @@
         </el-form-item>
 
         <el-form-item>
-            <el-button type="primary w-full" @click="toSubmit">注 册</el-button>
+            <el-button type="primary w-full" @click="toValidate">注 册</el-button>
         </el-form-item>
     </el-form>
 </template>
@@ -56,5 +56,16 @@ const rules_user = reactive({
 
 const toSubmit = () =>{
     emit('getInfo',user,true)
+}
+
+const toValidate = () => {
+    register_ruleFormRef.value.validate((vaild) => {
+        if(vaild){
+            toSubmit()
+        }
+        else {
+            return false
+        }
+    })
 }
 </script>

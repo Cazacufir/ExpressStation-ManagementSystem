@@ -1,5 +1,6 @@
 <template>
-    <el-form ref="hub_ruleFormRef" :model="hub" :rules="rules_hub" size="large" label-width="auto" hide-required-asterisk="true">
+    <el-form ref="hub_ruleFormRef" :model="hub" :rules="rules_hub" size="large" label-width="auto"
+        hide-required-asterisk="true">
         <el-form-item prop="role" label="您的身份：">
             <el-radio-group v-model="hub.role">
                 <el-radio :label="0" size="large">我是管理员</el-radio>
@@ -19,8 +20,13 @@
             <el-input v-model="hub.hubContact"></el-input>
         </el-form-item>
 
-        <el-form-item v-show="hub.role == 1" prop="address" label="驿站地址">
-            <el-input v-model="hub.address"></el-input>
+        <el-form-item v-show="hub.role == 1" prop="city" label="驿站地址">
+            <el-cascader size="large" :options="pcaTextArr" v-model="hub.city">
+            </el-cascader>
+        </el-form-item>
+
+        <el-form-item v-show="hub.role == 1" prop="detail" label="详细地址">
+            <el-input v-model="hub.detail"></el-input>
         </el-form-item>
 
         <el-form-item v-show="hub.role == 1" prop="close" label="营业时间">
@@ -30,7 +36,7 @@
         </el-form-item>
 
         <el-form-item>
-            <el-button type="primary m-auto" @click="toSubmit">已完成，下一步</el-button>
+            <el-button type="primary m-auto" @click="toValidate">已完成，下一步</el-button>
         </el-form-item>
 
     </el-form>
@@ -40,11 +46,14 @@
 import { reactive, ref } from 'vue';
 import { api } from "@/api"
 import { ElMessage } from 'element-plus'
+import { pcaTextArr } from 'element-china-area-data'
 
 const hub = reactive({
     role: 0,
     hub_id: null,
     name: '',
+    city: '',
+    detail: '',
     address: '',
     close: '',
     open: ''
@@ -76,16 +85,16 @@ const checkName = (role, value, callback) => {
     }
 }
 
-const checkAddress = (role, value, callback) => {
-    if (hub.role == 1) {
-        if (value == '') {
-            callback(new Error('驿站地址不能为空!'))
-        }
-    }
-    else {
-        callback()
-    }
-}
+// const checkAddress = (role, value, callback) => {
+//     if (hub.role == 1) {
+//         if (value == '') {
+//             callback(new Error('驿站地址不能为空!'))
+//         }
+//     }
+//     else {
+//         callback()
+//     }
+// }
 
 const checkContact = (role, value, callback) => {
     if (hub.role == 1) {
@@ -116,8 +125,11 @@ const rules_hub = reactive({
     name: [
         { validator: checkName, trigger: 'blur' }
     ],
-    address: [
-        { validator: checkAddress, trigger: 'blur' }
+    detail: [
+        { required: true, message: '详细地址不能为空', trigger: 'blur' }
+    ],
+    city: [
+        { required: true, message: '地址不能为空', trigger: 'blur' }
     ],
     hubContact: [
         { validator: checkContact, trigger: 'blur' }
@@ -128,11 +140,25 @@ const rules_hub = reactive({
 })
 
 const toSubmit = async () => {
-    const [e,r] = await api.vertifyInfo(hub)
-    if(r.code == 200) emit('getHub', hub,true)
-    else{
+    hub.city.forEach(item => hub.address += item)
+    hub.address += '_' + hub.detail
+    console.log("🚀 ~ toSubmit ~ hub:", hub)
+    const [e, r] = await api.vertifyInfo(hub)
+    if (r.code == 200) emit('getHub', hub, true)
+    else {
         ElMessage.error(r.msg)
-        emit('getHub', null,false)
+        emit('getHub', null, false)
     }
+}
+
+const toValidate = () => {
+    hub_ruleFormRef.value.validate((vaild) => {
+        if(vaild){
+            toSubmit()
+        }
+        else {
+            return false
+        }
+    })
 }
 </script>

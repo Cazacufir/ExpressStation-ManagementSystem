@@ -23,7 +23,7 @@
             </el-table-column>
         </el-table>
 
-        <el-dialog v-model="isShow" :title="showTitile" width="600px" @close="closeForm">
+        <el-dialog v-model="isShow" :title="showTitile" width="600px" @close="closeForm" ref="delivery_RefForm">
             <el-form :model="deliver" label-width="120px" :rules="deliver_rules">
                 <el-form-item prop="name" label="姓名：">
                     <el-input v-model="deliver.name"></el-input>
@@ -75,6 +75,8 @@ let searchFor = ref()
 let isShow = ref(false)
 
 let currentIndex = null
+
+let delivery_RefForm = ref()
 
 onMounted(() => {
     init()
@@ -233,12 +235,35 @@ const deleteRow = async (scope) => {
 
 const submitDeliver = () => {
     if (showTitile.value == '新增快递员') {
-        addDeliver()
+        toValidate()
     }
     else {
-        updateForm()
+        toValidateUpdate()
     }
 }
+
+const toValidate = () => {
+    delivery_RefForm.value.validate((vaild) => {
+        if(vaild){
+            addDeliver()
+        }
+        else {
+            return false
+        }
+    })
+}
+
+const toValidateUpdate = () => {
+    delivery_RefForm.value.validate((vaild) => {
+        if(vaild){
+            updateForm()
+        }
+        else {
+            return false
+        }
+    })
+}
+
 
 watchEffect(() => {
     if (searchFor.value == '') {
