@@ -28,7 +28,7 @@
             </el-table-column>
         </el-table>
 
-        <el-dialog v-model="isShow" :title="showTitile" width="600px" @close="closeForm" ref="staffForm_Ref">
+        <el-dialog v-model="isShow" :title="showTitile" width="600px" @close="closeForm" ref="staffForm_Ref" class="flex flex-col justify-center items-center">
             <el-form :model="Staff" label-width="120px" :rules="staff_rules">
                 <el-form-item prop="name" label="员工姓名：">
                     <el-input v-model="Staff.name"></el-input>

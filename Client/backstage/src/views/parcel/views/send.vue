@@ -1,10 +1,10 @@
 <template>
     <div class="container flex flex-col w-full">
         <el-tabs v-model="activeName">
-            <el-tab-pane label="出库订单" name="Out">
+            <el-tab-pane label="待出库包裹" name="Out">
                 <Out></Out>
             </el-tab-pane>
-            <el-tab-pane label="手动出库" name="outByHand">
+            <el-tab-pane label="寄送包裹" name="outByHand">
                 <outByHand></outByHand>
             </el-tab-pane>
         </el-tabs>

@@ -31,13 +31,12 @@
             </el-table-column>
         </el-table>
 
-        <el-pagination layout="prev, pager, next" :page-count="totalPage" @current-change="changePage" />
+        <!-- <el-pagination layout="prev, pager, next" :page-count="totalPage" @current-change="changePage" /> -->
     </div>
 </template>
 
 <script setup>
 import { onMounted, reactive, ref } from "vue";
-import { Search } from '@element-plus/icons-vue'
 import { adminStore } from "@/stores/admin.js";
 import { api } from "@/api"
 import { ElMessage } from 'element-plus'

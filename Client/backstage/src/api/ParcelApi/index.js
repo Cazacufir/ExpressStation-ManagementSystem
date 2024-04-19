@@ -35,10 +35,15 @@ export function getAllParcelByHub(pageNum,pageSize,hub_id){
     })
 }
 
+export function addSendList(parcel){
+    return Post("/addSendList",parcel)
+}
+
 export const ParcelApi = {
     getSendListByHub,
     sendParcelByHub,
     getSendingParcel,
     receiveParcelByHub,
-    getAllParcelByHub
+    getAllParcelByHub,
+    addSendList
 }

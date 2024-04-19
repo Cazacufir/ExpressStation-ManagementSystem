@@ -68,8 +68,9 @@ onMounted(() => {
 })
 
 const init = async () => {
+    console.log(111)
     const hub = store.getAdminInfo()
-    console.log(hub)
+    console.log("🚀 ~ init ~ hub:", hub)
     const [e, r] = await api.getMainInfo(hub.hub_id)
     console.log(r.data)
     Object.assign(Info, r.data)

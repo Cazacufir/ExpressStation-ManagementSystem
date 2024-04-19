@@ -16,5 +16,6 @@ export const adminStore = defineStore("admin",{
         deleteAdminInfo(){
             this.adminInfo = null
         }
-    }
+    },
+    persist: true,
 })

@@ -340,15 +340,15 @@
 	}
 
 	const toSend = async () => {
-		if(!Object.keys(send).length){
+		if (!Object.keys(send).length) {
 			uni.showToast({
-				title:'请填写寄件地址'
+				title: '请填写寄件地址'
 			})
 			return
 		}
-		if(!Object.keys(receive).length){
+		if (!Object.keys(receive).length) {
 			uni.showToast({
-				title:'请填写收件地址'
+				title: '请填写收件地址'
 			})
 			return
 		}
@@ -358,16 +358,19 @@
 		parcel.type = currentType.value
 		parcel.weight = weight.value
 
-		const currentDate = new Date();
-		if (dateTime.value[0] == '明') currentDate.setDate(currentDate.getDate() + 1)
-		else if (dateTime.value[0] == '后') currentDate.setDate(currentDate.getDate() + 2)
-		const year = currentDate.getFullYear();
-		const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-		const day = String(currentDate.getDate()).padStart(2, '0');
+		if (sendWay.value == '上门取件') {
+			const currentDate = new Date();
+			if (dateTime.value[0] == '明') currentDate.setDate(currentDate.getDate() + 1)
+			else if (dateTime.value[0] == '后') currentDate.setDate(currentDate.getDate() + 2)
+			const year = currentDate.getFullYear();
+			const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+			const day = String(currentDate.getDate()).padStart(2, '0');
 
-		const words = dateTime.value.split('天')[1]
+			const words = dateTime.value.split('天')[1]
 
-		parcel.dateTime = `${year}-${month}-${day}` + " " + words
+			parcel.dateTime = `${year}-${month}-${day}` + " " + words
+		}
+
 		parcel.price = price.value
 		parcel.user_id = user_id
 		parcel.hub_id = hub_id
