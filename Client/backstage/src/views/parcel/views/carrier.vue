@@ -25,8 +25,8 @@
 
                 <template #footer>
                     <div class="flex justify-center items-center gap-50">
-                        <el-button type="primary" plain size="large">修改</el-button>
-                        <el-button type="danger" plain size="large">删除</el-button>
+                        <el-button type="primary" plain size="large" @click="openCarrier(item)">修改</el-button>
+                        <el-button type="danger" plain size="large" @click="toDeleteCarrier(item,index)">删除</el-button>
                     </div>
                 </template>
             </el-card>
@@ -35,26 +35,32 @@
 
         <el-pagination class="m-auto" layout="prev, pager, next" :page-count="totalPage" @current-change="changePage" />
 
-        <el-dialog v-model="openForm" title="添加货架" class="flex flex-col justify-center items-center" width="400px">
-        <el-form :model="carrier" label-width="120px">
-            <el-form-item prop="num" label="货架序号：">
-                <el-input-number v-model="carrier.num" :min="1" />
-            </el-form-item>
+        <el-dialog v-model="openForm" title="货架编辑" class="flex flex-col justify-center items-center" width="400px" @close="closeForm">
+            <el-form :model="carrier" label-width="120px" v-if="!isDelete">
+                <el-form-item prop="num" label="货架序号：">
+                    <el-input-number v-model="carrier.num" :min="1" />
+                </el-form-item>
 
-            <el-form-item prop="flats" label="货架层数：">
-                <el-input-number v-model="carrier.flats" :min="1" />
-            </el-form-item>
+                <el-form-item prop="flats" label="货架层数：">
+                    <el-input-number v-model="carrier.flats" :min="1" />
+                </el-form-item>
 
-            <el-form-item prop="maxCount" label="最大存放数/层：">
-                <el-input-number v-model="carrier.maxCount" :min="5" />
-            </el-form-item>
-        </el-form>
+                <el-form-item prop="maxCount" label="最大存放数/层：">
+                    <el-input-number v-model="carrier.maxCount" :min="5" />
+                </el-form-item>
+            </el-form>
 
-        <template #footer>
-            <el-button @click="closeForm">取消</el-button>
-            <el-button type="primary" @click="addCarrier">新增货架</el-button>
-        </template>
-    </el-dialog>
+            <div class="flex flex-col justify-center items-center gap-15" v-else>
+                <el-icon size="30" color="#f56c6c"><WarningFilled /></el-icon>
+                <el-text>确定删除此货架？</el-text>
+            </div>
+            
+            <template #footer>
+                <el-button @click="closeForm">取消</el-button>
+                <el-button type="primary" @click="toJudge" v-if="!isDelete">新增货架</el-button>
+                <el-button type="danger" @click="toDelete" v-else>确定</el-button>
+            </template>
+        </el-dialog>
 
     </div>
 </template>
@@ -74,6 +80,7 @@ let hub_id = null
 
 let pageNum = 1
 let totalPage = null
+let carrierId
 
 let openForm = ref(false)
 const carrier = reactive({
@@ -112,8 +119,8 @@ const changePage = (value) => {
 }
 
 const addCarrier = async () => {
-    const [e,r] = await api.addCarrier(carrier)
-    if(r.code == 200){
+    const [e, r] = await api.addCarrier(carrier)
+    if (r.code == 200) {
         ElMessage({
             message: '添加货架成功',
             type: 'success',
@@ -121,13 +128,13 @@ const addCarrier = async () => {
         carrierList.value.push(carrier)
         closeForm()
     }
-    else{
+    else {
         ElMessage.error(r.msg)
-    } 
+    }
 }
 
-const checkNum = (role,value,callback) => {
-    if(value <= 0) {
+const checkNum = (role, value, callback) => {
+    if (value <= 0) {
         callback(new Error('此项必须为正整数'))
     }
 }
@@ -149,6 +156,67 @@ const closeForm = () => {
     carrier.flats = 1
     carrier.maxCount = 1
     openForm.value = false
+    isModify.value = false
+    isDelete.value = false
+    currentIndex = null
+    carrierId = null
+}
+
+let isModify = ref(false)
+
+const openCarrier = async (item) => {
+    Object.assign(carrier, item)
+    openForm.value = true
+    isModify.value = true
+}
+
+const updateCarrier = async () => {
+    const [e, r] = await api.updateCarrier(carrier)
+    if (r.code == 200) {
+        ElMessage({
+            message: '修改成功',
+            type: 'success',
+        })
+        closeForm()
+    }
+    else {
+        ElMessage.error(r.msg)
+    }
+}
+
+let currentIndex
+
+const toDeleteCarrier = (item,index) => {
+    openForm.value = true
+    isDelete.value = true
+    currentIndex = index
+    carrierId = item.carrierId
+}
+
+let isDelete = ref(false)
+
+const toJudge = () => {
+    if (isModify.value) updateCarrier()
+    else{
+        addCarrier()
+    }
+}
+
+const toDelete = async () => {
+    console.log(111)
+    const [e,r] = await api.deleteCarrier(carrierId)
+    console.log('r',r)
+    if (r.code == 200) {
+        carrierList.value.splice(currentIndex,1)
+        ElMessage({
+            message: '删除成功',
+            type: 'success',
+        })
+        closeForm()
+    }
+    else {
+        ElMessage.error(r.msg)
+    }
 }
 </script>
 

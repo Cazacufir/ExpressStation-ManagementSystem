@@ -83,21 +83,21 @@ export const PostForm = (url, data, params) => {
   });
 };
 
-// export const Delete = (url, data, params) => {
-//   return new Promise((resolve) => {
-//     inst
-//       .delete(url, {
-//         data: data,
-//         params: params,
-//       })
-//       .then((result) => {
-//         resolve([null, result.data]);
-//       })
-//       .catch((err) => {
-//         resolve([err, undefined]);
-//       });
-//   });
-// };
+export const DeleteObj = (url, data, params) => {
+  return new Promise((resolve) => {
+    inst
+      .delete(url, {
+        data: data,
+        params: params,
+      })
+      .then((result) => {
+        resolve([null, result.data]);
+      })
+      .catch((err) => {
+        resolve([err, undefined]);
+      });
+  });
+};
 export const Delete = (url, params, clearFn = undefined) =>
   new Promise((resolve) => {
     inst
