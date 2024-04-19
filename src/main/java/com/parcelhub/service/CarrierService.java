@@ -12,4 +12,6 @@ public interface CarrierService extends IService<Carrier> {
     Result addCarrier(Carrier carrier);
 
     Result updateCarrier(Carrier carrier);
+
+    Result deleteCarrier(int carrierId);
 }

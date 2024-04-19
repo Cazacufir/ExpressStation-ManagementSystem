@@ -30,4 +30,8 @@ public class CarrierController {
     public Result updateCarrier(@RequestBody Carrier carrier){
         return carrierService.updateCarrier(carrier);
     }
+    @DeleteMapping("/deleteCarrier")
+    public Result deleteCarrier(@RequestParam int carrierId){
+        return carrierService.deleteCarrier(carrierId);
+    }
 }

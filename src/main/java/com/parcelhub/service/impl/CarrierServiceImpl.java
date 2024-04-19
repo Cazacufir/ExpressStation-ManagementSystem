@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.parcelhub.dto.PagesDto;
 import com.parcelhub.entity.Carrier;
+import com.parcelhub.entity.CarrierFlat;
 import com.parcelhub.entity.Parcel;
 import com.parcelhub.mapper.CarrierFlatMapper;
 import com.parcelhub.mapper.CarrierMapper;
@@ -77,6 +78,18 @@ public class CarrierServiceImpl extends ServiceImpl<CarrierMapper, Carrier> impl
     @Override
     public Result updateCarrier(Carrier carrier){
         carrierMapper.updateById(carrier);
+        return Result.okResult();
+    }
+
+    @Override
+    public Result deleteCarrier(int carrierId){
+        LambdaQueryWrapper<CarrierFlat> carrierFlatLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        carrierFlatLambdaQueryWrapper.eq(CarrierFlat::getCarrier_id,carrierId);
+        List<CarrierFlat> carrierFlats = carrierFlatMapper.selectList(carrierFlatLambdaQueryWrapper);
+        if(carrierFlats.size() > 0){
+            return Result.errorResult(AppHttpCodeEnum.PARCEL_REMAIN);
+        }
+        carrierMapper.deleteById(carrierId);
         return Result.okResult();
     }
 }
