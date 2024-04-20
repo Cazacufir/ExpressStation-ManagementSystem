@@ -12,9 +12,15 @@
             <el-table-column prop="name" label="姓名" width="120" align="center" />
             <el-table-column prop="sex" label="性别" width="120" align="center" />
             <el-table-column prop="age" label="年龄" width="120" align="center" />
-            <el-table-column prop="work" label="职位" width="120" align="center" />
             <el-table-column prop="contact" label="联系方式" width="120" align="center" />
             <el-table-column prop="address" label="家庭住址" width="180" align="center" />
+
+            <el-table-column prop="work" label="职位" width="120" align="center" />
+            <el-table-column prop="affair" label="任务列表" width="180" align="center">
+                <template #default="scope">
+                    <span>{{ scope.row.affair? affair : '-' }}</span>
+                </template>
+            </el-table-column>
             <el-table-column prop="joinDate" label="入职日期" width="140" align="center">
                 <template #default="scope">
                     <span>{{ formatDate(scope.row.joinDate) }}</span>

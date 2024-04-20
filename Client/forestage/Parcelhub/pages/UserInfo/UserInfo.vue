@@ -84,6 +84,8 @@
 		// sex: 'M',
 		// age: 20
 	})
+	
+	let token
 
 	onLoad(() => {
 		uni.getStorage({
@@ -91,6 +93,12 @@
 			success(data) {
 				console.log('data', data)
 				Object.assign(userInfo, data.data)
+			}
+		})
+		uni.getStorage({
+			key: 'token',
+			success(data) {
+				token = data.data
 			}
 		})
 		console.log(userInfo)
@@ -208,6 +216,7 @@
 			filePath: e.tempFilePath,
 			name: 'file',
 			header:{
+				token:token,
 				type:'user'
 			},
 			formData: {
