@@ -18,7 +18,7 @@
             <el-table-column prop="work" label="职位" width="120" align="center" />
             <el-table-column prop="affair" label="任务列表" width="180" align="center">
                 <template #default="scope">
-                    <span>{{ scope.row.affair? affair : '-' }}</span>
+                    <span>{{ scope.row.affair? scope.row.affair : '-' }}</span>
                 </template>
             </el-table-column>
             <el-table-column prop="joinDate" label="入职日期" width="140" align="center">

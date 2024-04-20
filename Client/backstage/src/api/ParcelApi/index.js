@@ -39,11 +39,20 @@ export function addSendList(parcel){
     return Post("/addSendList",parcel)
 }
 
+export function getAllReserveParcel(pageNum,pageSize,hub_id){
+    return Get("/getAllReserveParcel",{
+        pageNum,
+        pageSize,
+        hub_id
+    })
+}
+
 export const ParcelApi = {
     getSendListByHub,
     sendParcelByHub,
     getSendingParcel,
     receiveParcelByHub,
     getAllParcelByHub,
-    addSendList
+    addSendList,
+    getAllReserveParcel
 }

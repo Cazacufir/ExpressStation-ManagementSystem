@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
-import { Histogram } from "@element-plus/icons-vue"
+import { Histogram } from "@element-plus/icons-vue";
+import component from "element-plus/es/components/tree-select/src/tree-select-option.mjs";
 
 const routes = [
   {
@@ -14,13 +15,13 @@ const routes = [
     redirect: "/login",
     children: [
       {
-        path:"/home",
+        path: "/home",
         name: "Home",
         component: async () => await import("@/views/home/home.vue"),
         meta: {
           title: "统计一览",
-          icon: 'Histogram',
-        }
+          icon: "Histogram",
+        },
       },
       {
         path: "/main",
@@ -28,7 +29,7 @@ const routes = [
         component: async () => await import("@/views/main/main.vue"),
         meta: {
           title: "驿站主体信息",
-          icon: 'HomeFilled'
+          icon: "HomeFilled",
         },
       },
       {
@@ -37,7 +38,7 @@ const routes = [
         component: async () => await import("@/views/cooperate/cooperate.vue"),
         meta: {
           title: "合作公司",
-          icon: 'OfficeBuilding'
+          icon: "OfficeBuilding",
         },
       },
       {
@@ -46,31 +47,32 @@ const routes = [
         component: async () => await import("@/views/staff/staff.vue"),
         meta: {
           title: "员工管理",
-          icon: 'Avatar'
+          icon: "Avatar",
         },
       },
       {
         path: "/parcel",
         name: "Parcel",
         component: async () => await import("@/views/parcel/parcel.vue"),
-        children:[
+        children: [
           {
-            path:'all',
-            name:'All',
+            path: "all",
+            name: "All",
             component: async () => await import("@/views/parcel/views/all.vue"),
-            meta:{
-              title:'快递总览',
-              icon: 'Search'
-            }
+            meta: {
+              title: "快递总览",
+              icon: "Search",
+            },
           },
           {
             path: "receive",
             name: "Receive",
-            component: async () => await import("@/views/parcel/views/receive.vue"),
-            meta:{
-              title:'快递入库',
-              icon: 'SoldOut'
-            }
+            component: async () =>
+              await import("@/views/parcel/views/receive.vue"),
+            meta: {
+              title: "快递入库",
+              icon: "SoldOut",
+            },
           },
           // {
           //   path: "out",
@@ -84,25 +86,27 @@ const routes = [
           {
             path: "send",
             name: "Send",
-            component: async () => await import("@/views/parcel/views/send.vue"),
-            meta:{
-              title:'快递出库',
-              icon: 'Van'
-            }
+            component: async () =>
+              await import("@/views/parcel/views/send.vue"),
+            meta: {
+              title: "快递出库",
+              icon: "Van",
+            },
           },
           {
-            path:"carrier",
-            name:"Carrier",
-            component: async () => await import("@/views/parcel/views/carrier.vue"),
-            meta:{
-              title:'货架一览',
-              icon: 'MessageBox'
-            }
-          }
+            path: "carrier",
+            name: "Carrier",
+            component: async () =>
+              await import("@/views/parcel/views/carrier.vue"),
+            meta: {
+              title: "货架一览",
+              icon: "MessageBox",
+            },
+          },
         ],
         meta: {
           title: "快递管理",
-          icon: 'Box'
+          icon: "Box",
         },
       },
       {
@@ -111,34 +115,54 @@ const routes = [
         component: async () => await import("@/views/delivery/delivery.vue"),
         meta: {
           title: "配送员管理",
-          icon: 'Promotion'
+          icon: "Promotion",
         },
       },
       {
         path: "/appointment",
         name: "Appointment",
-        component: async () =>
-          await import("@/views/appointment/appointment.vue"),
+        component: async () => await import("@/views/appointment/appointment.vue"),
+        children:[
+          {
+            path:"reserve",
+            name:"Reserve",
+            component:async () => await import("@/views/appointment/reserve.vue"),
+            meta:{
+              title:'预约取件',
+              icon:'Timer'
+            }
+          },
+          {
+            path:"delay",
+            name:"Delay",
+            component:async () => await import("@/views/appointment/delay.vue"),
+            meta:{
+              title:'延迟取件',
+              icon:'Stopwatch'
+            }
+          },
+        ],
         meta: {
           title: "预约管理",
-          icon: 'Clock'
+          icon: "Clock",
         },
       },
       {
         path: "/userInfo",
         name: "UserInfo",
-        component: async () => await import("@/views/userInfo/userInfo.vue")
+        component: async () => await import("@/views/userInfo/userInfo.vue"),
       },
       {
         path: "/password",
         name: "Password",
-        component: async () => await import("@/views/password/password.vue")
+        component: async () => await import("@/views/password/password.vue"),
       },
       {
-        path:"/:carrierId",
-        name:"CarrierId",
-        component: async () => await import("@/views/carrierDetail/[carrierId].vue")
-      }
+        path: "/:carrierId",
+        name: "CarrierId",
+        component: async () =>
+          await import("@/views/carrierDetail/[carrierId].vue"),
+      },
     ],
   },
 ];

@@ -18,7 +18,11 @@
             <el-table-column fixed="right" label="操作" width="150" align="center">
                 <template #default="scope">
                     <el-button link type="primary" @click.prevent="openForm(scope)">修改</el-button>
-                    <el-button link type="danger" @click.prevent="deleteRow(scope)">删除</el-button>
+                    <el-popconfirm title="确定要删除此配送员?" @confirm="deleteRow(scope)">
+                        <template #reference>
+                            <el-button link type="danger">删除</el-button>
+                        </template>
+                    </el-popconfirm>
                 </template>
             </el-table-column>
         </el-table>
