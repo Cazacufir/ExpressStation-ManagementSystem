@@ -18,7 +18,7 @@
 
             <el-table-column fixed="right" label="操作" width="80" align="center">
                 <template #default="scope">
-                    <el-button link type="primary">出库</el-button>
+                    <el-button link type="primary" @click.prevent="toSend(scope)">出库</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -63,5 +63,19 @@ const changePage = (value) => {
     pageNum = value
     console.log("🚀 ~ changePage ~ page:", value)
     getList()
+}
+
+const toSend = async (scope) => {
+    const [e,r] = await api.receiveSingleParcel(scope.row.parcelId)
+    if(r.code == 200){
+        list.value.splice(scope.$index,1)
+        ElMessage({
+            message: '出库成功，物流已更新',
+            type: 'success',
+        })
+    }
+    else {
+        ElMessage.error(r.msg)
+    }
 }
 </script>

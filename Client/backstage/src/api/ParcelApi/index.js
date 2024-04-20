@@ -47,6 +47,10 @@ export function getAllReserveParcel(pageNum,pageSize,hub_id){
     })
 }
 
+export function receiveSingleParcel(parcelId){
+    return Get("/receiveSingleParcel",{ parcelId:parcelId })
+}
+
 export const ParcelApi = {
     getSendListByHub,
     sendParcelByHub,
@@ -54,5 +58,6 @@ export const ParcelApi = {
     receiveParcelByHub,
     getAllParcelByHub,
     addSendList,
-    getAllReserveParcel
+    getAllReserveParcel,
+    receiveSingleParcel
 }
