@@ -17,6 +17,7 @@
 						<u-text :text="'手机号 ' + child.receiveContact + ' 的包裹'" size="13"></u-text>
 						<u-text :text="child.arrivalTime + ' 入站'" size="11"></u-text>
 						<u-text v-if="child.dateTime" :text="'已预约' + child.dateTime + '送货上门'" size="10" color="#1e80ff"></u-text>
+						<u-text v-if="child.days" type="error" :text="'已延迟' + child.days + '天取件'" size="10" color="#1e80ff"></u-text>
 					</div>
 
 					<rudon-rowMenuDotDotDot :localdata="options" @change="menuAction($event,child.parcelId)" >
@@ -31,7 +32,7 @@
 				</div>
 				
 				<div style="width: 20%;" v-if="!item.parcel[0].dateTime">
-					<u-button text="预约取件" shape="circle" @click="openDate(item)" size="small"></u-button>
+					<u-button text="预约取件" shape="circle" @click="openDate(item,index)" size="small"></u-button>
 				</div>
 				
 			</div>
@@ -57,6 +58,16 @@
 		
 		<u-picker :show="isShow" :columns="columns" closeOnClickOverlay="true" @confirm="confirm" @close="isShow = false"
 			@cancel="isShow = false" @change="changeHandler" title="请选择预约时间"></u-picker>
+			
+		<u-modal :show="isShowDelay" title="请选择延迟天数" closeOnClickOverlay="true" @confirm="confirmDelay" @close="closeDelay" @cancel="closeDelay">
+			<view class="slot-content">
+				<u-number-box v-model="delay.days" integer min="1" :max="14"></u-number-box>
+				<div style="border: 1px solid #ebebef;">
+					<u-input v-model="delay.reason" border="surround" placeholder="可备注"></u-input>
+				</div>
+				
+			</view>
+		</u-modal>
 	</div>
 	
 	<view class="containerR" v-else>
@@ -84,8 +95,46 @@
 	let isShowDate = ref(false)
 	let isShow = ref(false)
 	let dateTime = ref('明天09:00-11:00')
+	let isShowDelay = ref(false)
 	
 	let currentList = []
+	let currentIndex = null
+	
+	const delay = reactive({
+		parcel_id:null,
+		days:1,
+		reason:null
+	})
+	
+	const confirmDelay = async () => {
+		delay.parcel_id = delayId
+		await api.addDelay(delay)
+		.then(res => {
+			uni.showToast({
+				icon:'success',
+				title:'延时成功'
+			})
+			list.value.forEach(item => {
+				item.parcel.forEach(items => {
+					if(items.parcelId == delayId) items.days = delay.days
+				})
+			})
+			closeDelay()
+		})
+		.catch(res => {
+			uni.showToast({
+				title:res.msg
+			})
+		})
+	}
+	
+	const closeDelay = () => {
+		delay.parcel_id = null
+		delay.days = 1
+		delay.reason = null
+		delayId = null
+		isShowDelay.value = false
+	}
 	
 	const confirm = (e) => {
 		console.log('confirm', e);
@@ -93,8 +142,9 @@
 		isShow.value = false;
 	};
 	
-	const openDate = (item) => {
+	const openDate = (item,index) => {
 		currentList = item.parcel
+		currentIndex = index
 		console.log('currentList',currentList)
 		isShowDate.value = true
 	}
@@ -122,6 +172,9 @@
 				icon:'success',
 				title:'预约成功'
 			})
+			list.value[currentIndex].parcel = currentList
+			currentIndex = null
+			currentList = []
 		})
 		.catch(res => {
 			uni.showToast({
@@ -166,6 +219,7 @@
 
 	let isShowMoal = ref(false)
 	let currentVal = ref()
+	let delayId = null
 
 	const menuAction = (action, rowId) => {
 		if(action === '') return
@@ -175,6 +229,10 @@
 			isShowMoal.value = true
 			currentVal.value = rowId
 			wxbarcode.barcode('barcode', rowId, 250, 80)
+		}
+		else if(action == 1){
+			isShowDelay.value = true
+			delayId = rowId
 		}
 	}
 	
@@ -306,6 +364,7 @@
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
+		gap: 20rpx;
 	}
 	
 	.containerR {
