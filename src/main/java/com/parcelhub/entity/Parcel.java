@@ -1,6 +1,7 @@
 package com.parcelhub.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -55,4 +56,7 @@ public class Parcel implements Serializable {
     private int deliver_id;
 
     private String code;
+
+    @TableField(exist = false)
+    private String dateTime;
 }

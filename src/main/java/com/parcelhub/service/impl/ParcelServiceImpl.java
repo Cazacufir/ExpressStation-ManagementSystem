@@ -377,11 +377,11 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
 
     @Override
     public Result getReceivedParcel(Parcel parcel){
-        LambdaQueryWrapper<Parcel> parcelLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        parcelLambdaQueryWrapper.eq(Parcel::getReceiveName,parcel.getReceiveName())
-                .eq(Parcel::getReceiveContact,parcel.getReceiveContact())
-                .eq(Parcel::getState,"待取件");
-        List<Parcel> parcelList = parcelMapper.selectList(parcelLambdaQueryWrapper);
+//        LambdaQueryWrapper<Parcel> parcelLambdaQueryWrapper = new LambdaQueryWrapper<>();
+//        parcelLambdaQueryWrapper.eq(Parcel::getReceiveName,parcel.getReceiveName())
+//                .eq(Parcel::getReceiveContact,parcel.getReceiveContact())
+//                .eq(Parcel::getState,"待取件");
+        List<Parcel> parcelList = parcelMapper.getReceivedParcel(parcel.getReceiveName(),parcel.getReceiveContact());
         if(parcelList.size() == 0){
             return Result.errorResult(AppHttpCodeEnum.PARCEL_NOT_FOUND);
         }
