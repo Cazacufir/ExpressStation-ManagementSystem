@@ -1,12 +1,15 @@
 package com.parcelhub.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.parcelhub.dto.OrderParcelMerge;
 import com.parcelhub.dto.PagesDto;
 import com.parcelhub.entity.OrderList;
 import com.parcelhub.entity.Parcel;
+import com.parcelhub.entity.User;
 import com.parcelhub.mapper.OrderMapper;
 import com.parcelhub.mapper.ParcelMapper;
+import com.parcelhub.mapper.UserMapper;
 import com.parcelhub.service.OrderService;
 import com.parcelhub.utils.*;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,6 +25,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderList> implem
 
     @Autowired
     ParcelMapper parcelMapper;
+
+    @Autowired
+    UserMapper userMapper;
 
     @Autowired
     private RedisCache redisCache;
@@ -49,14 +55,31 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderList> implem
         parcel.setReceiveContact(orderParcelMerge.getReceiveContact());
         parcel.setType(orderParcelMerge.getType());
         parcel.setWeight(orderParcelMerge.getWeight());
-        parcel.setBelonged_id(orderParcelMerge.getUser_id());
+
+        if(orderParcelMerge.getUser_id()!=0){
+            parcel.setBelonged_id(orderParcelMerge.getUser_id());
+            orderList.setUser_id(orderParcelMerge.getUser_id());
+        }
+        else {
+            LambdaQueryWrapper<User> userLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            userLambdaQueryWrapper.eq(User::getName,orderParcelMerge.getSendName())
+                    .eq(User::getContact,orderParcelMerge.getSendContact());
+            User user = userMapper.selectOne(userLambdaQueryWrapper);
+            if (!Objects.isNull(user)){
+                parcel.setBelonged_id(user.getUserId());
+                orderList.setUser_id(user.getUserId());
+            }
+        }
+
         parcelMapper.insert(parcel);
         int parcelId = parcel.getParcelId();
 
         orderList.setOrderType(orderParcelMerge.getOrderType());
-        orderList.setDateTime(orderParcelMerge.getDateTime());
+        if(!Objects.isNull(orderParcelMerge.getDateTime())){
+            orderList.setDateTime(orderParcelMerge.getDateTime());
+        }
         orderList.setPrice(orderParcelMerge.getPrice());
-        orderList.setUser_id(orderParcelMerge.getUser_id());
+
         orderList.setHub_id(orderParcelMerge.getHub_id());
         orderList.setParcel_id(parcelId);
         orderMapper.insert(orderList);
