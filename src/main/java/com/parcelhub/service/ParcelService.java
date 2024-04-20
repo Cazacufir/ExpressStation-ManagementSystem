@@ -42,4 +42,6 @@ public interface ParcelService extends IService<Parcel> {
     Result receiveSingleParcel(int parcelId);
 
     Result receiveParcelByUser(List<Parcel> parcels);
+
+    Result getAllReserveParcel(Integer pageNum,Integer pageSize,int hub_id);
 }

@@ -100,4 +100,9 @@ public class ParcelController {
     public Result receiveParcelByUser(@RequestBody List<Parcel> parcels){
         return parcelService.receiveParcelByUser(parcels);
     }
+
+    @GetMapping("/getAllReserveParcel")
+    public Result getAllReserveParcel(Integer pageNum,Integer pageSize,int hub_id){
+        return parcelService.getAllReserveParcel(pageNum,pageSize,hub_id);
+    }
 }

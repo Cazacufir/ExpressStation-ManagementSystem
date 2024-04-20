@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.parcelhub.dto.OrderParcelMerge;
+import com.parcelhub.dto.PagesDto;
 import com.parcelhub.entity.*;
 import com.parcelhub.mapper.*;
 import com.parcelhub.service.ParcelService;
@@ -364,8 +365,7 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
     @Override
     public Result getAllParcelByHub(Integer pageNum,Integer pageSize,int hub_id){
         LambdaQueryWrapper<Parcel> parcelLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        parcelLambdaQueryWrapper.eq(Parcel::getHub_id,hub_id)
-                .ne(Parcel::getState,"已签收");
+        parcelLambdaQueryWrapper.eq(Parcel::getHub_id,hub_id);
         Page<Parcel> parcelPage = new Page<>(pageNum,pageSize);
         page(parcelPage,parcelLambdaQueryWrapper);
         int total = (int) parcelPage.getTotal();
@@ -461,5 +461,19 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
             carrierMapper.updateById(carrier);
         }
         return Result.okResult();
+    }
+
+    @Override
+    public Result getAllReserveParcel(Integer pageNum,Integer pageSize,int hub_id){
+        List<Parcel> parcelList = parcelMapper.getReserveParcel(hub_id);
+        int startIndex = (pageNum - 1) * pageSize;
+        int endIndex = Math.min(startIndex + pageSize, parcelList.size());
+        List<Parcel> parcelList1 = parcelList.subList(startIndex,endIndex);
+        PagesDto<Parcel> parcelPagesDto = PageUtils.listToPageDTO(parcelList,pageNum,pageSize);
+        parcelPagesDto.setDataList(parcelList1);
+        if(parcelPagesDto.getTotalElements() == 0){
+            return Result.errorResult(AppHttpCodeEnum.PARCEL_NOT_FOUND);
+        }
+        return Result.okResult(parcelPagesDto);
     }
 }

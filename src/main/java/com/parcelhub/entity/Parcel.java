@@ -59,4 +59,6 @@ public class Parcel implements Serializable {
 
     @TableField(exist = false)
     private String dateTime;
+    @TableField(exist = false)
+    private String name;
 }
