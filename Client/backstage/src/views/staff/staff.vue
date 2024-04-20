@@ -7,7 +7,7 @@
                 <el-button type="primary" icon="Search" @click="searchStaff"></el-button>
             </div>
         </div>
-        <el-table :data="isShowSearch? searchList : staffList" stripe>
+        <el-table :data="isShowSearch ? searchList : staffList" stripe>
             <el-table-column prop="staffId" label="工号" width="120" align="center" />
             <el-table-column prop="name" label="姓名" width="120" align="center" />
             <el-table-column prop="sex" label="性别" width="120" align="center" />
@@ -23,13 +23,18 @@
             <el-table-column fixed="right" label="操作" width="130" align="center">
                 <template #default="scope">
                     <el-button link type="primary" @click.prevent="openForm(scope)">修改</el-button>
-                    <el-button link type="danger" @click.prevent="deleteRow(scope)">删除</el-button>
+                    <el-popconfirm title="确定要删除此员工?" @confirm="deleteRow(scope)">
+                        <template #reference>
+                            <el-button link type="danger">删除</el-button>
+                        </template>
+                    </el-popconfirm>
                 </template>
             </el-table-column>
         </el-table>
 
-        <el-dialog v-model="isShow" :title="showTitile" width="600px" @close="closeForm" ref="staffForm_Ref" class="flex flex-col justify-center items-center">
-            <el-form :model="Staff" label-width="120px" :rules="staff_rules">
+        <el-dialog v-model="isShow" :title="showTitile" width="600px" @close="closeForm"
+            class="flex flex-col justify-center items-center">
+            <el-form :model="Staff" label-width="120px" :rules="staff_rules" ref="staffForm_Ref">
                 <el-form-item prop="name" label="员工姓名：">
                     <el-input v-model="Staff.name"></el-input>
                 </el-form-item>
@@ -45,6 +50,13 @@
                     </el-radio-group>
                 </el-form-item>
 
+                <el-form-item prop="work" label="职位：">
+                    <el-select v-model="Staff.work" placeholder="请选择职位">
+                        <el-option v-for="(item, index) in workType" :key="index" :label="item"
+                            :value="item"></el-option>
+                    </el-select>
+                </el-form-item>
+
                 <el-form-item prop="address" label="家庭住址：">
                     <el-input v-model="Staff.address"></el-input>
                 </el-form-item>
@@ -53,9 +65,6 @@
                     <el-input v-model="Staff.contact"></el-input>
                 </el-form-item>
 
-                <el-form-item prop="work" label="职位：">
-                    <el-input v-model="Staff.work"></el-input>
-                </el-form-item>
             </el-form>
 
             <template #footer>
@@ -80,13 +89,13 @@ let staffForm_Ref = ref()
 
 let currentIndex = null
 
-onMounted(()=>{
+onMounted(() => {
     init()
 })
 
 const init = async () => {
-    const hub=store.getAdminInfo() 
-    const [e,r] = await api.getStaffList(hub.hub_id)
+    const hub = store.getAdminInfo()
+    const [e, r] = await api.getStaffList(hub.hub_id)
     staffList.value = [...r.data]
     Staff.hub_id = hub.hub_id
 }
@@ -104,33 +113,34 @@ const Staff = reactive({
     contact: '',
     address: '',
     work: '',
+    affair:''
 })
 
 const searchFor = ref()
 
 const searchStaff = async () => {
-    if(searchFor.value == null){
+    if (searchFor.value == null) {
         return
     }
     searchList.value = []
     const word = parseInt(searchFor.value)
-    if(word){
-    const [e,r] = await api.getStaff(searchFor.value,null)
-        if(r.code == 200){
+    if (word) {
+        const [e, r] = await api.getStaff(searchFor.value, null)
+        if (r.code == 200) {
             searchList.value.push(r.data)
             isShowSearch.value = true
         }
-        else{
+        else {
             ElMessage.error(r.msg)
         }
     }
-    else{
-        const [e,r] = await api.getStaff(null,searchFor.value)
-        if(r.code == 200){
+    else {
+        const [e, r] = await api.getStaff(null, searchFor.value)
+        if (r.code == 200) {
             searchList.value = [...r.data]
             isShowSearch.value = true
         }
-        else{
+        else {
             ElMessage.error(r.msg)
         }
     }
@@ -187,32 +197,32 @@ const openForm = (scope) => {
     else {
         showTitile.value = '修改员工信息'
         currentIndex = scope.$index
-        console.log('currentIndex',currentIndex)
+        console.log('currentIndex', currentIndex)
         console.log(scope.row)
-        Object.assign(Staff,scope.row)
+        Object.assign(Staff, scope.row)
     }
     isShow.value = true
 }
 
 const updateForm = async () => {
-    const[e,r] = await api.updateStaffInfo(Staff)
+    const [e, r] = await api.updateStaffInfo(Staff)
     if (r.code == 200) {
         ElMessage({
             message: '修改成功！',
             type: 'success',
         })
-        Object.assign(staffList.value[currentIndex],Staff)
+        Object.assign(staffList.value[currentIndex], Staff)
         closeForm()
     }
 
-    else{
+    else {
         ElMessage.error('修改失败，请检查网络连接')
     }
 }
 
 const toValidateUpdate = () => {
     staffForm_Ref.value.validate((vaild) => {
-        if(vaild){
+        if (vaild) {
             updateForm()
         }
         else {
@@ -222,7 +232,7 @@ const toValidateUpdate = () => {
 }
 
 const addStaff = async () => {
-    const[e,r] = await api.addStaff(Staff)
+    const [e, r] = await api.addStaff(Staff)
     if (r.code == 200) {
         // staffList.value.push(JSON.parse(JSON.stringify(Staff)))
         staffList.value.push(r.data)
@@ -233,14 +243,14 @@ const addStaff = async () => {
         closeForm()
     }
 
-    else{
+    else {
         ElMessage.error('修改失败，请检查网络连接')
     }
 }
 
 const toValidate = () => {
     staffForm_Ref.value.validate((vaild) => {
-        if(vaild){
+        if (vaild) {
             addStaff()
         }
         else {
@@ -250,7 +260,7 @@ const toValidate = () => {
 }
 
 const deleteRow = async (scope) => {
-    const [e,r] = await api.deleteStaff(scope.row.staffId)
+    const [e, r] = await api.deleteStaff(scope.row.staffId)
     if (r.code == 200) {
         staffList.value.splice(scope.$index, 1)
         ElMessage({
@@ -260,16 +270,16 @@ const deleteRow = async (scope) => {
         closeForm()
     }
 
-    else{
+    else {
         ElMessage.error('删除失败，请检查网络连接')
     }
 }
 
-const submitStaff = () =>{
-    if(showTitile.value == '新增员工'){
+const submitStaff = () => {
+    if (showTitile.value == '新增员工') {
         toValidate()
     }
-    else{
+    else {
         toValidateUpdate()
     }
 }
@@ -283,11 +293,13 @@ function formatDate(dateString) {
     return `${year}年${month}月${day}日`;
 }
 
-watchEffect(()=>{
-    if(searchFor.value == ''){
+watchEffect(() => {
+    if (searchFor.value == '') {
         isShowSearch.value = false;
     }
 })
+
+const workType = ["站长", "管理员", "客服", "入库员", "配送员"]
 </script>
 
 <style lang="scss" scoped>
