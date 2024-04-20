@@ -219,9 +219,9 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
     }
 
     @Override
-    public Result sendParcelByHub(Map<String,Integer> map){
-        int parcelId = map.get("parcelId");
-        int hub_id = map.get("hub_id");
+    public Result sendParcelByHub(Map<String,Object> map){
+        int parcelId =(int) map.get("parcelId");
+        int hub_id =(int) map.get("hub_id");
         Parcel parcel = parcelMapper.selectById(parcelId);
 
         List<Deliver> deliverList =  redisCache.getCacheList("deliver_hub" + hub_id);
@@ -235,6 +235,34 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
         Company company = companyMapper.selectById(deliver.getCom_id());
         parcel.setCompany(company.getName());
         deliverMapper.updateById(deliver);
+
+        String orderType = (String) map.get("OrderType");
+        if(orderType.equals("上门取件")){
+            LambdaQueryWrapper<Staff> staffLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            staffLambdaQueryWrapper.eq(Staff::getHub_id,hub_id)
+                    .eq(Staff::getWork,"配送员");
+            List<Staff> staffList = staffMapper.selectList(staffLambdaQueryWrapper);
+            Staff staff = null;
+            String[] affairs = null;
+            for(Staff staff1 : staffList){
+                if (staff1.getAffair().contains("需揽收快件" + parcelId)){
+                    staff = staff1;
+                    affairs = staff1.getAffair().split(",");
+                    for(int i = 0; i < affairs.length; i++){
+                        if(affairs[i].contains("需揽收快件" + parcelId)){
+                            affairs[i] = "";
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+            String result = String.join(",", affairs);
+            if(!Objects.isNull(staff)){
+                staff.setAffair(result);
+            }
+            staffMapper.updateById(staff);
+        }
 
         Date now = new Date();
         parcel.setSendTime(now);
@@ -442,6 +470,7 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
             for(int i = 0; i < staffAffair.length; i++){
                 if(staffAffair[i].contains(parcel1.getCode())){
                     staffAffair[i] = "";
+                    break;
                 }
             }
             String result = String.join(",", staffAffair);
@@ -490,6 +519,7 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
                 for(int i = 0; i < staffAffair.length; i++){
                     if(staffAffair[i].contains(parcel2.getCode())){
                         staffAffair[i] = "";
+                        break;
                     }
                 }
                 String result = String.join(",", staffAffair);

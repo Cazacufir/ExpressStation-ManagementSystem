@@ -4,11 +4,10 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.parcelhub.dto.OrderParcelMerge;
 import com.parcelhub.dto.PagesDto;
-import com.parcelhub.entity.OrderList;
-import com.parcelhub.entity.Parcel;
-import com.parcelhub.entity.User;
+import com.parcelhub.entity.*;
 import com.parcelhub.mapper.OrderMapper;
 import com.parcelhub.mapper.ParcelMapper;
+import com.parcelhub.mapper.StaffMapper;
 import com.parcelhub.mapper.UserMapper;
 import com.parcelhub.service.OrderService;
 import com.parcelhub.utils.*;
@@ -28,6 +27,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderList> implem
 
     @Autowired
     UserMapper userMapper;
+
+    @Autowired
+    StaffMapper staffMapper;
 
     @Autowired
     private RedisCache redisCache;
@@ -77,6 +79,22 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderList> implem
         orderList.setOrderType(orderParcelMerge.getOrderType());
         if(!Objects.isNull(orderParcelMerge.getDateTime())){
             orderList.setDateTime(orderParcelMerge.getDateTime());
+
+            LambdaQueryWrapper<Staff> staffLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            staffLambdaQueryWrapper.eq(Staff::getHub_id,orderParcelMerge.getHub_id())
+                    .eq(Staff::getWork,"配送员");
+            List<Staff> staffList = staffMapper.selectList(staffLambdaQueryWrapper);
+            int index = (int) (Math.random()* staffList.size());
+            Staff staff = staffList.get(index);
+            String newAffair = "";
+            if(Objects.isNull(staff.getAffair())){
+                newAffair ="需揽收快件" + parcelId;
+            }
+            else{
+                newAffair = staff.getAffair() + "," + "需派送快件" +parcelId;
+            }
+            staff.setAffair(newAffair);
+            staffMapper.updateById(staff);
         }
         orderList.setPrice(orderParcelMerge.getPrice());
 

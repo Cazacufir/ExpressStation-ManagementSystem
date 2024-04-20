@@ -62,7 +62,7 @@ public class ParcelController {
     }
 
     @PostMapping("/sendParcelByHub")
-    public Result sendParcelByHub(@RequestBody Map<String,Integer> map){
+    public Result sendParcelByHub(@RequestBody Map<String,Object> map){
         return parcelService.sendParcelByHub(map);
     }
 
