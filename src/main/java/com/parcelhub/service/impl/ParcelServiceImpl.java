@@ -55,6 +55,12 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
     @Autowired
     CarrierFlatMapper carrierFlatMapper;
 
+    @Autowired
+    ReserveMapper reserveMapper;
+
+    @Autowired
+    StaffMapper staffMapper;
+
 
     @Override
     public Result getReceiveParcel(int userId){
@@ -426,6 +432,24 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
         carrier.setCurrentCount(carrier.getCurrentCount() - 1);
         carrierMapper.updateById(carrier);
 
+        LambdaQueryWrapper<Reserve> reserveLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        reserveLambdaQueryWrapper.eq(Reserve::getParcel_id,parcelId);
+        Reserve reserve = reserveMapper.selectOne(reserveLambdaQueryWrapper);
+        if(!Objects.isNull(reserve)){
+            Staff staff = staffMapper.selectById(reserve.getStaff_id());
+            String[] staffAffair = staff.getAffair().split(",");
+            Parcel parcel1 = parcelMapper.selectById(parcelId);
+            for(int i = 0; i < staffAffair.length; i++){
+                if(staffAffair[i].contains(parcel1.getCode())){
+                    staffAffair[i] = "";
+                }
+            }
+            String result = String.join(",", staffAffair);
+            staff.setAffair(result);
+            strDate = reserve.getDateTime();
+//            staffMapper.updateById(staff);
+        }
+
         parcel.setReceiveTime(strDate);
         parcel.setState("已签收");
         String str = "已签收" + "_" + now + "已签收，收件人已取走";
@@ -455,6 +479,23 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
             CarrierFlat carrierFlat = carrierFlatMapper.selectOne(carrierFlatLambdaQueryWrapper);
             int carrierId = carrierFlat.getCarrier_id();
             carrierFlatMapper.deleteById(carrierFlat);
+
+            LambdaQueryWrapper<Reserve> reserveLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            reserveLambdaQueryWrapper.eq(Reserve::getParcel_id,parcel.getParcelId());
+            Reserve reserve = reserveMapper.selectOne(reserveLambdaQueryWrapper);
+            if(!Objects.isNull(reserve)){
+                Staff staff = staffMapper.selectById(reserve.getStaff_id());
+                String[] staffAffair = staff.getAffair().split(",");
+                Parcel parcel2 = parcelMapper.selectById(parcel.getParcelId());
+                for(int i = 0; i < staffAffair.length; i++){
+                    if(staffAffair[i].contains(parcel2.getCode())){
+                        staffAffair[i] = "";
+                    }
+                }
+                String result = String.join(",", staffAffair);
+                staff.setAffair(result);
+                staffMapper.updateById(staff);
+            }
 
             Carrier carrier = carrierMapper.selectById(carrierId);
             carrier.setCurrentCount(carrier.getCurrentCount() - 1);
