@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -73,12 +74,21 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderList> implem
             }
         }
 
-        parcelMapper.insert(parcel);
+
         int parcelId = parcel.getParcelId();
 
         orderList.setOrderType(orderParcelMerge.getOrderType());
         if(!Objects.isNull(orderParcelMerge.getDateTime())){
             orderList.setDateTime(orderParcelMerge.getDateTime());
+            String strDate = orderParcelMerge.getDateTime();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            try{
+                Date date = new Date(sdf.parse(strDate).getTime());
+                parcel.setCurrentDate(date);
+            }
+            catch (java.text.ParseException e){
+                System.out.println(e);
+            }
 
             LambdaQueryWrapper<Staff> staffLambdaQueryWrapper = new LambdaQueryWrapper<>();
             staffLambdaQueryWrapper.eq(Staff::getHub_id,orderParcelMerge.getHub_id())
@@ -100,6 +110,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderList> implem
 
         orderList.setHub_id(orderParcelMerge.getHub_id());
         orderList.setParcel_id(parcelId);
+        parcelMapper.insert(parcel);
         orderMapper.insert(orderList);
 
         return Result.okResult();

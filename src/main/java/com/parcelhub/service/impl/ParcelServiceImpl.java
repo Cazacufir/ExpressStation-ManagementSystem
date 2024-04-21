@@ -274,7 +274,12 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
         parcel.setCurrentCity(city);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String strDate = sdf.format(now);
-        parcel.setRoute("已揽收" + "_" +  strDate + "_" + city);
+        if(!Objects.isNull(parcel.getCurrentDate())){
+            parcel.setRoute("已揽收" + "_" +  parcel.getCurrentDate() + "_" + city);
+        }
+        else{
+            parcel.setRoute("已揽收" + "_" +  strDate + "_" + city);
+        }
         parcelMapper.updateById(parcel);
 
         return Result.okResult(parcel);
