@@ -31,7 +31,7 @@
             </el-table-column>
         </el-table>
 
-        <!-- <el-pagination layout="prev, pager, next" :page-count="totalPage" @current-change="changePage" /> -->
+        <el-pagination layout="prev, pager, next" :page-count="totalPage" @current-change="changePage" />
     </div>
 </template>
 

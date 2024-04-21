@@ -26,12 +26,12 @@
 				</div>
 			</div>
 			
-			<div class="parcelBottom">
+			<div class="parcelBottom" v-if="!list.length">
 				<div style="width: 30%;">
 					<u-button text="身份码取件" shape="circle" type="primary" @click="toReceiveAll(item.parcel)" size="small"></u-button>
 				</div>
 				
-				<div style="width: 20%;" v-if="!item.parcel[0].dateTime">
+				<div style="width: 20%;" v-if="judgeIfBook(item.parcel[0])">
 					<u-button text="预约取件" shape="circle" @click="openDate(item,index)" size="small"></u-button>
 				</div>
 				
@@ -47,7 +47,7 @@
 			</view>
 		</u-modal>
 		
-		<u-modal :show="isShowDate" title="请选择预约时间" @confirm="confirmDate" @close="closeDate">
+		<u-modal :show="isShowDate" title="请选择预约时间" showCancelButton="true" @confirm="confirmDate" @close="closeDate">
 			<view class="slot-content">
 				<span class="litteBar" @click="isShow = true">
 					<u-text :text="'预约 ' + dateTime" color="#1e80ff"></u-text>
@@ -59,15 +59,17 @@
 		<u-picker :show="isShow" :columns="columns" closeOnClickOverlay="true" @confirm="confirm" @close="isShow = false"
 			@cancel="isShow = false" @change="changeHandler" title="请选择预约时间"></u-picker>
 			
-		<u-modal :show="isShowDelay" title="请选择延迟天数" closeOnClickOverlay="true" @confirm="confirmDelay" @close="closeDelay" @cancel="closeDelay">
+		<u-modal :show="isShowDelay" title="请选择延迟天数" closeOnClickOverlay="true" showCancelButton="true" @confirm="confirmDelay" @close="closeDelay" @cancel="closeDelay">
 			<view class="slot-content">
 				<u-number-box v-model="delay.days" integer min="1" :max="14"></u-number-box>
 				<div style="border: 1px solid #ebebef;">
 					<u-input v-model="delay.reason" border="surround" placeholder="可备注"></u-input>
 				</div>
-				
 			</view>
 		</u-modal>
+		
+		<u-modal :show="isShowReturn" title="确定回退此包裹？" closeOnClickOverlay="true" showCancelButton="true" @confirm="confirmReturn" @close="closeReturn" @cancel="closeReturn">
+		</u-modal>		
 	</div>
 	
 	<view class="containerR" v-else>
@@ -96,9 +98,37 @@
 	let isShow = ref(false)
 	let dateTime = ref('明天09:00-11:00')
 	let isShowDelay = ref(false)
+	let isShowReturn = ref(false)
 	
 	let currentList = []
 	let currentIndex = null
+	
+	const closeReturn = () => {
+		returnId = null
+		isShowReturn.value = false
+	}
+	
+	const confirmReturn = async () => {
+		await api.returnParcel({ parcelId:returnId })
+		.then(res => {
+			uni.showToast({
+				title:'success',
+				title:'回退成功'
+			})
+			list.value.forEach(item => {
+				item.parcel = item.parcel.filter(items => {
+					items.parcelId !== returnId
+				})
+			})
+			closeReturn()
+		})
+		.catch(res => {
+			uni.showToast({
+				icon:'none',
+				title:res.msg
+			})
+		})
+	}
 	
 	const delay = reactive({
 		parcel_id:null,
@@ -220,6 +250,7 @@
 	let isShowMoal = ref(false)
 	let currentVal = ref()
 	let delayId = null
+	let returnId = null
 
 	const menuAction = (action, rowId) => {
 		if(action === '') return
@@ -233,6 +264,10 @@
 		else if(action == 1){
 			isShowDelay.value = true
 			delayId = rowId
+		}
+		else if(action == 2){
+			isShowReturn.value = true
+			returnId = rowId
 		}
 	}
 	
@@ -293,6 +328,13 @@
 			picker.setColumnValues(1, columnData[index]);
 		}
 	};
+	
+	const judgeIfBook = (item) => {
+		Object.keys(item).forEach(items => {
+			if(items == 'dateTime') return false
+		})
+		return true
+	}
 </script>
 
 <style scoped lang="scss">
