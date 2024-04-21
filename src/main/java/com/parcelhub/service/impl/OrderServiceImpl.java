@@ -88,10 +88,10 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderList> implem
             Staff staff = staffList.get(index);
             String newAffair = "";
             if(Objects.isNull(staff.getAffair())){
-                newAffair ="需揽收快件" + parcelId;
+                newAffair ="需于" + orderParcelMerge.getDateTime() + "揽收快件" + parcelId;
             }
             else{
-                newAffair = staff.getAffair() + "," + "需派送快件" +parcelId;
+                newAffair = staff.getAffair() + "," + "需于" + orderParcelMerge.getDateTime() + "揽收快件" + parcelId;
             }
             staff.setAffair(newAffair);
             staffMapper.updateById(staff);
@@ -132,6 +132,10 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderList> implem
     @Override
     public Result cancelSendList(int orderId){
         OrderList orderList = orderMapper.selectById(orderId);
+        Parcel parcel = parcelMapper.selectById(orderList.getParcel_id());
+        if (!parcel.getState().equals("等待揽收")){
+            return Result.errorResult(AppHttpCodeEnum.PARCEL_OUT);
+        }
         parcelMapper.deleteById(orderList.getParcel_id());
 
         orderList.setDel_flag(1);

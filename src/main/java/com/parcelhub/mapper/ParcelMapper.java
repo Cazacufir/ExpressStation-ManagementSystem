@@ -10,9 +10,10 @@ import java.util.List;
 
 @Mapper
 public interface ParcelMapper extends BaseMapper<Parcel> {
-    @Select("SELECT p.*,r.* " +
+    @Select("SELECT p.*,r.*,d.* " +
             "FROM parcel p " +
             "LEFT JOIN reserve r ON p.parcelId = r.parcel_id " +
+            "LEFT JOIN delay d ON p.parcelId = d.parcel_id " +
             "WHERE p.receiveName = #{receiveName} AND p.receiveContact = #{receiveContact} AND p.state = '待取件'")
     List<Parcel> getReceivedParcel(String receiveName,String receiveContact);
 

@@ -2,8 +2,6 @@ package com.parcelhub.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.parcelhub.entity.Deliver;
-import com.parcelhub.entity.Parcel;
 import com.parcelhub.entity.Reserve;
 import com.parcelhub.entity.Staff;
 import com.parcelhub.mapper.ReserveMapper;
@@ -43,7 +41,7 @@ public class ReserveServiceImpl extends ServiceImpl<ReserveMapper, Reserve> impl
             Staff staff = staffList.get(index);
             String newAffair = "";
             if(Objects.isNull(staff.getAffair())){
-                newAffair ="需派送快件" + map.get("code");
+                newAffair ="需于" + map.get("dateTime") + "派送快件" + map.get("code");
             }
             else{
                 newAffair = staff.getAffair() + "," + "需派送快件" + map.get("code");
