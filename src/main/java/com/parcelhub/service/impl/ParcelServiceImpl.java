@@ -61,6 +61,9 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
     @Autowired
     StaffMapper staffMapper;
 
+    @Autowired
+    DelayMapper delayMapper;
+
 
     @Override
     public Result getReceiveParcel(int userId){
@@ -481,7 +484,14 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
             String result = String.join(",", staffAffair);
             staff.setAffair(result);
             strDate = reserve.getDateTime();
-//            staffMapper.updateById(staff);
+            staffMapper.updateById(staff);
+        }
+
+        LambdaQueryWrapper<Delay> delayLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        delayLambdaQueryWrapper.eq(Delay::getParcel_id,parcelId);
+        Delay delay = delayMapper.selectOne(delayLambdaQueryWrapper);
+        if(!Objects.isNull(delay)){
+            deliverMapper.deleteById(delay);
         }
 
         parcel.setReceiveTime(strDate);
@@ -530,6 +540,13 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
                 String result = String.join(",", staffAffair);
                 staff.setAffair(result);
                 staffMapper.updateById(staff);
+            }
+
+            LambdaQueryWrapper<Delay> delayLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            delayLambdaQueryWrapper.eq(Delay::getParcel_id,parcel.getParcelId());
+            Delay delay = delayMapper.selectOne(delayLambdaQueryWrapper);
+            if(!Objects.isNull(delay)){
+                deliverMapper.deleteById(delay);
             }
 
             Carrier carrier = carrierMapper.selectById(carrierId);

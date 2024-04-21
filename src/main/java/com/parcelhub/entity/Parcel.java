@@ -67,4 +67,7 @@ public class Parcel implements Serializable {
 
     @TableField(exist = false)
     private int days;
+
+    @TableField(exist = false)
+    private String reason;
 }
