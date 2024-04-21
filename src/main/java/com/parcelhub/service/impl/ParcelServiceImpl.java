@@ -240,7 +240,7 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
         deliverMapper.updateById(deliver);
 
         String orderType = (String) map.get("OrderType");
-        if(orderType.equals("上门取件")){
+        if(Objects.nonNull(orderType) && orderType.equals("上门取件")){
             LambdaQueryWrapper<Staff> staffLambdaQueryWrapper = new LambdaQueryWrapper<>();
             staffLambdaQueryWrapper.eq(Staff::getHub_id,hub_id)
                     .eq(Staff::getWork,"配送员");
@@ -273,7 +273,7 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
         String address = parcel.getSendAddress();
         List<Map<String, String>> result = AddressUtil.addressResolution(address);
         parcel.setCurrentDate(now);
-        String city=  result.get(0).get("city");
+        String city = result.get(0).get("city");
         parcel.setCurrentCity(city);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String strDate = sdf.format(now);
@@ -568,5 +568,54 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
             return Result.errorResult(AppHttpCodeEnum.PARCEL_NOT_FOUND);
         }
         return Result.okResult(parcelPagesDto);
+    }
+
+    @Override
+    public Result returnParcel(int parcelId){
+        Parcel parcel = parcelMapper.selectById(parcelId);
+        String sendName = parcel.getSendName();
+        String sendContact = parcel.getSendContact();
+        String sendAddress = parcel.getSendAddress();
+        String receiveName = parcel.getReceiveName();
+        String receiveContact = parcel.getReceiveContact();
+        String receiveAddress = parcel.getReceiveAddress();
+        parcel.setSendName(receiveName);
+        parcel.setSendContact(receiveContact);
+        parcel.setSendAddress(receiveAddress);
+        parcel.setReceiveName(sendName);
+        parcel.setReceiveContact(sendContact);
+        parcel.setReceiveAddress(sendAddress);
+
+        List<Deliver> deliverList = deliverHubMergeMapper.getAllDeliverByHubId(parcel.getHub_id());
+        int index = (int) (Math.random()* deliverList.size());
+        Deliver deliver = deliverList.get(index);
+        deliver.setAffair("正在运送快递单号为 " + parcelId + " 的包裹");
+        Company company = companyMapper.selectById(deliver.getCom_id());
+        parcel.setCompany(company.getName());
+        deliverMapper.updateById(deliver);
+
+        Date now = new Date();
+        parcel.setSendTime(now);
+        parcel.setState("已揽收");
+        List<Map<String, String>> result = AddressUtil.addressResolution(sendAddress);
+        parcel.setCurrentDate(now);
+        String city = result.get(0).get("city");
+        parcel.setCurrentCity(city);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String strDate = sdf.format(now);
+        parcel.setRoute("已揽收" + "_" +  strDate + "_" + city);
+
+        LambdaQueryWrapper<CarrierFlat> carrierFlatLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        carrierFlatLambdaQueryWrapper.eq(CarrierFlat::getParcel_id,parcelId);
+        CarrierFlat carrierFlat = carrierFlatMapper.selectOne(carrierFlatLambdaQueryWrapper);
+        int carrierId = carrierFlat.getCarrier_id();
+        carrierFlatMapper.deleteById(carrierFlat);
+
+        Carrier carrier = carrierMapper.selectById(carrierId);
+        carrier.setCurrentCount(carrier.getCurrentCount() - 1);
+        carrierMapper.updateById(carrier);
+
+        parcelMapper.updateById(parcel);
+        return Result.okResult();
     }
 }

@@ -105,4 +105,9 @@ public class ParcelController {
     public Result getAllReserveParcel(Integer pageNum,Integer pageSize,int hub_id){
         return parcelService.getAllReserveParcel(pageNum,pageSize,hub_id);
     }
+
+    @GetMapping("/returnParcel")
+    public Result returnParcel(@RequestParam int parcelId){
+        return parcelService.returnParcel(parcelId);
+    }
 }
