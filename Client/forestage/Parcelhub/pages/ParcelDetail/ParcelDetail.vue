@@ -14,6 +14,7 @@
 				<div class="parcelInfo">
 					<u-text :text="'快递公司：' + parcel.company? parcel.company : '顺丰'" bold size="13"></u-text>
 					<u-text :text="'快递单号： ' + parcel.parcelId" size="11"></u-text>
+					<u-text :text="'预计' + expectTime  + '前后送达'" size="11"></u-text>
 				</div>
 
 				<div v-if="parcel.state != '等待揽收' && cityIndex != cities.length" style="margin-left: auto;">
@@ -110,6 +111,8 @@
 	let cityIndex = 0
 	let currentCity = ref()
 	let currentDate = ref()
+	
+	let expectTime = ref()
 
 	const markers = ref([{
 		iconPath: "../../static/start.png",
@@ -203,6 +206,9 @@
 						if (data.paths[0] && data.paths[0].distance) {
 							distance = data.paths[0].distance + '米'
 						}
+						let newDate = new Date(parcel.sendTime)
+						newDate.setDate(newDate.getDate() + cities.length/2)
+						expectTime.value = newDate.toISOString().slice(5, 10).replace("T", " ");
 					}
 				})
 			}

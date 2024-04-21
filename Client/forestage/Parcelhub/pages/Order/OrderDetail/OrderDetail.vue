@@ -31,7 +31,7 @@
 					<u-button type="primary" text="寄"></u-button>
 				</span>
 
-				<div style="display: flex;flex-direction: column;gap: 10rpx;">
+				<div style="display: flex;flex-direction: column;gap: 10rpx;flex: 1;">
 					<div class="addressBar">
 						<span>
 							<u-text :text="parcel.sendName" bold="true"></u-text>
@@ -53,7 +53,7 @@
 					<u-button type="primary" text="收" color="#0ab99c"></u-button>
 				</span>
 
-				<div style="display: flex;flex-direction: column;gap: 10rpx;width: 100%;">
+				<div style="display: flex;flex-direction: column;gap: 10rpx;width: 100%;flex: 1;">
 					<div class="addressBar">
 						<span>
 							<u-text :text="parcel.receiveName" bold="true"></u-text>
