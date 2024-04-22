@@ -59,6 +59,9 @@ const toLogin = async () => {
     user.contact += user.showContact    
     const [e, r] = await api.login(user)
     console.log('res', r)
+    if(!r.msg){
+        toLogin()
+    }
     if (r.msg != '认证或授权失败') {
         utils.setSession("token", r.data.token);
         utils.setSession("admin",r.data.adminInfoVo)

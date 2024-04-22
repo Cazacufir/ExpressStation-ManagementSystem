@@ -19,6 +19,7 @@
                 </template>
             </el-table-column>
             <el-table-column prop="state" label="当前状态" width="100" align="center" />
+            <el-table-column prop="orderType" label="订单类型" width="100" align="center" />
             <el-table-column prop="orderTime" label="下单时间" width="140" align="center">
                 <template #default="scope">
                     <span>{{ formatDate(scope.row.orderTime) }}</span>
@@ -72,7 +73,7 @@ const getList = async () => {
 const toSend = async (scope) => {
     console.log("🚀 ~ toSend ~ scope:", scope.row.parcelId)
     console.log("🚀 ~ toSend ~ scope:", scope.$index)
-    const [e,r] = await api.sendParcelByHub(scope.row.parcelId,hub_id)
+    const [e,r] = await api.sendParcelByHub(scope.row)
     if(r.code == 200){
         list.value.splice(scope.$index,1)
         ElMessage({

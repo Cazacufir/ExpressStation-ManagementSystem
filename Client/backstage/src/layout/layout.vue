@@ -1,15 +1,15 @@
 <template>
-    <el-container>
+    <el-container class="h-full overflow-y-hidden">
         <el-header class="header">
             <Header></Header>
         </el-header>
 
-        <el-container>
-            <el-aside class="carrier w-200px h-100vh" >
+        <el-container class="h-full bg-gray-200">
+            <el-aside class="carrier h-full" width="250px">
                 <SideBar></SideBar>
             </el-aside>
 
-            <el-main>
+            <el-main class="ml-15 mt-15 bg-white">
                 <AppMain></AppMain>
             </el-main>
         </el-container>

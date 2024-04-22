@@ -12,8 +12,13 @@ export function updateHubInfo(hub){
     return Put('/updateHubInfo',hub)
 }
 
+export function getPriceWeek(hub_id){
+    return Get("/getPriceWeek",{ hub_id:hub_id })
+}
+
 export const hubApi = {
     getMainInfo,
     vertifyHub,
     updateHubInfo,
+    getPriceWeek
 }

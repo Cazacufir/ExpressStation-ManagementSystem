@@ -63,6 +63,10 @@ export function returnParcel(parcelId){
     return Get("/returnParcel",{ parcelId:parcelId })
 }
 
+export function countParcel(hub_id){
+    return Get("/countParcel",{ hub_id:hub_id })
+}
+
 export const ParcelApi = {
     getSendListByHub,
     sendParcelByHub,
@@ -73,5 +77,6 @@ export const ParcelApi = {
     getAllReserveParcel,
     receiveSingleParcel,
     getDelayParcel,
-    returnParcel
+    returnParcel,
+    countParcel
 }

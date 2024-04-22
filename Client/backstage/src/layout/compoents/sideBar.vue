@@ -33,7 +33,7 @@
 
 <script setup>
 
-import { onMounted, ref, computed } from "vue";
+import { onMounted, ref, computed,onBeforeMount } from "vue";
 import { useRouter } from "vue-router";
 import { useRoute } from "vue-router";
 
@@ -41,7 +41,7 @@ const router = useRouter();
 const route = useRoute();
 
 const tabs = ref([])
-onMounted(() => {
+onBeforeMount(() => {
     tabs.value = [...router.options.routes[1].children]
     tabs.value.splice(tabs.value.length, 1)
     console.log(tabs.value)
