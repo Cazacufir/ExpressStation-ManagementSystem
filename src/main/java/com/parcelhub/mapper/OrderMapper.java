@@ -3,8 +3,10 @@ package com.parcelhub.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.parcelhub.dto.OrderParcelMerge;
 import com.parcelhub.entity.OrderList;
+import com.parcelhub.vo.PriceVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+
 
 import java.util.List;
 
@@ -28,4 +30,10 @@ public interface OrderMapper extends BaseMapper<OrderList> {
             "INNER JOIN parcel p ON o.parcel_id = p.parcelId " +
             "WHERE o.hub_id = #{hub_id} AND o.del_flag = 0 AND p.state = '等待揽收' ;")
     List<OrderParcelMerge> getSendParcelByHub(int hub_id);
+
+    @Select("SELECT DATE(orderTime) AS OrderDate, SUM(price) AS TotalPrice " +
+            "FROM orderlist o " +
+            "WHERE OrderTime BETWEEN DATE_SUB(CURDATE(), INTERVAL 10 DAY) AND CURDATE() AND o.hub_id = #{hub_id} " +
+            "GROUP BY OrderDate")
+    List<PriceVo> getPriceByHub(int hub_id);
 }

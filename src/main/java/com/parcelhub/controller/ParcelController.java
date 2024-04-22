@@ -110,4 +110,9 @@ public class ParcelController {
     public Result returnParcel(@RequestParam int parcelId){
         return parcelService.returnParcel(parcelId);
     }
+
+    @GetMapping("/countParcel")
+    public Result countParcel(@RequestParam int hub_id){
+        return parcelService.countParcel(hub_id);
+    }
 }

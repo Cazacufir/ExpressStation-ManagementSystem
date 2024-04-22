@@ -42,4 +42,9 @@ public class OrderController {
     public Result getSendListByHub(Integer pageNum,Integer pageSize,int hub_id){
         return orderService.getSendListByHub(pageNum,pageSize,hub_id);
     }
+
+    @GetMapping("/getPriceWeek")
+    public Result getPriceWeek(@RequestParam int hub_id){
+        return orderService.getPriceWeek(hub_id);
+    }
 }

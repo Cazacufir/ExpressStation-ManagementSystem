@@ -11,6 +11,7 @@ import com.parcelhub.mapper.StaffMapper;
 import com.parcelhub.mapper.UserMapper;
 import com.parcelhub.service.OrderService;
 import com.parcelhub.utils.*;
+import com.parcelhub.vo.PriceVo;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -78,9 +79,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderList> implem
         int parcelId = parcel.getParcelId();
 
         orderList.setOrderType(orderParcelMerge.getOrderType());
-        if(!Objects.isNull(orderParcelMerge.getDateTime())){
+        if(orderParcelMerge.getOrderType().equals("上门取件")){
             orderList.setDateTime(orderParcelMerge.getDateTime());
-            String strDate = orderParcelMerge.getDateTime();
+            String strDate = orderParcelMerge.getDateTime().substring(0,16);
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             try{
                 Date date = new Date(sdf.parse(strDate).getTime());
@@ -192,6 +193,12 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderList> implem
         PagesDto<OrderParcelMerge> orderParcelMergePagesDto = PageUtils.listToPageDTO(orderParcelMergeList,pageNum,pageSize);
         orderParcelMergePagesDto.setDataList(orderParcelMergeList1);
         return Result.okResult(orderParcelMergePagesDto);
+    }
+
+    @Override
+    public Result getPriceWeek(int hub_id){
+        List<PriceVo> priceVoList = orderMapper.getPriceByHub(hub_id);
+        return Result.okResult(priceVoList);
     }
 
 }

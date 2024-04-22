@@ -10,13 +10,16 @@ import com.parcelhub.entity.*;
 import com.parcelhub.mapper.*;
 import com.parcelhub.service.ParcelService;
 import com.parcelhub.utils.*;
+import com.parcelhub.vo.CountParcelVo;
 import com.parcelhub.vo.ReceiveParcelVo;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 
 @Service
@@ -63,6 +66,9 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
 
     @Autowired
     DelayMapper delayMapper;
+
+    @Autowired
+    OrderMapper orderMapper;
 
 
     @Override
@@ -226,6 +232,8 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
         int parcelId =(int) map.get("parcelId");
         int hub_id =(int) map.get("hub_id");
         Parcel parcel = parcelMapper.selectById(parcelId);
+        Date now = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         List<Deliver> deliverList =  redisCache.getCacheList("deliver_hub" + hub_id);
         if(deliverList.size() == 0){
@@ -248,11 +256,11 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
             Staff staff = null;
             String[] affairs = null;
             for(Staff staff1 : staffList){
-                if (staff1.getAffair().contains("需揽收快件" + parcelId)){
+                if (staff1.getAffair().contains("" + parcelId)){
                     staff = staff1;
                     affairs = staff1.getAffair().split(",");
                     for(int i = 0; i < affairs.length; i++){
-                        if(affairs[i].contains("需揽收快件" + parcelId)){
+                        if(affairs[i].contains("" + parcelId)){
                             affairs[i] = "";
                             break;
                         }
@@ -265,9 +273,19 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
                 staff.setAffair(result);
             }
             staffMapper.updateById(staff);
+
+            LambdaQueryWrapper<OrderList> orderListLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            orderListLambdaQueryWrapper.eq(OrderList::getParcel_id,parcelId);
+            OrderList orderList = orderMapper.selectOne(orderListLambdaQueryWrapper);
+            String dateTime = orderList.getDateTime().substring(0,16);
+            try {
+                now = sdf.parse(dateTime);
+            }
+            catch (java.text.ParseException e){
+                System.out.println(e);
+            }
         }
 
-        Date now = new Date();
         parcel.setSendTime(now);
         parcel.setState("已揽收");
         String address = parcel.getSendAddress();
@@ -275,14 +293,14 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
         parcel.setCurrentDate(now);
         String city = result.get(0).get("city");
         parcel.setCurrentCity(city);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String strDate = sdf.format(now);
-        if(!Objects.isNull(parcel.getCurrentDate())){
-            parcel.setRoute("已揽收" + "_" +  parcel.getCurrentDate() + "_" + city);
-        }
-        else{
-            parcel.setRoute("已揽收" + "_" +  strDate + "_" + city);
-        }
+//        if(!Objects.isNull(parcel.getCurrentDate())){
+//            parcel.setRoute("已揽收" + "_" +  parcel.getCurrentDate() + "_" + city);
+//        }
+//        else{
+//            parcel.setRoute("已揽收" + "_" +  strDate + "_" + city);
+//        }
+        parcel.setRoute("已揽收" + "_" +  strDate + "_" + city);
         parcelMapper.updateById(parcel);
 
         return Result.okResult(parcel);
@@ -617,5 +635,44 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
 
         parcelMapper.updateById(parcel);
         return Result.okResult();
+    }
+
+    @Override
+    public Result countParcel(int hub_id){
+        CountParcelVo countParcelVo = new CountParcelVo();
+        LocalDate today = LocalDate.now();
+
+        LambdaQueryWrapper<Parcel> parcelLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        parcelLambdaQueryWrapper.eq(Parcel::getHub_id,hub_id)
+                .eq(Parcel::getState,"待取件");
+        countParcelVo.setCurrentParcel(parcelMapper.selectCount(parcelLambdaQueryWrapper));
+
+        LambdaQueryWrapper<Parcel> parcelLambdaQueryWrapper1 = new LambdaQueryWrapper<>();
+        parcelLambdaQueryWrapper1.eq(Parcel::getHub_id,hub_id)
+                .eq(Parcel::getState,"派送中");
+        countParcelVo.setPendingReceiveParcel(parcelMapper.selectCount(parcelLambdaQueryWrapper1));
+
+        LambdaQueryWrapper<Parcel> parcelLambdaQueryWrapper2 = new LambdaQueryWrapper<>();
+        parcelLambdaQueryWrapper2.eq(Parcel::getHub_id,hub_id)
+                .eq(Parcel::getState,"等待揽收");
+        countParcelVo.setPendingSendParcel(parcelMapper.selectCount(parcelLambdaQueryWrapper2));
+
+        LambdaQueryWrapper<Parcel> parcelLambdaQueryWrapper3 = new LambdaQueryWrapper<>();
+        parcelLambdaQueryWrapper3.eq(Parcel::getHub_id,hub_id)
+                .between(Parcel::getSendTime,today.atStartOfDay(),today.atTime(LocalTime.MAX));
+        countParcelVo.setSendParcel(parcelMapper.selectCount(parcelLambdaQueryWrapper3));
+
+        LambdaQueryWrapper<Parcel> parcelLambdaQueryWrapper4 = new LambdaQueryWrapper<>();
+        parcelLambdaQueryWrapper4.eq(Parcel::getHub_id,hub_id)
+                .between(Parcel::getArrivalTime,today.atStartOfDay(),today.atTime(LocalTime.MAX));
+        countParcelVo.setReceiveParcel(parcelMapper.selectCount(parcelLambdaQueryWrapper4));
+
+        LambdaQueryWrapper<Parcel> parcelLambdaQueryWrapper5 = new LambdaQueryWrapper<>();
+        parcelLambdaQueryWrapper5.eq(Parcel::getHub_id,hub_id)
+                .eq(Parcel::getState,"待取件")
+                .le(Parcel::getArrivalTime,today);
+        countParcelVo.setOverdue(parcelMapper.selectCount(parcelLambdaQueryWrapper5));
+
+        return Result.okResult(countParcelVo);
     }
 }
