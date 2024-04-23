@@ -12,6 +12,7 @@ import com.parcelhub.service.ParcelService;
 import com.parcelhub.utils.*;
 import com.parcelhub.vo.CountParcelVo;
 import com.parcelhub.vo.ReceiveParcelVo;
+import com.parcelhub.vo.UserCountsVo;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -702,6 +703,26 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
         Long NormalParcel = parcelMapper.selectCount(parcelLambdaQueryWrapper2) - ReserveCount - DelayCount;
         map.put("正常待取",NormalParcel);
 
+        return Result.okResult(map);
+    }
+
+    @Override
+    public Result countUser(int hub_id){
+        List<UserCountsVo> userCountsVoList = parcelMapper.getSendUser(hub_id);
+        List<UserCountsVo> userCountsVoList1 = parcelMapper.getReceiveUser(hub_id);
+        Map<String,List<UserCountsVo>> map = new HashMap<>();
+        map.put("send",userCountsVoList);
+        map.put("receive",userCountsVoList1);
+        return Result.okResult(map);
+    }
+
+    @Override
+    public Result countSRParcel(int hub_id){
+        List<UserCountsVo> userCountsVoList = parcelMapper.getSendUser(hub_id);
+        List<UserCountsVo> userCountsVoList1 = parcelMapper.getReceiveParcel(hub_id);
+        Map<String,List<UserCountsVo>> map = new HashMap<>();
+        map.put("sendParcel",userCountsVoList);
+        map.put("receiveParcel",userCountsVoList1);
         return Result.okResult(map);
     }
 }

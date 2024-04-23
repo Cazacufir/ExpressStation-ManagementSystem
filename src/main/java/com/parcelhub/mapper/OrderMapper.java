@@ -34,6 +34,7 @@ public interface OrderMapper extends BaseMapper<OrderList> {
     @Select("SELECT DATE(orderTime) AS OrderDate, SUM(price) AS TotalPrice " +
             "FROM orderlist o " +
             "WHERE OrderTime BETWEEN DATE_SUB(CURDATE(), INTERVAL 10 DAY) AND CURDATE() AND o.hub_id = #{hub_id} " +
+            "AND o.del_flag = 0 " +
             "GROUP BY OrderDate")
     List<PriceVo> getPriceByHub(int hub_id);
 }

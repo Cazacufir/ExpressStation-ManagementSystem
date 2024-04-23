@@ -2,6 +2,7 @@ package com.parcelhub.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.parcelhub.entity.Parcel;
+import com.parcelhub.vo.UserCountsVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -35,4 +36,26 @@ public interface ParcelMapper extends BaseMapper<Parcel> {
             "INNER JOIN delay d ON d.parcel_id = p.parcelId " +
             "WHERE p.hub_id = #{hub_id} ")
     Long getDelay(int hub_id);
+
+    @Select("SELECT DATE(orderTime) AS OrderDate, COUNT(orderId) AS counts " +
+            "FROM orderlist o " +
+            "WHERE OrderTime BETWEEN DATE_SUB(CURDATE(), INTERVAL 10 DAY) AND CURDATE() AND o.hub_id = #{hub_id} " +
+            "AND o.del_flag = 0 " +
+            "GROUP BY OrderDate")
+    List<UserCountsVo> getSendUser(int hub_id);
+
+    @Select("SELECT DATE(receiveTime) AS OrderDate, COUNT(parcelId) AS counts " +
+            "FROM parcel p " +
+            "WHERE receiveTime BETWEEN DATE_SUB(CURDATE(), INTERVAL 10 DAY) AND CURDATE() AND p.hub_id = #{hub_id} " +
+            "AND p.state = '已签收' " +
+            "GROUP BY OrderDate")
+    List<UserCountsVo> getReceiveUser(int hub_id);
+
+    @Select("SELECT DATE(receiveTime) AS OrderDate, COUNT(parcelId) AS counts " +
+            "FROM parcel p " +
+            "WHERE receiveTime BETWEEN DATE_SUB(CURDATE(), INTERVAL 10 DAY) AND CURDATE() AND p.hub_id = #{hub_id} " +
+            "AND p.state = '已签收' " +
+            "OR p.state = '待取件' " +
+            "GROUP BY OrderDate")
+    List<UserCountsVo> getReceiveParcel(int hub_id);
 }

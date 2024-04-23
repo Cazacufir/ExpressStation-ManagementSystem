@@ -50,4 +50,8 @@ public interface ParcelService extends IService<Parcel> {
     Result countParcel(int hub_id);
 
     Result getKindsParcel(int hub_id);
+
+    Result countUser(int hub_id);
+
+    Result countSRParcel(int hub_id);
 }
