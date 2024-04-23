@@ -4,7 +4,7 @@
             <el-descriptions-item label="工号">{{ Staff.staffId }}</el-descriptions-item>
             <el-descriptions-item label="姓名">{{ Staff.name }}</el-descriptions-item>
             <el-descriptions-item label="年龄">{{ Staff.age }}</el-descriptions-item>
-            <el-descriptions-item label="性别">{{ Staff.sex }}</el-descriptions-item>
+            <el-descriptions-item label="性别">{{ Staff.sex == 'M'? '男' : '女' }}</el-descriptions-item>
             <el-descriptions-item label="联系方式" span="2">{{ Staff.contact }}</el-descriptions-item>
             <el-descriptions-item label="地址" span="2">{{ Staff.address }}</el-descriptions-item>
             <el-descriptions-item label="职位" span="2">

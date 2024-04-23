@@ -1,15 +1,15 @@
 <template>
     <div class="container flex flex-col justify-center items-center overflow-y-hidden gap-20">
         <div class="flex justify-around items-center w-95% shadow-lg p-10">
-            <div v-for="(item, index) in list" :key="index" class="flex flex-col justify-center items-center gap-15">
+            <div v-for="(item, index) in list" :key="index" class="flex flex-col justify-center items-center gap-10">
                 <span class="text-7xl font-semibold">{{ item.name }}</span>
                 <span class="text-9xl font-semibold text-[#1e80ff]">{{ item.count }}</span>
             </div>
         </div>
 
-        <div class="flex flex-wrap gap-15 flex-1 w-full gap-5">
-            <div class="w-600px h-300px" ref="priceRef"></div>
-            <div class="w-600px h-300px" ref="kindRef"></div>
+        <div class="flex flex-wrap gap-15 flex-1 w-full gap-15">
+            <div class="w-600px h-250px" ref="priceRef"></div>
+            <div class="w-600px h-250px" ref="kindRef"></div>
             <div class="w-600px h-250px" ref="userRef"></div>
             <div class="w-600px h-250px" ref="parcelRef"></div>
         </div>
@@ -143,7 +143,6 @@ const getKind = async (hub_id) => {
         color: ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de'],
         title: {
             text: '现有快件种类',
-            subtext: '每个快件的流动方向',
             left: 'center'
         },
         tooltip: {
@@ -285,7 +284,7 @@ const getParcelCount = async (hub_id) => {
             trigger: 'axis'
         },
         legend: {
-            data: ['收件数', '寄件数', '均值']
+            data: ['收件数', '寄件数', '吞吐量']
         },
         grid: {
             left: '3%',
@@ -320,7 +319,7 @@ const getParcelCount = async (hub_id) => {
                 data: sendArray
             },
             {
-                name: 'Video Ads',
+                name: '吞吐量',
                 type: 'line',
                 stack: 'Total',
                 data: sumArray
