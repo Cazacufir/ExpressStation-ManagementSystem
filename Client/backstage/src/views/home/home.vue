@@ -1,5 +1,5 @@
 <template>
-    <div class="container flex flex-col justify-center items-center h-full p-10 overflow-hidden gap-20">
+    <div class="container flex flex-col justify-center items-center overflow-y-hidden gap-20">
         <div class="flex justify-around items-center w-95% shadow-lg p-10">
             <div v-for="(item, index) in list" :key="index" class="flex flex-col justify-center items-center gap-15">
                 <span class="text-7xl font-semibold">{{ item.name }}</span>
@@ -7,9 +7,11 @@
             </div>
         </div>
 
-        <div class="flex flex-wrap gap-15 flex-1 w-full gap-10">
+        <div class="flex flex-wrap gap-15 flex-1 w-full gap-5">
             <div class="w-600px h-300px" ref="priceRef"></div>
             <div class="w-600px h-300px" ref="kindRef"></div>
+            <div class="w-600px h-250px" ref="userRef"></div>
+            <div class="w-600px h-250px" ref="parcelRef"></div>
         </div>
     </div>
 </template>
@@ -25,11 +27,12 @@ const { appContext } = getCurrentInstance();
 const Eapi = appContext.config.globalProperties.$api;
 const priceRef = ref(null);
 const kindRef = ref(null)
+const userRef = ref(null)
+const parcelRef = ref(null)
 
 const route = useRoute()
 onMounted(async () => {
     let hub_id = adminStore().getAdminInfo().hub_id
-    console.log("🚀 ~ onMounted ~ hub_id:", hub_id)
     const [e1, r1] = await api.countParcel(hub_id)
     console.log("🚀 ~ onMounted ~ r1:", r1)
     list.value.forEach(item => {
@@ -38,7 +41,8 @@ onMounted(async () => {
     console.log("🚀 ~ onMounted ~ list.value:", list.value)
     getPrice(hub_id)
     getKind(hub_id)
-
+    getUserCount(hub_id)
+    getParcelCount(hub_id)
 })
 
 const getPrice = async (hub_id) => {
@@ -127,7 +131,7 @@ const getKind = async (hub_id) => {
     const dataArray = []
     for (let item in r.data) {
         dataArray.push({
-            value: r.data[item] + 5,
+            value: r.data[item],
             name: item
         })
     }
@@ -149,7 +153,6 @@ const getKind = async (hub_id) => {
         },
         series: [
             {
-                name: 'Access From',
                 type: 'pie',
                 radius: '50%',
                 data: dataArray,
@@ -164,5 +167,165 @@ const getKind = async (hub_id) => {
         ]
     }
     kindChart.setOption(option)
+}
+
+const getUserCount = async (hub_id) => {
+    const [e, r] = await api.countUser(hub_id)
+    console.log("🚀 ~ getUserCount ~ r:", r)
+
+    const userDom = userRef.value
+    const userChart = echarts.init(userDom)
+
+    const currentDate = new Date();
+
+    const tenDaysAgo = new Date();
+    tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
+
+    function formatDate(date) {
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        return `${month}-${day}`;
+    }
+
+    const datesArray = [];
+    for (let i = tenDaysAgo; i <= currentDate; i.setDate(i.getDate() + 1)) {
+        datesArray.push(formatDate(new Date(i)));
+    }
+
+    const sendArray = []
+    r.data.send.forEach(item => sendArray.push(item.counts))
+
+    const receiveArray = []
+    r.data.receive.forEach(item => receiveArray.push(item.counts))
+
+
+    const option = {
+        title: {
+            text: '用户收件与寄件情况'
+        },
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'shadow'
+            }
+        },
+        legend: {},
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        xAxis: {
+            type: 'category',
+            data: datesArray
+        },
+        yAxis: {
+            type: 'value',
+            boundaryGap: [0, 0.01]
+        },
+        series: [
+            {
+                name: '寄件人数',
+                type: 'bar',
+                data: sendArray
+            },
+            {
+                name: '取件人数',
+                type: 'bar',
+                data: receiveArray
+            }
+        ]
+    };
+
+    userChart.setOption(option);
+}
+
+const getParcelCount = async (hub_id) => {
+    const [e, r] = await api.countSRParcel(hub_id)
+    console.log("🚀 ~ getParcelCount ~ r:", r)
+
+    const parcelDom = parcelRef.value
+    const parcelChart = echarts.init(parcelDom)
+
+    const currentDate = new Date();
+
+    const tenDaysAgo = new Date();
+    tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
+
+    function formatDate(date) {
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        return `${month}-${day}`;
+    }
+
+    const datesArray = [];
+    for (let i = tenDaysAgo; i <= currentDate; i.setDate(i.getDate() + 1)) {
+        datesArray.push(formatDate(new Date(i)));
+    }
+
+    const sendArray = []
+    r.data.sendParcel.forEach(item => sendArray.push(item.counts))
+
+    const receiveArray = []
+    r.data.receiveParcel.forEach(item => receiveArray.push(item.counts))
+
+    const sumArray = []
+    for(let i = 0; i < 10; i ++){
+        sumArray[i] = sendArray[i] + receiveArray[i]
+    }
+
+    const option = {
+        title: {
+            text: '快件吞吐量'
+        },
+        tooltip: {
+            trigger: 'axis'
+        },
+        legend: {
+            data: ['收件数', '寄件数', '均值']
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        toolbox: {
+            feature: {
+                saveAsImage: {}
+            }
+        },
+        xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: datesArray
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: [
+            {
+                name: '收件数',
+                type: 'line',
+                stack: 'Total',
+                data: receiveArray
+            },
+            {
+                name: '寄件数',
+                type: 'line',
+                stack: 'Total',
+                data: sendArray
+            },
+            {
+                name: 'Video Ads',
+                type: 'line',
+                stack: 'Total',
+                data: sumArray
+            }
+        ]
+    };
+
+    parcelChart.setOption(option);
 }
 </script>

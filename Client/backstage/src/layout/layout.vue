@@ -9,7 +9,7 @@
                 <SideBar></SideBar>
             </el-aside>
 
-            <el-main class="ml-15 mt-15 bg-white">
+            <el-main class="ml-15 mt-15 bg-white h-97% overflow-y-hidden">
                 <AppMain></AppMain>
             </el-main>
         </el-container>
