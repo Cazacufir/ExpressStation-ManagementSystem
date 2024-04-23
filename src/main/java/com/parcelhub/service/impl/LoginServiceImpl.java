@@ -1,9 +1,10 @@
 package com.parcelhub.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.parcelhub.entity.Admin;
+import com.parcelhub.entity.Staff;
 import com.parcelhub.entity.User;
-import com.parcelhub.mapper.AdminMapper;
+import com.parcelhub.mapper.StaffMapper;
 import com.parcelhub.model.SecurityForeStageUser;
 import com.parcelhub.model.SecurityUser;
 import com.parcelhub.service.LoginService;
@@ -28,6 +29,9 @@ public class LoginServiceImpl implements LoginService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    @Autowired
+    StaffMapper staffMapper;
+
     public Result login(Admin admin){
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(admin.getContact(),admin.getPassword());
         Authentication authenticate = authenticationManager.authenticate(authenticationToken);
@@ -43,6 +47,11 @@ public class LoginServiceImpl implements LoginService {
         redisCache.setCacheObject("login:"+adminId,securityUser);
 
         AdminInfoVo adminInfoVo = BeanCopyUtils.copyBean(securityUser.getAdmin(), AdminInfoVo.class);
+        LambdaQueryWrapper<Staff> staffLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        staffLambdaQueryWrapper.eq(Staff::getHub_id,securityUser.getAdmin().getHub_id())
+                .eq(Staff::getContact,securityUser.getAdmin().getContact());
+        Staff staff = staffMapper.selectOne(staffLambdaQueryWrapper);
+        adminInfoVo.setStaff_id(staff.getStaffId());
         AdminLoginVo vo = new AdminLoginVo(jwt,adminInfoVo);
         return Result.okResult(vo);
     }

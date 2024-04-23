@@ -17,4 +17,6 @@ public class AdminInfoVo {
     private int role;
 
     private int hub_id;
+
+    private int staff_id;
 }
