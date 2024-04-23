@@ -142,17 +142,25 @@ const routes = [
         path: "/userInfo",
         name: "UserInfo",
         component: async () => await import("@/views/userInfo/userInfo.vue"),
+        meta: {
+          title: "个人信息"
+        }
       },
       {
         path: "/password",
         name: "Password",
         component: async () => await import("@/views/password/password.vue"),
+        meta: {
+          title: "修改密码"
+        }
       },
       {
         path: "/:carrierId",
         name: "CarrierId",
-        component: async () =>
-          await import("@/views/carrierDetail/[carrierId].vue"),
+        component: async () => await import("@/views/carrierDetail/[carrierId].vue"),
+        meta: {
+          title: "货架详情"
+        }
       },
     ],
   },

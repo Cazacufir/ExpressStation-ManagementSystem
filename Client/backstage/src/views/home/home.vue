@@ -1,5 +1,5 @@
 <template>
-    <div class="container flex flex-col justify-center items-center h-full p-10 overflow-hidden">
+    <div class="container flex flex-col justify-center items-center h-full p-10 overflow-hidden gap-20">
         <div class="flex justify-around items-center w-95% shadow-lg p-10">
             <div v-for="(item, index) in list" :key="index" class="flex flex-col justify-center items-center gap-15">
                 <span class="text-7xl font-semibold">{{ item.name }}</span>
@@ -7,8 +7,9 @@
             </div>
         </div>
 
-        <div class="flex flex-wrap gap-15 flex-1 w-full">
+        <div class="flex flex-wrap gap-15 flex-1 w-full gap-10">
             <div class="w-600px h-300px" ref="priceRef"></div>
+            <div class="w-600px h-300px" ref="kindRef"></div>
         </div>
     </div>
 </template>
@@ -23,6 +24,7 @@ import * as echarts from 'echarts';
 const { appContext } = getCurrentInstance();
 const Eapi = appContext.config.globalProperties.$api;
 const priceRef = ref(null);
+const kindRef = ref(null)
 
 const route = useRoute()
 onMounted(async () => {
@@ -35,7 +37,7 @@ onMounted(async () => {
     })
     console.log("🚀 ~ onMounted ~ list.value:", list.value)
     getPrice(hub_id)
-
+    getKind(hub_id)
 
 })
 
@@ -63,11 +65,11 @@ const getPrice = async (hub_id) => {
     }
 
     const priceArray = []
-    
+
     r.data.forEach(item => {
         priceArray.push(item.totalPrice)
     })
-        
+
     console.log("🚀 ~ getPrice ~ priceArray:", priceArray)
 
     const option = {
@@ -115,4 +117,52 @@ const list = ref([
     },
 ])
 
+const getKind = async (hub_id) => {
+    const [e, r] = await api.getKindsParcel(hub_id)
+    console.log("🚀 ~ getKind ~ r:", r.data)
+
+    const kindDom = kindRef.value
+    const kindChart = echarts.init(kindDom)
+
+    const dataArray = []
+    for (let item in r.data) {
+        dataArray.push({
+            value: r.data[item] + 5,
+            name: item
+        })
+    }
+    console.log("🚀 ~ getKind ~ dataArray:", dataArray)
+
+    const option = {
+        color: ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de'],
+        title: {
+            text: '现有快件种类',
+            subtext: '每个快件的流动方向',
+            left: 'center'
+        },
+        tooltip: {
+            trigger: 'item'
+        },
+        legend: {
+            orient: 'vertical',
+            left: 'left'
+        },
+        series: [
+            {
+                name: 'Access From',
+                type: 'pie',
+                radius: '50%',
+                data: dataArray,
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                }
+            }
+        ]
+    }
+    kindChart.setOption(option)
+}
 </script>

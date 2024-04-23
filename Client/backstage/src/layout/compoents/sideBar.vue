@@ -43,7 +43,7 @@ const route = useRoute();
 const tabs = ref([])
 onBeforeMount(() => {
     tabs.value = [...router.options.routes[1].children]
-    tabs.value.splice(tabs.value.length, 1)
+    tabs.value.splice(7)
     console.log(tabs.value)
 })
 
