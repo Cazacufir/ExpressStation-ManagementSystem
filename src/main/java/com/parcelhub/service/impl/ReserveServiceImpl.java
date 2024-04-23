@@ -2,8 +2,10 @@ package com.parcelhub.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.parcelhub.entity.Delay;
 import com.parcelhub.entity.Reserve;
 import com.parcelhub.entity.Staff;
+import com.parcelhub.mapper.DelayMapper;
 import com.parcelhub.mapper.ReserveMapper;
 import com.parcelhub.mapper.StaffMapper;
 import com.parcelhub.service.ReserveService;
@@ -23,6 +25,9 @@ public class ReserveServiceImpl extends ServiceImpl<ReserveMapper, Reserve> impl
 
     @Autowired
     StaffMapper staffMapper;
+
+    @Autowired
+    DelayMapper delayMapper;
 
     @Override
     public Result addReserve(List<Map<String,Object>> maps){
@@ -53,6 +58,10 @@ public class ReserveServiceImpl extends ServiceImpl<ReserveMapper, Reserve> impl
             reserve.setStaff_id(staff.getStaffId());
             reserve.setParcel_id(parcel_id);
             save(reserve);
+
+            LambdaQueryWrapper<Delay> delayLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            delayLambdaQueryWrapper.eq(Delay::getParcel_id,parcel_id);
+            delayMapper.delete(delayLambdaQueryWrapper);
         }
 
         return Result.okResult();

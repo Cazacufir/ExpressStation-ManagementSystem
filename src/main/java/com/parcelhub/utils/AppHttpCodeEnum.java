@@ -30,7 +30,9 @@ public enum AppHttpCodeEnum {
     PASSWORD_EXITST(914,"新密码与原密码一致"),
     ADDRESS_EXIST(403,"地址已被使用"),
     PARCEL_REMAIN(403,"货架仍存放快件，无法删除"),
-    PARCEL_OUT(515,"快递已出库，无法取消");
+    PARCEL_OUT(515,"快递已出库，无法取消"),
+
+    PARCEL_RESERVED(515,"该快件已预约上门");
 
 
     int code;

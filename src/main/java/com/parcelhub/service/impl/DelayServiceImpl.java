@@ -5,7 +5,9 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.parcelhub.dto.PagesDto;
 import com.parcelhub.entity.Delay;
 import com.parcelhub.entity.Parcel;
+import com.parcelhub.entity.Reserve;
 import com.parcelhub.mapper.DelayMapper;
+import com.parcelhub.mapper.ReserveMapper;
 import com.parcelhub.service.DelayService;
 import com.parcelhub.utils.AppHttpCodeEnum;
 import com.parcelhub.utils.PageUtils;
@@ -22,8 +24,17 @@ public class DelayServiceImpl extends ServiceImpl<DelayMapper, Delay> implements
     @Autowired
     DelayMapper delayMapper;
 
+    @Autowired
+    ReserveMapper reserveMapper;
+
     @Override
     public Result addDelay(Delay delay){
+        LambdaQueryWrapper<Reserve> reserveLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        reserveLambdaQueryWrapper.eq(Reserve::getParcel_id,delay.getParcel_id());
+        Reserve reserve = reserveMapper.selectOne(reserveLambdaQueryWrapper);
+        if (!Objects.isNull(reserve)){
+            return Result.errorResult(AppHttpCodeEnum.PARCEL_RESERVED);
+        }
         LambdaQueryWrapper<Delay> delayLambdaQueryWrapper = new LambdaQueryWrapper<>();
         delayLambdaQueryWrapper.eq(Delay::getParcel_id,delay.getParcel_id());
         Delay delay1 = delayMapper.selectOne(delayLambdaQueryWrapper);

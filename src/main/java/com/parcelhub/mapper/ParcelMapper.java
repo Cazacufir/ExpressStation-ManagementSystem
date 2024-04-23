@@ -23,4 +23,16 @@ public interface ParcelMapper extends BaseMapper<Parcel> {
             "INNER JOIN staff s ON s.staffId = r.staff_id " +
             "WHERE p.hub_id = #{hub_id}")
     List<Parcel> getReserveParcel(int hub_id);
+
+    @Select("SELECT COUNT(parcelId) " +
+            "FROM parcel p " +
+            "INNER JOIN reserve r ON r.parcel_id = p.parcelId " +
+            "WHERE p.hub_id = #{hub_id} ")
+    Long getReserve(int hub_id);
+
+    @Select("SELECT COUNT(parcelId) " +
+            "FROM parcel p " +
+            "INNER JOIN delay d ON d.parcel_id = p.parcelId " +
+            "WHERE p.hub_id = #{hub_id} ")
+    Long getDelay(int hub_id);
 }

@@ -675,4 +675,33 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
 
         return Result.okResult(countParcelVo);
     }
+
+    @Override
+    public Result getKindsParcel(int hub_id){
+        Map<String,Long> map = new HashMap<>();
+        Long ReserveCount = parcelMapper.getReserve(hub_id);
+        map.put("预约取件",ReserveCount);
+        Long DelayCount = parcelMapper.getDelay(hub_id);
+        map.put("滞留件",DelayCount);
+
+        LambdaQueryWrapper<Parcel> parcelLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        parcelLambdaQueryWrapper.eq(Parcel::getHub_id,hub_id)
+                .eq(Parcel::getState,"已揽收");
+        Long SendParcel = parcelMapper.selectCount(parcelLambdaQueryWrapper);
+        map.put("待出库",SendParcel);
+
+        LambdaQueryWrapper<Parcel> parcelLambdaQueryWrapper1 = new LambdaQueryWrapper<>();
+        parcelLambdaQueryWrapper1.eq(Parcel::getHub_id,hub_id)
+                .eq(Parcel::getState,"派送中");
+        Long ReceiveParcel = parcelMapper.selectCount(parcelLambdaQueryWrapper1);
+        map.put("待入库",ReceiveParcel);
+
+        LambdaQueryWrapper<Parcel> parcelLambdaQueryWrapper2 = new LambdaQueryWrapper<>();
+        parcelLambdaQueryWrapper2.eq(Parcel::getHub_id,hub_id)
+                .eq(Parcel::getState,"待取件");
+        Long NormalParcel = parcelMapper.selectCount(parcelLambdaQueryWrapper2) - ReserveCount - DelayCount;
+        map.put("正常待取",NormalParcel);
+
+        return Result.okResult(map);
+    }
 }
