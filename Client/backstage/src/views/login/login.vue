@@ -64,8 +64,8 @@ const toLogin = async () => {
     }
     if (r.msg != '认证或授权失败') {
         utils.setSession("token", r.data.token);
-        utils.setSession("admin",r.data.adminInfoVo)
-        store.setAdminInfo(r.data)
+        // utils.setSession("admin",r.data.adminInfoVo)
+        store.setAdminInfo(r.data.adminInfoVo)
         router.replace('/home')
         ElMessage({
             message: '登录成功！',

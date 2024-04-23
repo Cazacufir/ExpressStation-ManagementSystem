@@ -31,8 +31,8 @@
 
             <el-form-item prop="sex" label="性别：">
                 <el-radio-group v-model="Staff.sex">
-                    <el-radio label="F" size="large">男</el-radio>
-                    <el-radio label="M" size="large">女</el-radio>
+                    <el-radio label="M" size="large">男</el-radio>
+                    <el-radio label="F" size="large">女</el-radio>
                 </el-radio-group>
             </el-form-item>
 

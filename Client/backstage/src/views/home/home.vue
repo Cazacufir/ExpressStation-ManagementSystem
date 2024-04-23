@@ -29,12 +29,14 @@ const priceRef = ref(null);
 const kindRef = ref(null)
 const userRef = ref(null)
 const parcelRef = ref(null)
+const store = adminStore();
 
 const route = useRoute()
 onMounted(async () => {
-    let hub_id = adminStore().getAdminInfo().hub_id
+    let hub_id = store.getAdminInfo().hub_id
+    console.log("🚀 ~ onMounted ~ hub_id:",  store.getAdminInfo())
     const [e1, r1] = await api.countParcel(hub_id)
-    console.log("🚀 ~ onMounted ~ r1:", r1)
+    console.log("🚀 ~ onMounted ~ r1:", r1.data)
     list.value.forEach(item => {
         item.count = r1.data[item.count]
     })

@@ -5,11 +5,13 @@
         </el-header>
 
         <el-container class="h-full bg-gray-200">
-            <el-aside class="carrier h-full" width="250px">
-                <SideBar></SideBar>
+            <el-aside class="carrier" width="250px">
+                <el-scrollbar height="690">
+                   <SideBar></SideBar> 
+                </el-scrollbar>
             </el-aside>
 
-            <el-main class="ml-15 mt-15 bg-white h-97% overflow-y-hidden">
+            <el-main class="ml-15 mt-15 bg-white h-100% overflow-y-hidden">
                 <AppMain></AppMain>
             </el-main>
         </el-container>
