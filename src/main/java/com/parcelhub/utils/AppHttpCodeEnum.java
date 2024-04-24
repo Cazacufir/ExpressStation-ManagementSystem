@@ -31,8 +31,8 @@ public enum AppHttpCodeEnum {
     ADDRESS_EXIST(403,"地址已被使用"),
     PARCEL_REMAIN(403,"货架仍存放快件，无法删除"),
     PARCEL_OUT(515,"快递已出库，无法取消"),
-
-    PARCEL_RESERVED(515,"该快件已预约上门");
+    PARCEL_RESERVED(515,"该快件已预约上门"),
+    DELIVER_WORKING(515,"快递员派件中，无法终止合作");
 
 
     int code;

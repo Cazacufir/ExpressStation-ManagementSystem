@@ -4,9 +4,11 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.parcelhub.entity.ComHubMerge;
 import com.parcelhub.entity.Company;
+import com.parcelhub.entity.Deliver;
 import com.parcelhub.entity.Hub;
 import com.parcelhub.mapper.ComHubMergeMapper;
 import com.parcelhub.mapper.CompanyMapper;
+import com.parcelhub.mapper.DeliverHubMergeMapper;
 import com.parcelhub.mapper.HubMapper;
 import com.parcelhub.service.HubService;
 import com.parcelhub.utils.AppHttpCodeEnum;
@@ -27,6 +29,9 @@ public class HubServiceImpl extends ServiceImpl<HubMapper, Hub>  implements HubS
 
     @Autowired
     private ComHubMergeMapper comHubMergeMapper;
+
+    @Autowired
+    DeliverHubMergeMapper deliverHubMergeMapper;
 
     @Override
     public Result getMainInfo(int Id){
@@ -57,12 +62,18 @@ public class HubServiceImpl extends ServiceImpl<HubMapper, Hub>  implements HubS
 
     @Override
     public Result deleteCompany(int mapId){
-//        QueryWrapper<ComHubMerge> comHubMergeQueryWrapper = new QueryWrapper<>();
-//        comHubMergeQueryWrapper.eq("com_id",com_id)
-//                .eq("hub_id",hub_id)
-//                .eq("delFlag",0);
-//        ComHubMerge comHubMerge = comHubMergeMapper.selectOne(comHubMergeQueryWrapper);
-//        comHubMergeMapper.deleteById(comHubMerge.getMapId());
+        ComHubMerge comHubMerge = comHubMergeMapper.selectById(mapId);
+        int com_id = comHubMerge.getCom_id();
+        int hub_id = comHubMerge.getHub_id();
+        List<Deliver> deliverList = deliverHubMergeMapper.deleteDeliverByEndWithHub(hub_id,com_id);
+        for(Deliver deliver : deliverList){
+            if (deliver.getAffair().contains("正在运送")){
+                return Result.errorResult(AppHttpCodeEnum.DELIVER_WORKING);
+            }
+        }
+        for (Deliver deliver : deliverList){
+            deliverHubMergeMapper.deleteById(deliver);
+        }
         comHubMergeMapper.deleteById(mapId);
         return Result.okResult("取消合作成功");
     }
