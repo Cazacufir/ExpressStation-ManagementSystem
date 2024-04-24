@@ -37,6 +37,8 @@ public class Parcel implements Serializable {
 
     private String company;
 
+    private String logo;
+
     private String state;
 
     private String route;

@@ -23,6 +23,8 @@ public class Company implements Serializable {
 
     private String address;
 
+    private String logo;
+
     @TableField(exist = false)
     private Date co_date;
 

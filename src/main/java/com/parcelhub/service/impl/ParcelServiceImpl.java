@@ -246,6 +246,7 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
         deliver.setAffair("正在运送快递单号为 " + parcelId + " 的包裹");
         Company company = companyMapper.selectById(deliver.getCom_id());
         parcel.setCompany(company.getName());
+        parcel.setLogo(company.getLogo());
         deliverMapper.updateById(deliver);
 
         String orderType = (String) map.get("OrderType");
@@ -415,8 +416,8 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
         parcel.setState("待取件");
 
         Hub hub = hubMapper.selectById(parcel.getHub_id());
-        String hubStr = "已入库" + "_" + now + "您的快递已派送至<" + hub.getName() + "代收点;自提点联系方式:" + hub.getContact()
-                + ">,请凭取件码" + code + "及时到代收点领取";
+        String hubStr = "已入库" + "_" + now + parcel.getCurrentCity() + "_" + "您的快递已派送至<" + hub.getName() + "代收点;自提点联系方式:" + hub.getContact()
+                + ">，请凭取件码" + code + "及时到代收点领取";
         String newRoute = parcel.getRoute() + "," + hubStr;
         parcel.setRoute(newRoute);
         parcelMapper.updateById(parcel);

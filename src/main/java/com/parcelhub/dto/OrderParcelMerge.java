@@ -54,6 +54,8 @@ public class OrderParcelMerge implements Serializable {
 
     private String company;
 
+    private String logo;
+
     private String state;
 
     private String route;
