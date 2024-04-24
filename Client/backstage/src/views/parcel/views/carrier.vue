@@ -1,6 +1,6 @@
 <template>
     <div class="container w-full flex flex-col gap-10">
-        <div>
+        <div v-if="work === '站长'">
             <el-button size="large" type="primary" @click="openForm = true">+ 新增货架</el-button>
         </div>
         <div class="flex w-full gap-20 flex-wrap">
@@ -26,7 +26,7 @@
                 <template #footer>
                     <div class="flex justify-center items-center gap-50">
                         <el-button type="primary" plain size="large" @click="openCarrier(item)">修改</el-button>
-                        <el-button type="danger" plain size="large" @click="toDeleteCarrier(item,index)">删除</el-button>
+                        <el-button type="danger" plain size="large" @click="toDeleteCarrier(item,index)" v-if="work === '站长'">删除</el-button>
                     </div>
                 </template>
             </el-card>
@@ -90,8 +90,11 @@ const carrier = reactive({
     hub_id: null
 })
 
+let work = ref()
+
 onMounted(() => {
     hub_id = store.getAdminInfo().hub_id
+    work.value = store.getAdminInfo().work
     carrier.hub_id = hub_id
     console.log("🚀 ~ onMounted ~ hub_id:", hub_id)
     getList()

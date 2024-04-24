@@ -1,8 +1,8 @@
 <template>
     <div class="container flex flex-col gap-20 justify-center">
         <div class="flex justify-between">
-            <el-button plain type="primary" class="ml-10" icon="Plus" @click="openForm(null)">新增快递员</el-button>
-            <div class="flex">
+            <el-button plain type="primary" class="ml-10" icon="Plus" @click="openForm(null)" v-if="work === '站长'">新增快递员</el-button>
+            <div class="flex ml-auto">
                 <el-input v-model="searchFor" placeholder="查找快递员"></el-input>
                 <el-button type="primary" icon="Search" @click="searchDeliver"></el-button>
             </div>
@@ -18,7 +18,7 @@
             <el-table-column fixed="right" label="操作" width="150" align="center">
                 <template #default="scope">
                     <el-button link type="primary" @click.prevent="openForm(scope)">修改</el-button>
-                    <el-popconfirm title="确定要删除此配送员?" @confirm="deleteRow(scope)">
+                    <el-popconfirm title="确定要删除此配送员?" @confirm="deleteRow(scope)" v-if="work === '站长'">
                         <template #reference>
                             <el-button link type="danger">删除</el-button>
                         </template>
@@ -82,6 +82,8 @@ let currentIndex = null
 
 let delivery_RefForm = ref()
 
+let work = ref()
+
 onMounted(() => {
     init()
 })
@@ -90,6 +92,7 @@ const companyName = ref([])
 
 const init = async () => {
     const hub = store.getAdminInfo()
+    work.value = hub.work
     const [e, r] = await api.getAllDeliver(hub.hub_id)
     deliverList.value = [...r.data]
     deliver.hub_id = hub.hub_id

@@ -56,7 +56,7 @@
             <el-descriptions-item label="成立时间" span="2">{{ formatDate(Info.setupDate) }}</el-descriptions-item>
         </el-descriptions>
 
-        <div class="m-auto mt-50">
+        <div class="m-auto mt-50" v-if="work === '站长'">
             <el-button type="primary" size="large" @click="openForm">修改驿站信息</el-button>
         </div>
 
@@ -132,6 +132,8 @@ const ruleFormRef = ref()
 
 let isShow = ref(false)
 
+let work = ref()
+
 onBeforeMount(() => {
     init()
 })
@@ -141,6 +143,7 @@ let showAddress
 const init = async () => {
     const hub = store.getAdminInfo()
     console.log("🚀 ~ init ~ hub:", hub)
+    work.value = hub.work
     const [e, r] = await api.getMainInfo(hub.hub_id)
     Object.assign(Info, r.data)
     console.log("🚀 ~ init ~ Info:", Info)

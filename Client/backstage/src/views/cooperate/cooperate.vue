@@ -21,7 +21,7 @@
             </template>
         </el-card>
 
-        <el-card class="cursor-pointer hover:bg-light-900" @click="openForm = true">
+        <el-card class="cursor-pointer hover:bg-light-900" @click="openForm = true" v-if="work === '站长'">
             <div class="w-300px h-200px flex items-center justify-center">
                 <el-icon color="gray" size="30">
                     <Plus />
@@ -75,8 +75,11 @@ onMounted(() => {
 
 let hub_id = ref()
 
+let work = ref()
+
 const init = async () => {
     const hub = store.getAdminInfo()
+    work.value = hub.work
     hub_id.value = hub.hub_id
     const [e, r] = await api.getCompanyList(hub.hub_id)
     companyList.value = [...r.data]
