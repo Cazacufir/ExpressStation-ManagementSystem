@@ -32,9 +32,18 @@ const updateUserInfo = (params) =>{
 	})
 }
 
+const updatePassword = (params) =>{
+	return request({
+		url:'/user/updatePassword',
+		method:'post',
+		data:params
+	})
+}
+
 export const UserApi = {
 	login,
 	register,
 	uploadAvatar,
-	updateUserInfo
+	updateUserInfo,
+	updatePassword
 }

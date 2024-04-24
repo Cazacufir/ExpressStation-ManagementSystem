@@ -20,18 +20,23 @@
 		</div>
 		
 		<div class="logoutBtn">
-			<u-button type="error" size="large">退出登录</u-button>
+			<u-button type="error" size="large" @click="show = true">退出登录</u-button>
 		</div>
+		
+		<u-modal :show="show" title="确定退出吗？" content="确认后将返回登录页" showCancelButton="true" @confirm="toLogout" @close="show = false"
+		@cancel="show = false">
+		</u-modal>
 		
 	</view>
 </template>
 
 <script setup>
-import { reactive } from 'vue';
+import { reactive,ref } from 'vue';
 import { onLoad,onShow	} from '@dcloudio/uni-app'
 
-
 const userInfo = reactive({})
+
+let show = ref(false)
 
 onLoad(()=>{
 	uni.getStorage({
@@ -75,13 +80,30 @@ const list = [
 	{
 		name:'账号安全',
 		icon:'integral-fill',
-		color:'#F47174'
+		color:'#F47174',
+		target:'/pages/Password/Password'
 	}
 ]
 
 const toPage = (url) => {
 	uni.navigateTo({
 		url:url
+	})
+}
+
+const toLogout = () => {
+	uni.removeStorage({
+		key:'user',
+		success() {
+			uni.removeStorage({
+				key:'token',
+				success() {
+					uni.redirectTo({
+						url:'/pages/Login/Login'
+					})
+				}
+			})
+		}
 	})
 }
 </script>

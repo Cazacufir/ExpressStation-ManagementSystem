@@ -82,7 +82,7 @@
 		// sex: 'M',
 		// age: 20
 	})
-	
+
 	let token
 
 	onLoad(() => {
@@ -103,18 +103,6 @@
 	})
 
 	const user_rules = {
-		name: {
-			type: 'string',
-			required: true,
-			message: '姓名不能为空',
-			trigger: ['blur']
-		},
-		contact: {
-			type: 'string',
-			required: true,
-			message: '手机号不能为空',
-			trigger: ['blur']
-		},
 		nickName: {
 			type: 'string',
 			required: true,
@@ -145,22 +133,24 @@
 		}
 	]
 
-	const toSubmit = async () => {
-		await api.updateUserInfo(userInfo)
-		.then(res => {
-			if(res.code == 200){
-				uni.showToast({
-					icon:'success',
-					title:'修改成功'
+	const toSubmit = () => {
+		userFormRef.value.validate().then(async () => {
+			await api.updateUserInfo(userInfo)
+				.then(res => {
+					if (res.code == 200) {
+						uni.showToast({
+							icon: 'success',
+							title: '修改成功'
+						})
+					}
 				})
-			}
+				.catch(res => {
+					uni.showToast({
+						title: res.msg
+					})
+				})
+			isModify.value = false
 		})
-		.catch(res => {
-			uni.showToast({
-				title:res.msg
-			})
-		})
-		isModify.value = false
 	}
 
 	const imgSrc = ref('')
@@ -213,26 +203,25 @@
 			url: 'http://localhost:8280/user/uploadAvatar', //仅为示例，非真实的接口地址
 			filePath: e.tempFilePath,
 			name: 'file',
-			header:{
-				token:token,
-				type:'user'
+			header: {
+				token: token,
+				type: 'user'
 			},
 			formData: {
-				userId:userInfo.userId,
+				userId: userInfo.userId,
 			},
 			success: (uploadFileRes) => {
-				console.log('u',uploadFileRes.data);
-				userInfo.avatar = JSON.parse(uploadFileRes.data).data 
-				console.log('userInfo.avatar',userInfo.avatar)
+				console.log('u', uploadFileRes.data);
+				userInfo.avatar = JSON.parse(uploadFileRes.data).data
+				console.log('userInfo.avatar', userInfo.avatar)
 				uni.setStorage({
-					key:'user',
-					data:userInfo
+					key: 'user',
+					data: userInfo
 				})
 			}
 		});
 		closePop()
 	}
-	
 </script>
 
 <style lang="scss" scoped>

@@ -51,7 +51,8 @@
 			</view>
 		</u-modal>
 
-		<u-modal :show="isShowDate" title="请选择预约时间" showCancelButton="true" @confirm="confirmDate" @close="closeDate">
+		<u-modal :show="isShowDate" title="请选择预约时间" showCancelButton="true" @confirm="confirmDate" @close="closeDate"
+		@cancel="closeDate">
 			<view class="slot-content">
 				<span class="litteBar" @click="isShow = true">
 					<u-text :text="'预约 ' + dateTime" color="#1e80ff"></u-text>
