@@ -8,7 +8,7 @@
 		
 		<div class="parcelCard" v-if="Object.keys(parcel).length">
 			<div>
-				<u-image src="../static/sf.png" height="50" width="50"></u-image>
+				<u-image :src="parcel.logo" height="50" width="50" errorIcon="http://114.132.155.61:9000/companylogo/fail.png"></u-image>
 			</div>
 		
 			<div class="parcelInfo">

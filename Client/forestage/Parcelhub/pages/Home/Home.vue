@@ -50,7 +50,7 @@
 				
 				<div v-if="parcelList.length" class="parcelCard" v-for="(items,index) in parcelList" :key="index">
 					<div>
-						<u-image src="../static/sf.png" height="50" width="50"></u-image>
+						<u-image :src="items.logo" height="50" width="50" errorIcon="http://114.132.155.61:9000/companylogo/fail.png"></u-image>
 					</div>
 				
 					<div class="parcelInfo">

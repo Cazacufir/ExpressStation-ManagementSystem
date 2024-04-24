@@ -8,7 +8,8 @@
 		<div class="parcelContainer">
 			<div class="header">
 				<div>
-					<u-image src="../static/sf.png" height="50" width="50"></u-image>
+					<u-image :src="parcel.logo" height="50" width="50"
+						errorIcon="http://114.132.155.61:9000/companylogo/fail.png"></u-image>
 				</div>
 
 				<div class="parcelInfo">
@@ -30,6 +31,7 @@
 						<u-steps-item title="已下单"></u-steps-item>
 						<u-steps-item title="已出库"></u-steps-item>
 						<u-steps-item title="运输中"></u-steps-item>
+						<u-steps-item title="待签收"></u-steps-item>
 						<u-steps-item title="已签收"></u-steps-item>
 					</u-steps>
 				</div>
@@ -111,7 +113,7 @@
 	let cityIndex = 0
 	let currentCity = ref()
 	let currentDate = ref()
-	
+
 	let expectTime = ref()
 
 	const markers = ref([{
@@ -139,7 +141,7 @@
 			key: '5a30fd46a68c8ca67069b5bd60ec34f4',
 		})
 		Object.assign(parcel, JSON.parse(option.item))
-
+		console.log('parcel', parcel)
 		if (parcel.route) updateRouteList()
 
 		send.address = parcel.sendAddress.split('_')[0]
@@ -207,8 +209,9 @@
 							distance = data.paths[0].distance + '米'
 						}
 						let newDate = new Date(parcel.sendTime)
-						newDate.setDate(newDate.getDate() + cities.length/2)
-						expectTime.value = newDate.toISOString().slice(5, 10).replace("T", " ");
+						newDate.setDate(newDate.getDate() + cities.length / 2)
+						expectTime.value = newDate.toISOString().slice(5, 10).replace("T",
+						" ");
 					}
 				})
 			}
@@ -234,8 +237,9 @@
 		if (parcel.state == '等待揽收') return 0
 		else if (parcel.state == '已揽收') return 1
 		else if (parcel.state == '运输中') return 2
-		else {
-			return 3
+		else if (parcel.state == '待取件') return 3
+		else{
+			return 4
 		}
 	})
 

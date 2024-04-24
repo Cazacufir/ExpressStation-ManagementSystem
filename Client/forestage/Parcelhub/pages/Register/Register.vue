@@ -3,6 +3,10 @@
 		<div class="logincard">
 			<u-text text="注册" bold="true" size="35"></u-text>
 			<u-form :model="user" :rules="RegisterRules" ref="RegisterFormRef">
+				<u-form-item prop="name">
+					<u-input v-model="user.name" placeholder="请输入姓名" clearable prefixIcon="account" shape="circle"
+						prefixIconStyle="font-size:30px"></u-input>
+				</u-form-item>   
 				<u-form-item prop="contact">
 					<u-input v-model="user.contact" placeholder="请输入手机号" clearable prefixIcon="phone" shape="circle"
 						prefixIconStyle="font-size:30px"></u-input>
@@ -37,12 +41,19 @@
 	let RegisterFormRef = ref()
 
 	const user = reactive({
+		name:'',
 		contact: '',
 		password: '',
 		conf: ''
 	})
 
 	const RegisterRules = {
+		name: {
+			type: 'string',
+			required: true,
+			message: '姓名不能为空',
+			trigger: ['blur']
+		},
 		contact: {
 			type: 'string',
 			required: true,

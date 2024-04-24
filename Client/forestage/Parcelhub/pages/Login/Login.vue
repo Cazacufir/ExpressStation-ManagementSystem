@@ -94,6 +94,7 @@
 					}
 					else {
 						uni.showToast({
+							icon:'none',
 							title: '用户或密码错误'
 						})
 					}

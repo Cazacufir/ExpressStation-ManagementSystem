@@ -6,17 +6,24 @@
 			<u-text v-if="parcel.orderId" :text="parcel.orderTime" size="13" color="gray"></u-text>
 		</div>
 
-		<div class="card header">
-			<u-text :text="parcel.company? parcel.company : '百世' " bold="true"></u-text>
-			<u-text :text="'快递单号：' +  parcel.parcelId"></u-text>
+		<div class="card addressBar">
+			<div>
+				<u-image :src="parcel.logo" height="40" width="40" errorIcon="http://114.132.155.61:9000/companylogo/fail.png"></u-image>
+			</div>
+			<div class="header" style="margin-left: 20rpx;">
+				<u-text :text="parcel.company? parcel.company : '百世' " bold="true"></u-text>
+				<u-text :text="'快递单号：' +  parcel.parcelId"></u-text>
+			</div>
 		</div>
 
 		<div class="card header">
 			<div class="parcelCard" @click="toDetail">
 				<div class="right">
 					<u-text :text="parcel.state" color="#0165fe"></u-text>
-					<u-text v-if="parcel.state != '等待揽收'" :text="'快递已到达' + '[' + parcel.currentCity + ']'" color="#0165fe" size="12"></u-text>
-					<u-text v-if="parcel.state != '等待揽收'" :text="formatDate(parcel.currentDate)" size="11" color="#0165fe"></u-text>
+					<u-text v-if="parcel.state != '等待揽收'" :text="'快递已到达' + '[' + parcel.currentCity + ']'"
+						color="#0165fe" size="12"></u-text>
+					<u-text v-if="parcel.state != '等待揽收'" :text="formatDate(parcel.currentDate)" size="11"
+						color="#0165fe"></u-text>
 				</div>
 
 				<div class="left">
@@ -105,7 +112,7 @@
 			url: '/pages/ParcelDetail/ParcelDetail?item=' + JSON.stringify(parcel)
 		})
 	}
-	
+
 	const formatDate = (dateString) => {
 		const date = new Date(dateString)
 		const year = date.getFullYear();
@@ -114,7 +121,7 @@
 		const hours = String(date.getHours()).padStart(2, '0')
 		const min = String(date.getMinutes()).padStart(2, '0')
 		const sec = String(date.getSeconds()).padStart(2, '0')
-		
+
 		return `${year}-${month}-${day} ${hours}:${min}:${sec}`
 	}
 </script>
@@ -160,4 +167,5 @@
 		gap: 10rpx;
 		// align-items: center;
 	}
+	
 </style>

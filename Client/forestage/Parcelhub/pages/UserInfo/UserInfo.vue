@@ -12,9 +12,8 @@
 					</div>
 				</u-form-item>
 
-				<u-form-item prop="name" label="姓名">
-					<u-text v-if="!isModify" :text="userInfo.name"></u-text>
-					<u-input v-if="isModify" v-model="userInfo.name"></u-input>
+				<u-form-item prop="name" label="姓名" v-if="!isModify">
+					<u-text :text="userInfo.name"></u-text>
 				</u-form-item>
 
 				<u-form-item prop="nickName" label="昵称">
@@ -22,9 +21,8 @@
 					<u-input v-if="isModify" v-model="userInfo.nickName"></u-input>
 				</u-form-item>
 
-				<u-form-item prop="contact" label="手机号">
-					<u-text v-if="!isModify" :text="userInfo.contact"></u-text>
-					<u-input v-if="isModify" v-model="userInfo.contact" type="number"></u-input>
+				<u-form-item prop="contact" label="手机号" v-if="!isModify">
+					<u-text :text="userInfo.contact"></u-text>
 				</u-form-item>
 
 				<u-form-item prop="sex" label="性别">
