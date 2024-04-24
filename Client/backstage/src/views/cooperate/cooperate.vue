@@ -155,7 +155,7 @@ const deleteCompany = async (item,index) =>{
         closeForm()
     }
     else{
-        ElMessage.error('请求失败，请检查网络连接')
+        ElMessage.error(r.msg)
     }
 }
 

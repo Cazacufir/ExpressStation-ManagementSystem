@@ -27,8 +27,8 @@
             </el-table-column>
         </el-table>
 
-        <el-dialog v-model="isShow" :title="showTitile" width="600px" @close="closeForm" ref="delivery_RefForm">
-            <el-form :model="deliver" label-width="120px" :rules="deliver_rules">
+        <el-dialog v-model="isShow" :title="showTitile" width="600px" @close="closeForm">
+            <el-form :model="deliver" label-width="120px" :rules="deliver_rules" ref="delivery_RefForm">
                 <el-form-item prop="name" label="姓名：">
                     <el-input v-model="deliver.name"></el-input>
                 </el-form-item>
@@ -48,7 +48,7 @@
                     <el-input v-model="deliver.contact"></el-input>
                 </el-form-item>
 
-                <el-form-item v-show="showTitile === '新增快递员'" prop="comName" label="所属公司：">
+                <el-form-item v-show="showTitile === '新增快递员'" prop="com_id" label="所属公司：">
                     <el-select v-model="deliver.com_id" clearable placeholder="请选择快递公司">
                         <el-option v-for="(item, index) in companyName" :key="index" :label="item.name"
                             :value="item.comId"></el-option>
@@ -93,8 +93,15 @@ const init = async () => {
     const [e, r] = await api.getAllDeliver(hub.hub_id)
     deliverList.value = [...r.data]
     deliver.hub_id = hub.hub_id
+
+    const[e1,r1] = await api.getCompanyList(hub.hub_id)
+    let companyList = [...r1.data]
+    const Name = new Set()
+    companyList.forEach(item => {
+        Name.add(item.name)
+    })
     const [e2,r2] = await api.getCompanyName()
-    companyName.value = [...r2.data]
+    companyName.value = r2.data.filter(item => Name.has(item.name))
 }
 
 const deliver = reactive({
@@ -169,7 +176,7 @@ const deliver_rules = reactive({
         { required: true, message: '联系方式不能为空!', trigger: 'blur' }
     ],
 
-    comName: [
+    com_id: [
         { required: true, message: '所属公司不能为空!', trigger: 'blur' }
     ],
 })
