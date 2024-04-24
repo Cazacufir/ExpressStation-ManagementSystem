@@ -9,9 +9,10 @@
 				</u-form-item>
 
 				<u-form-item prop="password">
-					<u-input type="password" v-model="user.password" placeholder="请输入密码" clearable prefixIcon="lock" shape="circle"
+					<u-input :type="show? 'text' : 'password' " v-model="user.password" placeholder="请输入密码" clearable prefixIcon="lock" shape="circle"
 						prefixIconStyle="font-size:30px"></u-input>
 				</u-form-item>
+				
 			</u-form>
 
 			<u-button text="登 录" type="primary" shape="circle" size="large" @click="toHome()"></u-button>
@@ -22,7 +23,9 @@
 				</span>
 			</div>
 		</div>
+		<u-icon :name="show? 'eye' : 'eye-off' " size="20" @click="show = !show"></u-icon>
 	</view>
+	
 </template>
 
 <script setup>
@@ -105,6 +108,8 @@
 	const textFormat = (text) => {
 		return text.split("@")[1]
 	}
+	
+	let show = ref(false)
 </script>
 
 <style lang="scss">
@@ -127,5 +132,13 @@
 	.btnBar {
 		display: flex;
 		flex-direction: row-reverse;
+	}
+	
+	.password{
+		position: relative;
+	}
+	
+	.uicon-eye{
+		position: absolute;
 	}
 </style>
