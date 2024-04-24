@@ -88,11 +88,13 @@
 
                         <el-form-item prop="open_time" label="营业时间" class="time">
                             <!-- <el-input v-model="modify.open_time"></el-input> -->
-                            <el-time-picker format = 'HH:mm' value-format = 'HH:mm' v-model="modify.open_time" arrow-control placeholder="选择营业开始时间" />
+                            <el-time-picker format='HH:mm' value-format='HH:mm' v-model="modify.open_time" arrow-control
+                                placeholder="选择营业开始时间" />
                             <div class="mt-10 mb-10">
                                 <el-text>至</el-text>
                             </div>
-                            <el-time-picker format = 'HH:mm' value-format = 'HH:mm' v-model="modify.close_time" arrow-control placeholder="选择营业结束时间" />
+                            <el-time-picker format='HH:mm' value-format='HH:mm' v-model="modify.close_time"
+                                arrow-control placeholder="选择营业结束时间" />
                             <!-- <el-input v-model="modify.close_time"></el-input> -->
                         </el-form-item>
 
@@ -118,6 +120,7 @@ import { onMounted, reactive, ref, computed, onBeforeMount } from "vue";
 import { adminStore } from "@/stores/admin.js";
 import { ElMessage } from 'element-plus'
 import { pcaTextArr } from 'element-china-area-data'
+import { ElMessageBox } from 'element-plus'
 
 const store = adminStore();
 
@@ -229,14 +232,24 @@ const submitForm = async () => {
 }
 
 const toValidate = () => {
-    ruleFormRef.value.validate((vaild) => {
-        if (vaild) {
-            submitForm()
-        }
-        else {
-            return false
-        }
-    })
+    ElMessageBox.confirm('确认修改吗?')
+        .then(() => {
+            ruleFormRef.value.validate((vaild) => {
+                if (vaild) {
+                    submitForm()
+                }
+                else {
+                    return false
+                }
+            })
+        })
+        .catch(() => {
+            ElMessage({
+            message: '未知错误',
+            type: 'error',
+        })
+        })
+
 }
 
 const size = ref('large')

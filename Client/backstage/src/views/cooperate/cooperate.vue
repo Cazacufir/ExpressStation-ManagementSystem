@@ -12,7 +12,7 @@
             </article>
 
             <template #footer>
-                <el-button type="danger" @click="deleteCompany(item.mapId,index)">终止合作</el-button>
+                <el-button type="danger" @click="toDelete(item,index)">终止合作</el-button>
             </template>
         </el-card>
 
@@ -27,9 +27,9 @@
 
     <el-dialog v-model="openForm" title="添加合作公司" :rules="company_rules" width="500px">
         <el-form :model="company" label-width="120px">
-            <el-form-item prop="com_id" label="公司名称：">
-                <el-select v-model="company.com_id" clearable placeholder="请选择快递公司">
-                    <el-option v-for="(item,index) in companyName" :key="index" :label="item.name" :value="item.comId"></el-option>
+            <el-form-item prop="comId" label="公司名称：">
+                <el-select v-model="company" clearable placeholder="请选择快递公司" @change="handleChange" value-key="comId">
+                    <el-option v-for="(item,index) in companyName" :key="index" :label="item.name" :value="item"></el-option>
                 </el-select>
             </el-form-item>
 
@@ -54,6 +54,7 @@ import { onMounted, reactive, ref } from "vue";
 import { api } from "@/api"
 import { adminStore } from "@/stores/admin.js";
 import { ElMessage } from 'element-plus'
+import { ElMessageBox } from 'element-plus'
 
 const store = adminStore();
 const openForm = ref(false)
@@ -73,22 +74,24 @@ const init = async () => {
     hub_id.value = hub.hub_id
     const[e,r] = await api.getCompanyList(hub.hub_id)
     companyList.value = [...r.data]
+    const Name = new Set()
+    companyList.value.forEach(item => {
+        Name.add(item.name)
+    })
+    console.log("🚀 ~ init ~ companyList.value:", Name)
     const [e2,r2] = await api.getCompanyName()
-    companyName.value = [...r2.data]
+    companyName.value = r2.data.filter(item => !Name.has(item.name))
+    console.log("🚀 ~ init ~ companyName.value:", companyName.value)
 }
 
-const company = reactive({
-    com_id:null,
-    // name: '',
-    // contact: '',
-    // address: '',
-})
+// const company = reactive({
+//     comId:null,
+//     name: '',
+// })
+const company = ref()
 
 const closeForm = () =>{
-    company.com_id = null,
-    // company.name = ''
-    // company.contact = ''
-    // company.address = ''
+    company.value = null
     openForm.value = false
 }
 
@@ -119,12 +122,12 @@ const company_rules = reactive({
 })
 
 const submitForm = async () =>{
-    console.log('id',company.com_id,hub_id.value)
-    if(company.com_id == null){
+    console.log("🚀 ~ submitForm ~ company.value:", company.value)
+    if(company.value.comId == null){
         ElMessage.error('请选择快递公司!')
         return
     }
-    const[e,r] = await api.addCompany(company.com_id,hub_id.value)
+    const[e,r] = await api.addCompany(company.value.comId,hub_id.value)
     console.log('r',r)
     if(r.code == 200){
         companyList.value.push(r.data)
@@ -132,6 +135,7 @@ const submitForm = async () =>{
             message: '添加成功！',
             type: 'success',
         })
+        companyName.value = companyName.value.filter(item => item.name != company.value.name)
         closeForm()
     }
     else{
@@ -139,20 +143,40 @@ const submitForm = async () =>{
     }
 }
 
-const deleteCompany = async (mapId,index) =>{
-    const[e,r] = await api.deleteCompany(mapId)
+const deleteCompany = async (item,index) =>{
+    const[e,r] = await api.deleteCompany(item.mapId)
     if(r.code == 200){
         ElMessage({
             message: '终止合成成功！',
             type: 'success',
         })
         companyList.value.splice(index,1)
+        companyName.value.push(item)
         closeForm()
     }
     else{
         ElMessage.error('请求失败，请检查网络连接')
     }
 }
+
+const handleChange = (e) => {
+    console.log("🚀 ~ handleChange ~ e:", e)
+}
+
+const toDelete = (item,index) => {
+    ElMessageBox.confirm('确认要终止合作吗?')
+        .then(() => {
+            deleteCompany(item,index)
+        })
+        .catch(() => {
+            ElMessage({
+            message: '未知错误',
+            type: 'error',
+        })
+        })
+
+}
+
 </script>
 
 <style scoped lang="scss">
