@@ -1,14 +1,14 @@
 <template>
-    <div class="container flex flex-col">
+    <div class="container flex flex-col gap-20">
         <div class="flex justify-between">
-            <el-button plain type="primary" class="ml-40" icon="Plus" @click="openForm(null)"></el-button>
-            <div class="flex mr-40">
+            <el-button plain type="primary" class="ml-10" icon="Plus" @click="openForm(null)">新增员工</el-button>
+            <div class="flex">
                 <el-input v-model="searchFor" placeholder="查找员工"></el-input>
                 <el-button type="primary" icon="Search" @click="searchStaff"></el-button>
             </div>
         </div>
         <el-table :data="isShowSearch ? searchList : staffList" stripe>
-            <el-table-column prop="staffId" label="工号" width="120" align="center" />
+            <el-table-column fixed  prop="staffId" label="工号" width="120" align="center" />
             <el-table-column prop="name" label="姓名" width="120" align="center" />
             <el-table-column prop="sex" label="性别" width="120" align="center" />
             <el-table-column prop="age" label="年龄" width="120" align="center" />

@@ -1,8 +1,13 @@
 <template>
-    <div class="container flex gap-20 flex-wrap">
+    <div class="container flex gap-20 flex-wrap overflow-x-auto gap-50 pl-40">
         <el-card v-for="(item, index) in companyList" :key="index" class="card">
             <template #header>
-                {{ item.name }}
+                <div class="flex justify-between items-center">
+                    <span>{{ item.name }}</span>
+                    <div class="flex h-40px w-40px justify-center items-center">
+                        <el-image :src="item.logo" fit="fit"></el-image>
+                    </div>
+                </div>
             </template>
 
             <article class="flex flex-col gap-10">
@@ -12,7 +17,7 @@
             </article>
 
             <template #footer>
-                <el-button type="danger" @click="toDelete(item,index)">终止合作</el-button>
+                <el-button type="danger" @click="toDelete(item, index)">终止合作</el-button>
             </template>
         </el-card>
 
@@ -29,7 +34,8 @@
         <el-form :model="company" label-width="120px">
             <el-form-item prop="comId" label="公司名称：">
                 <el-select v-model="company" clearable placeholder="请选择快递公司" @change="handleChange" value-key="comId">
-                    <el-option v-for="(item,index) in companyName" :key="index" :label="item.name" :value="item"></el-option>
+                    <el-option v-for="(item, index) in companyName" :key="index" :label="item.name"
+                        :value="item"></el-option>
                 </el-select>
             </el-form-item>
 
@@ -63,7 +69,7 @@ const companyList = ref([])
 
 const companyName = ref([])
 
-onMounted(()=>{
+onMounted(() => {
     init()
 })
 
@@ -72,14 +78,15 @@ let hub_id = ref()
 const init = async () => {
     const hub = store.getAdminInfo()
     hub_id.value = hub.hub_id
-    const[e,r] = await api.getCompanyList(hub.hub_id)
+    const [e, r] = await api.getCompanyList(hub.hub_id)
     companyList.value = [...r.data]
+    console.log("🚀 ~ init ~ companyList.value:", companyList.value)
     const Name = new Set()
     companyList.value.forEach(item => {
         Name.add(item.name)
     })
     console.log("🚀 ~ init ~ companyList.value:", Name)
-    const [e2,r2] = await api.getCompanyName()
+    const [e2, r2] = await api.getCompanyName()
     companyName.value = r2.data.filter(item => !Name.has(item.name))
     console.log("🚀 ~ init ~ companyName.value:", companyName.value)
 }
@@ -90,7 +97,7 @@ const init = async () => {
 // })
 const company = ref()
 
-const closeForm = () =>{
+const closeForm = () => {
     company.value = null
     openForm.value = false
 }
@@ -121,15 +128,15 @@ const company_rules = reactive({
     // ]
 })
 
-const submitForm = async () =>{
+const submitForm = async () => {
     console.log("🚀 ~ submitForm ~ company.value:", company.value)
-    if(company.value.comId == null){
+    if (company.value.comId == null) {
         ElMessage.error('请选择快递公司!')
         return
     }
-    const[e,r] = await api.addCompany(company.value.comId,hub_id.value)
-    console.log('r',r)
-    if(r.code == 200){
+    const [e, r] = await api.addCompany(company.value.comId, hub_id.value)
+    console.log('r', r)
+    if (r.code == 200) {
         companyList.value.push(r.data)
         ElMessage({
             message: '添加成功！',
@@ -138,23 +145,23 @@ const submitForm = async () =>{
         companyName.value = companyName.value.filter(item => item.name != company.value.name)
         closeForm()
     }
-    else{
+    else {
         ElMessage.error('添加失败，请检查网络连接')
     }
 }
 
-const deleteCompany = async (item,index) =>{
-    const[e,r] = await api.deleteCompany(item.mapId)
-    if(r.code == 200){
+const deleteCompany = async (item, index) => {
+    const [e, r] = await api.deleteCompany(item.mapId)
+    if (r.code == 200) {
         ElMessage({
             message: '终止合成成功！',
             type: 'success',
         })
-        companyList.value.splice(index,1)
+        companyList.value.splice(index, 1)
         companyName.value.push(item)
         closeForm()
     }
-    else{
+    else {
         ElMessage.error(r.msg)
     }
 }
@@ -163,16 +170,16 @@ const handleChange = (e) => {
     console.log("🚀 ~ handleChange ~ e:", e)
 }
 
-const toDelete = (item,index) => {
+const toDelete = (item, index) => {
     ElMessageBox.confirm('确认要终止合作吗?')
         .then(() => {
-            deleteCompany(item,index)
+            deleteCompany(item, index)
         })
         .catch(() => {
             ElMessage({
-            message: '未知错误',
-            type: 'error',
-        })
+                message: '未知错误',
+                type: 'error',
+            })
         })
 
 }

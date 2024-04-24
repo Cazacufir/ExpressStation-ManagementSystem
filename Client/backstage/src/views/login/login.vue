@@ -58,6 +58,7 @@ const toLogin = async () => {
     user.contact = 'ad@'
     user.contact += user.showContact    
     const [e, r] = await api.login(user)
+    console.log("🚀 ~ toLogin ~ e:", e)
     console.log('res', r)
     if(!r.msg){
         toLogin()

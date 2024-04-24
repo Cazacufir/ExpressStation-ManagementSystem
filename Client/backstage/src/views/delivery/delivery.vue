@@ -1,18 +1,18 @@
 <template>
-    <div class="container flex flex-col">
+    <div class="container flex flex-col gap-20 justify-center">
         <div class="flex justify-between">
-            <el-button plain type="primary" class="ml-100" icon="Plus" @click="openForm(null)"></el-button>
-            <div class="flex mr-120">
+            <el-button plain type="primary" class="ml-10" icon="Plus" @click="openForm(null)">新增快递员</el-button>
+            <div class="flex">
                 <el-input v-model="searchFor" placeholder="查找快递员"></el-input>
                 <el-button type="primary" icon="Search" @click="searchDeliver"></el-button>
             </div>
         </div>
         <el-table :data="isShowSearch ? searchList : deliverList" stripe>
-            <el-table-column prop="deliverId" label="快递员编号" width="100" align="center" />
+            <el-table-column fixed prop="deliverId" label="快递员编号" width="100" align="center" />
             <el-table-column prop="name" label="姓名" width="140" align="center" />
             <el-table-column prop="sex" label="性别" width="120" align="center" />
             <el-table-column prop="age" label="年龄" width="120" align="center" />
-            <el-table-column prop="contact" label="联系方式" width="140" align="center" />
+            <el-table-column prop="contact" label="联系方式" width="180" align="center" />
             <el-table-column prop="comName" label="所属公司" width="120" align="center" />
             <el-table-column prop="affair" label="当前事务" width="250" align="center" />
             <el-table-column fixed="right" label="操作" width="150" align="center">

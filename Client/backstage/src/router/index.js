@@ -105,7 +105,7 @@ const routes = [
         name: "Deliver",
         component: async () => await import("@/views/delivery/delivery.vue"),
         meta: {
-          title: "配送员管理",
+          title: "快递员管理",
           icon: "Promotion",
         },
       },
