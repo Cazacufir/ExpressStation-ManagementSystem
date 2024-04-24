@@ -1,6 +1,6 @@
 <template>
-    <div class="container flex flex-col justify-center items-center">
-        <div class="header h-50 w-full flex flex-row-reverse">
+    <div class="container flex flex-col">
+        <!-- <div class="header h-50 w-full flex flex-row-reverse">
             <el-text tag="b" size="large">驿站主体信息</el-text>
         </div>
 
@@ -45,36 +45,109 @@
                 <el-button type="primary" v-show="isModify" @click="toValidate">确定</el-button>
             </div>
 
+        </div> -->
+        <el-descriptions title="驿站主体信息" column="6" :size="size" direction="vertical" :style="blockMargin" border>
+            <el-descriptions-item label="驿站ID" span="2">{{ Info.id }}</el-descriptions-item>
+            <el-descriptions-item label="驿站名称" span="2">{{ Info.name }}</el-descriptions-item>
+            <el-descriptions-item label="营业时间" span="2">{{ Info.open_time + '~' + Info.close_time
+                }}</el-descriptions-item>
+            <el-descriptions-item label="驿站地址" span="6">{{ Info.address }}</el-descriptions-item>
+            <el-descriptions-item label="联系方式" span="2">{{ Info.contact }}</el-descriptions-item>
+            <el-descriptions-item label="成立时间" span="2">{{ formatDate(Info.setupDate) }}</el-descriptions-item>
+        </el-descriptions>
+
+        <div class="m-auto mt-50">
+            <el-button type="primary" size="large" @click="openForm">修改驿站信息</el-button>
         </div>
+
+        <el-drawer v-model="isShow" direction="rtl">
+            <template #header>
+                <h4>修改驿站信息</h4>
+            </template>
+            <template #default>
+                <div>
+                    <el-form ref="ruleFormRef" :model="modify" lable-width="120px" :rules="hub_rules"
+                        hide-required-asterisk @close="cancelClick">
+
+                        <el-form-item prop="name" label="驿站名称">
+                            <el-input v-model="modify.name"></el-input>
+                        </el-form-item>
+
+
+                        <el-form-item prop="city" label="驿站地址">
+                            <!-- <el-input v-model="modify.address"></el-input> -->
+                            <el-cascader size="large" :options="pcaTextArr" v-model="modify.city"
+                                :placeholder="modify.city" style="width: 100%;">
+                            </el-cascader>
+                        </el-form-item>
+
+                        <el-form-item prop="detail" label="详细地址">
+                            <el-input v-model="modify.detail"></el-input>
+                        </el-form-item>
+
+
+                        <el-form-item prop="open_time" label="营业时间" class="time">
+                            <!-- <el-input v-model="modify.open_time"></el-input> -->
+                            <el-time-picker format = 'HH:mm' value-format = 'HH:mm' v-model="modify.open_time" arrow-control placeholder="选择营业开始时间" />
+                            <div class="mt-10 mb-10">
+                                <el-text>至</el-text>
+                            </div>
+                            <el-time-picker format = 'HH:mm' value-format = 'HH:mm' v-model="modify.close_time" arrow-control placeholder="选择营业结束时间" />
+                            <!-- <el-input v-model="modify.close_time"></el-input> -->
+                        </el-form-item>
+
+                        <el-form-item prop="contact" label="联系方式">
+                            <el-input v-model="modify.contact"></el-input>
+                        </el-form-item>
+                    </el-form>
+                </div>
+            </template>
+            <template #footer>
+                <div style="flex: auto">
+                    <el-button @click="cancelClick">取消</el-button>
+                    <el-button type="primary" @click="toValidate">提交</el-button>
+                </div>
+            </template>
+        </el-drawer>
     </div>
 </template>
 
 <script setup>
 import { api } from "@/api"
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, reactive, ref, computed, onBeforeMount } from "vue";
 import { adminStore } from "@/stores/admin.js";
 import { ElMessage } from 'element-plus'
+import { pcaTextArr } from 'element-china-area-data'
 
 const store = adminStore();
 
 const Info = reactive({})
 
+const modify = reactive({})
+
 const ruleFormRef = ref()
 
-let isModify = ref(false)
+let isShow = ref(false)
 
-onMounted(() => {
+onBeforeMount(() => {
     init()
 })
 
+let showAddress
+
 const init = async () => {
-    console.log(111)
     const hub = store.getAdminInfo()
     console.log("🚀 ~ init ~ hub:", hub)
     const [e, r] = await api.getMainInfo(hub.hub_id)
-    console.log(r.data)
     Object.assign(Info, r.data)
+    console.log("🚀 ~ init ~ Info:", Info)
+    showAddress = r.data.address
+    const word = r.data.address.split("_")
+    modify.city = word[0]
+    modify.detail = word[1]
+    Info.address = Info.address.replace(/_/g, '')
 }
+
 
 const formatDate = (dateString) => {
     let dateObject = new Date(dateString);
@@ -89,8 +162,8 @@ const checkAddress = async (role, value, callback) => {
     if (!value) {
         callback(new Error('地址不能为空!'))
     }
-    if (isModify.value == true) {
-        const [e, r] = await api.vertifyHub(Info)
+    if (isShow.value == true) {
+        const [e, r] = await api.vertifyHub(modify)
         if (r.code != 200) {
             callback(new Error(r.msg))
         }
@@ -102,8 +175,8 @@ const checkName = async (role, value, callback) => {
     if (!value) {
         callback(new Error('名称不能为空!'))
     }
-    if (isModify.value == true) {
-        const [e, r] = await api.vertifyHub(Info)
+    if (isShow.value == true) {
+        const [e, r] = await api.vertifyHub(modify)
         if (r.code != 200) {
             callback(new Error(r.msg))
         }
@@ -113,24 +186,42 @@ const checkName = async (role, value, callback) => {
 
 const hub_rules = reactive({
     name: [
-        { validator: checkAddress,trigger: 'blur' }
-    ],
-    address: [
-        { validator: checkName,trigger: 'blur' }
+        { validator: checkName, trigger: 'blur' }
     ],
     contact: [
         { required: true, message: '联系方式不能为空！', trigger: 'blur' }
+    ],
+    city: [
+        { required: true, message: '驿站地址不能为空！', trigger: 'blur' }
+    ],
+    detail: [
+        { required: true, message: '驿站地址不能为空！', trigger: 'blur' }
     ]
 })
 
 const submitForm = async () => {
-    const [e, r] = await api.updateHubInfo(Info)
+    modify.address = ''
+    if (Array.isArray(modify.city)) {
+        console.log("🚀 ~ submitForm ~ modify.city:", modify.city)
+        modify.city.forEach(item => modify.address += item)
+        modify.address += '_' + modify.detail
+    }
+    else {
+        modify.address = modify.city + '_' + modify.detail
+    }
+
+    console.log("🚀 ~ submitForm ~ modify.address:", modify)
+    const [e, r] = await api.updateHubInfo(modify)
     if (r.code == 200) {
         ElMessage({
             message: '修改成功！',
             type: 'success',
         })
-        isModify.value = false
+        showAddress = modify.address
+        console.log("🚀 ~ submitForm ~ showAddress:", showAddress)
+        isShow.value = false
+        Object.assign(Info, modify)
+        Info.address = Info.address.replace(/_/g, '')
     }
     else {
         ElMessage.error('修改失败，请检查网络连接')
@@ -139,7 +230,7 @@ const submitForm = async () => {
 
 const toValidate = () => {
     ruleFormRef.value.validate((vaild) => {
-        if(vaild){
+        if (vaild) {
             submitForm()
         }
         else {
@@ -147,6 +238,32 @@ const toValidate = () => {
         }
     })
 }
+
+const size = ref('large')
+const blockMargin = computed(() => {
+    const marginMap = {
+        large: '32px',
+        default: '28px',
+        small: '24px',
+    }
+    return {
+        marginTop: marginMap[size.value] || marginMap.default,
+    }
+})
+
+function cancelClick() {
+    const word = showAddress.split("_")
+    modify.city = word[0]
+    modify.detail = word[1]
+    isShow.value = false
+}
+
+const openForm = () => {
+    isShow.value = true
+    Object.assign(modify, Info)
+    console.log("🚀 ~ openForm ~ modify:", modify)
+}
+
 </script>
 
 <style scope lang="scss">

@@ -30,9 +30,11 @@
         </el-form-item>
 
         <el-form-item v-show="hub.role == 1" prop="close" label="营业时间">
-            <el-input v-model="hub.open" style="width:80px"></el-input>
-            <span>~</span>
-            <el-input v-model="hub.close" style="width:80px"></el-input>
+            <el-time-picker format = 'HH:mm' value-format = 'HH:mm' v-model="hub.open_time" arrow-control placeholder="选择营业开始时间" />
+            <div class="mt-10 mb-10">
+                <el-text>至</el-text>
+            </div>
+            <el-time-picker format = 'HH:mm' value-format = 'HH:mm' v-model="hub.close_time" arrow-control placeholder="选择营业结束时间" />
         </el-form-item>
 
         <el-form-item>
@@ -55,8 +57,8 @@ const hub = reactive({
     city: '',
     detail: '',
     address: '',
-    close: '',
-    open: ''
+    close_time: '',
+    open_time: ''
 })
 
 const emit = defineEmits(['getHub'])
@@ -152,8 +154,9 @@ const toSubmit = async () => {
 }
 
 const toValidate = () => {
+    console.log('hub',hub)
     hub_ruleFormRef.value.validate((vaild) => {
-        if(vaild){
+        if (vaild) {
             toSubmit()
         }
         else {

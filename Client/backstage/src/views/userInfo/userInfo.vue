@@ -54,7 +54,7 @@
 </template>
 
 <script setup>
-import { computed, ref, reactive, onMounted } from 'vue'
+import { computed, ref, reactive, onMounted} from 'vue'
 import { api } from "@/api"
 import { adminStore } from "@/stores/admin.js"
 import { ElMessage } from 'element-plus'
