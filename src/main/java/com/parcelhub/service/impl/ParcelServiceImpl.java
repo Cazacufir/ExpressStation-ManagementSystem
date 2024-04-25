@@ -688,7 +688,7 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
 
         LambdaQueryWrapper<Parcel> parcelLambdaQueryWrapper = new LambdaQueryWrapper<>();
         parcelLambdaQueryWrapper.eq(Parcel::getHub_id,hub_id)
-                .eq(Parcel::getState,"已揽收");
+                .eq(Parcel::getState,"等待揽收");
         Long SendParcel = parcelMapper.selectCount(parcelLambdaQueryWrapper);
         map.put("待出库",SendParcel);
 

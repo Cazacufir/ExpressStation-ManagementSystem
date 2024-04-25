@@ -176,7 +176,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderList> implem
             return Result.okResult(orderParcelMergeSet);
         }
         else {
-            List<OrderParcelMerge> orderParcelMerge = orderMapper.getSendParcelByParcelId(parcelId);
+            List<OrderParcelMerge> orderParcelMerge = orderMapper.getSendParcelByParcelId(parcelId,userId);
             if(orderParcelMerge.size() == 0){
                 return Result.errorResult(AppHttpCodeEnum.PARCEL_NOT_FOUND);
             }
@@ -193,6 +193,31 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderList> implem
         PagesDto<OrderParcelMerge> orderParcelMergePagesDto = PageUtils.listToPageDTO(orderParcelMergeList,pageNum,pageSize);
         orderParcelMergePagesDto.setDataList(orderParcelMergeList1);
         return Result.okResult(orderParcelMergePagesDto);
+    }
+
+    @Override
+    public Result searchSendListByHub(Integer hub_id,Integer parcelId,String word){
+        if(parcelId == 0){
+            List<OrderParcelMerge> orderParcelMergeList = orderMapper.getSendParcelByHub(hub_id);
+            List<OrderParcelMerge> orderParcelMerges = new ArrayList<>();
+            for(OrderParcelMerge orderParcelMerge : orderParcelMergeList){
+                if(orderParcelMerge.getSendName().contains(word) || orderParcelMerge.getSendAddress().contains(word) ||
+                        orderParcelMerge.getReceiveName().contains(word) || orderParcelMerge.getReceiveAddress().contains(word)
+                || orderParcelMerge.getState().contains(word) || orderParcelMerge.getType().contains(word) || orderParcelMerge.getCode().contains(word)
+                || orderParcelMerge.getOrderType().contains(word)){
+                    orderParcelMerges.add(orderParcelMerge);
+                }
+            }
+            Set<OrderParcelMerge> orderParcelMergeSet = new HashSet<>(orderParcelMerges);
+            return Result.okResult(orderParcelMergeSet);
+        }
+        else {
+            List<OrderParcelMerge> orderParcelMergeList = orderMapper.getSendParcelByParcelIdByHub(parcelId,hub_id);
+            if(orderParcelMergeList.size() == 0){
+                return Result.errorResult(AppHttpCodeEnum.PARCEL_NOT_FOUND);
+            }
+            return Result.okResult(orderParcelMergeList);
+        }
     }
 
     @Override
