@@ -1,6 +1,13 @@
 <template>
-    <div class="w-full flex flex-col items-center">
-        <el-table :data="list" stripe>
+    <div class="w-full flex flex-col items-center gap-20">
+        <div class="flex flex-row-reverse w-full">
+            <div class="flex ml-auto">
+                <el-input v-model="searchFor" placeholder="搜索快件"></el-input>
+                <el-button type="primary" icon="Search" @click="searchParcel"></el-button>
+            </div>
+        </div>
+
+        <el-table :data="isShowSearch ? searchList : list" stripe>
             <el-table-column prop="parcelId" label="快递单号" width="100" align="center" />
             <el-table-column prop="sendName" label="邮寄人姓名" width="120" align="center" />
             <el-table-column prop="sendContact" label="联系方式" width="100" align="center" />
@@ -32,12 +39,12 @@
             </el-table-column>
         </el-table>
 
-        <el-pagination layout="prev, pager, next" :page-count="totalPage" @current-change="changePage" />
+        <el-pagination v-if="!isShowSearch" layout="prev, pager, next" :page-count="totalPage" @current-change="changePage" />
     </div>
 </template>
 
 <script setup>
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, reactive, ref,watchEffect } from "vue";
 import { adminStore } from "@/stores/admin.js";
 import { api } from "@/api"
 import { ElMessage } from 'element-plus'
@@ -73,9 +80,9 @@ const getList = async () => {
 const toSend = async (scope) => {
     console.log("🚀 ~ toSend ~ scope:", scope.row.parcelId)
     console.log("🚀 ~ toSend ~ scope:", scope.$index)
-    const [e,r] = await api.sendParcelByHub(scope.row)
-    if(r.code == 200){
-        list.value.splice(scope.$index,1)
+    const [e, r] = await api.sendParcelByHub(scope.row)
+    if (r.code == 200) {
+        list.value.splice(scope.$index, 1)
         ElMessage({
             message: '出库成功，物流已更新',
             type: 'success',
@@ -110,5 +117,52 @@ const changePage = (value) => {
     pageNum = value
     console.log("🚀 ~ changePage ~ page:", value)
     getList()
+}
+
+let isShowSearch = ref(false)
+const searchList = ref([])
+const searchFor = ref()
+
+watchEffect(() => {
+    if (searchFor.value == '') {
+        isShowSearch.value = false;
+    }
+})
+
+
+const searchParcel = async () => {
+    if (searchFor.value == null) {
+        return
+    }
+    searchList.value = []
+    const word = parseInt(searchFor.value)
+    if (word) {
+        const [e, r] = await api.searchSendListByHub(
+            hub_id,
+            searchFor.value,
+            0
+        )
+        if (r.code == 200) {
+            searchList.value = [...r.data]
+            isShowSearch.value = true
+        }
+        else {
+            ElMessage.error(r.msg)
+        }
+    }
+    else {
+        const [e, r] = await api.searchSendListByHub(
+            hub_id,
+            0,
+            searchFor.value
+        )
+        if (r.code == 200) {
+            searchList.value = [...r.data]
+            isShowSearch.value = true
+        }
+        else {
+            ElMessage.error(r.msg)
+        }
+    }
 }
 </script>

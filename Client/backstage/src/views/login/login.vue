@@ -60,7 +60,7 @@ const toLogin = async () => {
     const [e, r] = await api.login(user)
     console.log("🚀 ~ toLogin ~ e:", e)
     console.log('res', r)
-    if(!r.msg){
+    if(e){
         toLogin()
     }
     if (r.msg != '认证或授权失败') {

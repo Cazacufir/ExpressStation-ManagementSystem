@@ -79,6 +79,14 @@ export function countSRParcel(hub_id){
     return Get("/countSRParcel",{ hub_id:hub_id })
 }
 
+export function searchSendListByHub(hub_id,parcelId,word){
+    return Get("/searchSendListByHub",{
+        hub_id:hub_id,
+        parcelId:parcelId,
+        word:word,
+    })
+}
+
 export const ParcelApi = {
     getSendListByHub,
     sendParcelByHub,
@@ -93,5 +101,6 @@ export const ParcelApi = {
     countParcel,
     getKindsParcel,
     countUser,
-    countSRParcel
+    countSRParcel,
+    searchSendListByHub
 }
