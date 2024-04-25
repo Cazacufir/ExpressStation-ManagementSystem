@@ -364,6 +364,36 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
     }
 
     @Override
+    public Result searchSendingParcel(int hub_id,int parcelId,String word){
+        if (parcelId == 0){
+            LambdaQueryWrapper<Parcel> parcelLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            parcelLambdaQueryWrapper.eq(Parcel::getHub_id,hub_id)
+                    .eq(Parcel::getState,"派送中")
+                    .like(Parcel::getSendName,word)
+                    .or().like(Parcel::getSendAddress,word)
+                    .or().like(Parcel::getReceiveName,word)
+                    .or().like(Parcel::getReceiveAddress,word)
+                    .or().like(Parcel::getType,word)
+                    .or().like(Parcel::getCode,word);
+            List<Parcel> parcelList = parcelMapper.selectList(parcelLambdaQueryWrapper);
+            if (parcelList.size() == 0){
+                return Result.errorResult(AppHttpCodeEnum.PARCEL_NOT_FOUND);
+            }
+            return Result.okResult(parcelList);
+        }
+        else {
+            LambdaQueryWrapper<Parcel> parcelLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            parcelLambdaQueryWrapper.eq(Parcel::getHub_id,hub_id)
+                    .eq(Parcel::getParcelId,parcelId);
+            List<Parcel> parcelList = parcelMapper.selectList(parcelLambdaQueryWrapper);
+            if (parcelList.size() == 0){
+                return Result.errorResult(AppHttpCodeEnum.PARCEL_NOT_FOUND);
+            }
+            return Result.okResult(parcelList);
+        }
+    }
+
+    @Override
     public Result receiveParcelByHub(Parcel parcel){
         LambdaQueryWrapper<Carrier> carrierLambdaQueryWrapper = new LambdaQueryWrapper<>();
         carrierLambdaQueryWrapper.eq(Carrier::getHub_id,parcel.getHub_id());
@@ -435,6 +465,37 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
             return Result.errorResult(AppHttpCodeEnum.PARCEL_NOT_FOUND);
         }
         return Result.okResult(parcelPage);
+    }
+
+    @Override
+    public Result searchAllParcelByHub(int hub_id,int parcelId,String word){
+        if (parcelId == 0){
+            LambdaQueryWrapper<Parcel> parcelLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            parcelLambdaQueryWrapper.eq(Parcel::getHub_id,hub_id)
+                    .like(Parcel::getSendName,word)
+                    .or().like(Parcel::getSendAddress,word)
+                    .or().like(Parcel::getReceiveName,word)
+                    .or().like(Parcel::getReceiveAddress,word)
+                    .or().like(Parcel::getType,word)
+                    .or().like(Parcel::getCode,word)
+                    .or().like(Parcel::getState,word)
+                    .or().like(Parcel::getCompany,word);
+            List<Parcel> parcelList = parcelMapper.selectList(parcelLambdaQueryWrapper);
+            if (parcelList.size() == 0){
+                return Result.errorResult(AppHttpCodeEnum.PARCEL_NOT_FOUND);
+            }
+            return Result.okResult(parcelList);
+        }
+        else{
+            LambdaQueryWrapper<Parcel> parcelLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            parcelLambdaQueryWrapper.eq(Parcel::getHub_id,hub_id)
+                    .eq(Parcel::getParcelId,parcelId);
+            List<Parcel> parcelList = parcelMapper.selectList(parcelLambdaQueryWrapper);
+            if (parcelList.size() == 0){
+                return Result.errorResult(AppHttpCodeEnum.PARCEL_NOT_FOUND);
+            }
+            return Result.okResult(parcelList);
+        }
     }
 
     @Override

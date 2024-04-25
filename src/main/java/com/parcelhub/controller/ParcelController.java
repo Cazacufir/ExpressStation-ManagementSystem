@@ -76,6 +76,11 @@ public class ParcelController {
         return parcelService.getSendingParcel(pageNum,pageSize,hub_id);
     }
 
+    @GetMapping("/searchSendingParcel")
+    public Result searchSendingParcel(int hub_id,int parcelId,String word){
+        return parcelService.searchSendingParcel(hub_id,parcelId,word);
+    }
+
     @PostMapping("/receiveParcelByHub")
     public Result receiveParcelByHub(@RequestBody Parcel parcel){
         return parcelService.receiveParcelByHub(parcel);
@@ -84,6 +89,11 @@ public class ParcelController {
     @GetMapping("/getAllParcelByHub")
     public Result getAllParcelByHub(Integer pageNum,Integer pageSize,int hub_id){
         return parcelService.getAllParcelByHub(pageNum,pageSize,hub_id);
+    }
+
+    @GetMapping("/searchAllParcelByHub")
+    public Result searchAllParcelByHub(int hub_id,int parcelId,String word){
+        return parcelService.searchAllParcelByHub(hub_id,parcelId,word);
     }
 
     @PostMapping("/getReceivedParcel")
