@@ -1,31 +1,14 @@
 <template>
-    <!-- <div class="container flex justify-center items-center h-50vh">
-        <article class="h-100% w-500 flex flex-col justify-center items-center gap-20 h-50vh">
-            <el-input v-model="parcelId" placeholder="请输入快递ID码">
-                <template #append>
-                    <el-button :icon="Search" />
-                </template>
-            </el-input>
+    <div class="w-full flex flex-col items-center gap-20">
+        <div class="flex flex-row-reverse w-full">
+            <div class="flex ml-auto">
+                <el-input v-model="searchFor" placeholder="搜索快件"></el-input>
+                <el-button type="primary" icon="Search" @click="searchParcel"></el-button>
+            </div>
+        </div>
 
-            <el-button round>点击此处上传快递条形码</el-button>
-
-            <el-radio-group v-model="receive">
-                <el-radio label="1" size="large">自动入库</el-radio>
-                <el-radio label="2" size="large">手动入库</el-radio>
-            </el-radio-group>
-
-            <section class="flex" v-show="receive == '2'">
-                <label for="carrier" class="w-90 leading-32px">货架号：</label>
-                <el-input id="carrier"></el-input>
-            </section>
-
-            <el-button type="primary">点击入库</el-button>
-
-        </article>
-    </div> -->
-    <div class="w-full flex flex-col items-center">
-        <el-table :data="list" stripe>
-            <el-table-column prop="parcelId" label="快递单号" width="100" align="center" />
+        <el-table :data="isShowSearch ? searchList : list" stripe>
+            <el-table-column fixed prop="parcelId" label="快递单号" width="100" align="center" />
             <el-table-column prop="sendName" label="邮寄人姓名" width="120" align="center" />
             <el-table-column prop="sendAddress" label="地址" width="180" align="center">
                 <template #default="scope">
@@ -53,13 +36,12 @@
             </el-table-column>
         </el-table>
 
-        <el-pagination layout="prev, pager, next" :page-count="totalPage" @current-change="changePage" />
+        <el-pagination v-if="!isShowSearch" layout="prev, pager, next" :page-count="totalPage" @current-change="changePage" />
     </div>
 </template>
 
 <script setup>
-import { onMounted, reactive, ref } from "vue";
-import { Search } from '@element-plus/icons-vue'
+import { onMounted, reactive, ref,watchEffect } from "vue";
 import { adminStore } from "@/stores/admin.js";
 import { api } from "@/api"
 import { ElMessage } from 'element-plus'
@@ -113,6 +95,53 @@ const toReceive = async (scope) => {
     }
     else {
         ElMessage.error(r.msg)
+    }
+}
+
+let isShowSearch = ref(false)
+const searchList = ref([])
+const searchFor = ref()
+
+watchEffect(() => {
+    if (searchFor.value == '') {
+        isShowSearch.value = false;
+    }
+})
+
+
+const searchParcel = async () => {
+    if (searchFor.value == null) {
+        return
+    }
+    searchList.value = []
+    const word = parseInt(searchFor.value)
+    if (word) {
+        const [e, r] = await api.searchSendingParcel(
+            hub_id,
+            searchFor.value,
+            0
+        )
+        if (r.code == 200) {
+            searchList.value = [...r.data]
+            isShowSearch.value = true
+        }
+        else {
+            ElMessage.error(r.msg)
+        }
+    }
+    else {
+        const [e, r] = await api.searchSendingParcel(
+            hub_id,
+            0,
+            searchFor.value
+        )
+        if (r.code == 200) {
+            searchList.value = [...r.data]
+            isShowSearch.value = true
+        }
+        else {
+            ElMessage.error(r.msg)
+        }
     }
 }
 </script>

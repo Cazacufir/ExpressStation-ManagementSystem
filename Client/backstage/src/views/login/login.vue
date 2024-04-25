@@ -63,7 +63,7 @@ const toLogin = async () => {
     if(e){
         toLogin()
     }
-    if (r.msg != '认证或授权失败') {
+    if (r.msg != '认证或授权失败' && r.code != 505) {
         utils.setSession("token", r.data.token);
         // utils.setSession("admin",r.data.adminInfoVo)
         store.setAdminInfo(r.data.adminInfoVo)
@@ -74,7 +74,7 @@ const toLogin = async () => {
         })
     }
     else {
-        ElMessage.error(r.msg)
+        ElMessage.error('用户名或密码错误')
     }
 }
 </script>
