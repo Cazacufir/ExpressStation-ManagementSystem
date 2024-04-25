@@ -8,7 +8,7 @@
         </div>
 
         <el-table :data="isShowSearch ? searchList : list" stripe>
-          <el-table-column fixed prop="parcelId" label="快递单号" width="100" align="center" />
+          <el-table-column prop="parcelId" label="快递单号" width="100" align="center" />
           <el-table-column prop="receiveName" label="收件人姓名" width="150" align="center" />
           <el-table-column prop="receiveAddress" label="地址" width="180" align="center">
             <template #default="scope">
