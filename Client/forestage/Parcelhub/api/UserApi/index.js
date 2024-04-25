@@ -40,10 +40,19 @@ const updatePassword = (params) =>{
 	})
 }
 
+const deleteUser = (params) =>{
+	return request({
+		url:'/user/deleteUser',
+		method:'get',
+		data:params
+	})
+}
+
 export const UserApi = {
 	login,
 	register,
 	uploadAvatar,
 	updateUserInfo,
-	updatePassword
+	updatePassword,
+	deleteUser
 }

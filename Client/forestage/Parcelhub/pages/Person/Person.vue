@@ -81,7 +81,7 @@ const list = [
 		name:'账号安全',
 		icon:'integral-fill',
 		color:'#F47174',
-		target:'/pages/Password/Password'
+		target:'/pages/AccountSec/AccountSec'
 	}
 ]
 

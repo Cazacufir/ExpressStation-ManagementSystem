@@ -85,38 +85,38 @@ const formatDate = (dateString) => {
 		return address.replace(/_/g, '')
 	}
 	
-	let currentId = ref()
-	let currentIndex = null
+	// let currentId = ref()
+	// let currentIndex = null
 	
-	const toDelete = (items,index) => {
-		isShowModal.value = true
-		currentId.value = items.orderId
-		currentIndex = index
-	}
+	// const toDelete = (items,index) => {
+	// 	isShowModal.value = true
+	// 	currentId.value = items.orderId
+	// 	currentIndex = index
+	// }
 	
-	const deleteList = async () => {
-		await api.cancelSendList({ orderId:currentId.value })
-		.then(res => {
-			list.value.splice(currentIndex,1)
-			uni.showToast({
-				icon:'success',
-				title:'取消成功'
-			})
-		})
-		.catch(res => {
-			uni.showToast({
-				title:res.msg
-			})
-		})
-		cancelModal()
-		console.log('id',currentId.value)
-	}
+	// const deleteList = async () => {
+	// 	await api.cancelSendList({ orderId:currentId.value })
+	// 	.then(res => {
+	// 		list.value.splice(currentIndex,1)
+	// 		uni.showToast({
+	// 			icon:'success',
+	// 			title:'取消成功'
+	// 		})
+	// 	})
+	// 	.catch(res => {
+	// 		uni.showToast({
+	// 			title:res.msg
+	// 		})
+	// 	})
+	// 	cancelModal()
+	// 	console.log('id',currentId.value)
+	// }
 	
-	const cancelModal = () => {
-		currentId.value = null
-		currentIndex = null
-		isShowModal.value = false
-	}
+	// const cancelModal = () => {
+	// 	currentId.value = null
+	// 	currentIndex = null
+	// 	isShowModal.value = false
+	// }
 	
 	let isShowSearch = ref(false)
 	const searchList = ref([])

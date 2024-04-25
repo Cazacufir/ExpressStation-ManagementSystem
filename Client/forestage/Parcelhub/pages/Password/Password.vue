@@ -1,17 +1,27 @@
 <template>
 	<view class="container">
 		<div class="pswBar">
-			<u-form :model="psw" :rules="psw_rules" labelWidth="65" ref="psw_Ref">
+			<u-form :model="psw" :rules="psw_rules" labelWidth="65" ref="psw_Ref" style="position: relative;">
 				<u-form-item label="原密码" prop="rawPassword">
-					<u-input v-model="psw.rawPassword" placeholder="请输入原密码"></u-input>
+					<div style="display: flex;">
+						<u-input v-model="psw.rawPassword" placeholder="请输入原密码" :password="show"></u-input>
+						<u-icon :name="show? 'eye' : 'eye-off' " size="20" @click="show = !show"></u-icon>
+					</div>
 				</u-form-item>
 
 				<u-form-item label="新密码" prop="newPassword">
-					<u-input v-model="psw.newPassword" placeholder="请输入新密码"></u-input>
+					<div style="display: flex;">
+						<u-input v-model="psw.newPassword" placeholder="请输入新密码" :password="show2"></u-input>
+						<u-icon :name="show2? 'eye' : 'eye-off' " size="20" @click="show2 = !show2"></u-icon>
+					</div>
 				</u-form-item>
-
+				
+				
 				<u-form-item label="确认密码" prop="conf">
-					<u-input v-model="psw.conf" placeholder="请输入确认密码"></u-input>
+					<div style="display: flex;">
+						<u-input v-model="psw.conf" placeholder="请输入确认密码" :password="show3"></u-input>
+						<u-icon :name="show3? 'eye' : 'eye-off' " size="20" @click="show3 = !show3"></u-icon>
+					</div>
 				</u-form-item>
 			</u-form>
 		</div>
@@ -37,6 +47,10 @@
 	} from '../../api/index.js'
 
 	let psw_Ref = ref()
+
+	let show = ref(true)
+	let show2 = ref(true)
+	let show3 = ref(true)
 
 	let userId
 
@@ -96,27 +110,26 @@
 		psw_Ref.value.validate().then(async () => {
 			psw.userId = userId
 			await api.updatePassword(psw).then((res) => {
-				
-				if (res.code == 200) {
-					uni.navigateBack()
-					uni.showToast({
-						icon: 'success',
-						title: '修改成功'
-					})
-				}
-				else{
-					uni.showToast({
-						icon:'none',
-						title:res.msg
-					})
-				}
-			})
-			.catch(res => {
-				uni.showToast({
-					icon:'none',
-					title:res.msg
+
+					if (res.code == 200) {
+						uni.navigateBack()
+						uni.showToast({
+							icon: 'success',
+							title: '修改成功'
+						})
+					} else {
+						uni.showToast({
+							icon: 'none',
+							title: res.msg
+						})
+					}
 				})
-			})
+				.catch(res => {
+					uni.showToast({
+						icon: 'none',
+						title: res.msg
+					})
+				})
 		})
 
 	}
@@ -148,5 +161,9 @@
 		width: 100%;
 		position: absolute;
 		bottom: 0;
+	}
+
+	.uicon-eye {
+		position: absolute;
 	}
 </style>
