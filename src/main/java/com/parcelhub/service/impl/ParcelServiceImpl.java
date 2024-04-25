@@ -446,7 +446,7 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
         parcel.setState("待取件");
 
         Hub hub = hubMapper.selectById(parcel.getHub_id());
-        String hubStr = "已入库" + "_" + now + parcel.getCurrentCity() + "_" + "您的快递已派送至<" + hub.getName() + "代收点;自提点联系方式:" + hub.getContact()
+        String hubStr = "待取件" + "_" + now + parcel.getCurrentCity() + "_" + "您的快递已派送至<" + hub.getName() + "代收点;自提点联系方式:" + hub.getContact()
                 + ">，请凭取件码" + code + "及时到代收点领取";
         String newRoute = parcel.getRoute() + "," + hubStr;
         parcel.setRoute(newRoute);
