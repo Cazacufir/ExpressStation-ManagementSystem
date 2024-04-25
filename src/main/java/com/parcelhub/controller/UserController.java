@@ -48,4 +48,9 @@ public class UserController {
     public Result uploadAvatar(UserAvatarVo userAvatarVo){
         return userService.uploadAvatar(userAvatarVo);
     }
+
+    @GetMapping("/deleteUser")
+    public Result deleteUser(@RequestParam int userId){
+        return userService.deleteUser(userId);
+    }
 }

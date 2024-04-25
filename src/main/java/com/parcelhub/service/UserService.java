@@ -17,4 +17,6 @@ public interface UserService extends IService<User> {
     Result updateUserInfo(User user);
 
     Result uploadAvatar(UserAvatarVo userAvatarVo);
+
+    Result deleteUser(int userId);
 }

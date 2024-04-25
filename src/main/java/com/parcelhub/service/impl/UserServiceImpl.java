@@ -94,4 +94,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
         return Result.errorResult(AppHttpCodeEnum.UPLOAD_ERROR);
     }
+
+    @Override
+    public Result deleteUser(int userId){
+        userMapper.deleteById(userId);
+        return Result.okResult();
+    }
 }
