@@ -27,6 +27,22 @@
 				<u-text text="身份码" bold size="20" color="white"></u-text>
 			</div>
 		</view>
+		
+		<div class="parcelBar" v-if="receivedParcel.length">
+			<u-text text="到站包裹" bold size="20"></u-text>
+			
+			<div class="parcelCard" v-for="(items,index) in receivedParcel" :key="index" @click="toDetail(items)">
+				<div>
+					<u-image :src="items.logo" height="50" width="50" errorIcon="http://114.132.155.61:9000/companylogo/fail.png"></u-image>
+				</div>
+			
+				<div class="parcelInfo">
+					<u-text :text="items.code" bold size="13"></u-text>
+					<u-text :text="'手机号 ' + items.receiveContact + ' 的包裹'" size="11"></u-text>
+				</div>
+			
+			</div>
+		</div>
 
 		<view class="parcelBar">
 			<div class="parcelHead">
@@ -91,8 +107,18 @@
 	const parcelList = ref([])
 	
 	const deleteItem = {}
+	
+	const receivedParcel = ref([])
 
 	onLoad(async () => {
+		uni.getStorage({
+			key:'user',
+			success:async function (res) {
+				console.log(111)
+				await api.getReceivedParcelByUser({ receiveName:res.data.name,receiveContact:res.data.contact })
+				.then(res => receivedParcel.value = [...res.data])
+			}
+		})
 		let amapPlugin = new amap.AMapWX({
 			key: '5a30fd46a68c8ca67069b5bd60ec34f4'
 		})
@@ -194,6 +220,12 @@
 	const toCode = () => {
 		uni.navigateTo({
 			url:'/pages/UserCode/UserCode'
+		})
+	}
+	
+	const toDetail = (items) => {
+		uni.navigateTo({
+			url:'/pages/ParcelDetail/ParcelDetail?item=' + JSON.stringify(items)
 		})
 	}
 </script>
