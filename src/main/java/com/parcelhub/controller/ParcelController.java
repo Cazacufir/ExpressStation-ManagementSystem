@@ -140,4 +140,9 @@ public class ParcelController {
     public Result countSRParcel(@RequestParam int hub_id){
         return parcelService.countSRParcel(hub_id);
     }
+
+    @PostMapping("/getReceivedParcelByUser")
+    public Result getReceivedParcelByUser(@RequestBody Parcel parcel){
+        return parcelService.getReceivedParcelByUser(parcel);
+    }
 }

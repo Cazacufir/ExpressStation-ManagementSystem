@@ -43,6 +43,8 @@ public interface ParcelService extends IService<Parcel> {
 
     Result getReceivedParcel(Parcel parcel);
 
+    Result getReceivedParcelByUser(Parcel parcel);
+
     Result receiveSingleParcel(int parcelId);
 
     Result receiveParcelByUser(List<Parcel> parcels);
