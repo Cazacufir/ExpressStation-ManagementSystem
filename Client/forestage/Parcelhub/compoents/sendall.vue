@@ -17,7 +17,7 @@
 				</div>
 
 				<div style="width: 20%;" class="parcelInfo">
-					<u-text :text="items.state" size="13"></u-text>
+					<u-text :text="judgeReserve(items.state)" size="13"></u-text>
 					<div style="display: flex;">
 						<u-icon name="minus" color="#0165fe"></u-icon>
 						<u-icon name="minus" color="#0165fe"></u-icon>
@@ -181,6 +181,16 @@
 					}
 				})
 		}
+	}
+	
+	const judgeReserve = (items) => {
+		if(items.includes("_")){
+			let word = items.split("_")
+			return word[0]
+		}
+		else{
+			return items
+		} 
 	}
 </script>
 

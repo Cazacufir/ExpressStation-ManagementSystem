@@ -8,8 +8,9 @@
 		<div class="parcelContainer">
 			<div class="header">
 				<div>
-					<u-image :src="parcel.logo" height="50" width="50"
+					<u-image v-if="parcel.logo" :src="parcel.logo" height="50" width="50"
 						errorIcon="http://114.132.155.61:9000/companylogo/fail.png"></u-image>
+					<u-image v-else src="http://114.132.155.61:9000/companylogo/fail.png" height="50" width="50"></u-image>
 				</div>
 
 				<div class="parcelInfo">
@@ -18,7 +19,8 @@
 					<u-text :text="'预计' + expectTime  + '前后送达'" size="11"></u-text>
 				</div>
 
-				<div v-if="parcel.state != '等待揽收' && parcel.state != '派送中' && parcel.state != '待取件' && cityIndex != cities.length" style="margin-left: auto;">
+				<div v-if="parcel.state != '等待揽收' && parcel.state != '派送中' && parcel.state != '待取件' 
+				&& cityIndex != cities.length && !parcel.state.includes('等待揽收')" style="margin-left: auto;">
 					<u-button shape="circle" text="+ 推进流程" type="primary" size="small" @click="pushRoute"></u-button>
 				</div>
 			</div>
@@ -58,7 +60,8 @@
 
 				<div :class="[parcel.route? 'routeBar' : '']" style="margin-left: 30rpx;">
 					<div>
-						<u-text :text="parcel.state" bold block="false"></u-text>
+						<u-text :text="judgeReserve(parcel.state)" bold block="false"></u-text>
+						<u-text v-if="deliver" :text="deliver" size="11" color="gray"></u-text>
 						<u-text v-if="parcel.route" :text="'快递现已到达[' + currentCity + ']'" block="false"
 							size="12"></u-text>
 						<u-text v-if="parcel.route" :text="currentDate" size="11" color="gray"></u-text>
@@ -234,7 +237,7 @@
 	// }
 
 	const judgeState = computed(() => {
-		if (parcel.state == '等待揽收') return 0
+		if (parcel.state.includes('等待揽收')) return 0
 		else if (parcel.state == '已揽收') return 1
 		else if (parcel.state == '运输中') return 2
 		else if (parcel.state == '待取件') return 3
@@ -311,6 +314,19 @@
 		console.log('parcelRoute.value', parcelRoute.value)
 		currentCity.value = parcelRoute.value[0].city
 		currentDate.value = parcelRoute.value[0].dateTime
+	}
+	
+	let deliver = ref()
+	
+	const judgeReserve = (items) => {
+		if(items.includes("_")){
+			let word = items.split("_")
+			deliver.value = word[1]
+			return word[0]
+		}
+		else{
+			return items
+		} 
 	}
 </script>
 

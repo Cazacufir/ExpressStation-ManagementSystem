@@ -1,17 +1,17 @@
 <template>
 	<view class="container">
 		<div class="card header">
-			<u-text :text="parcel.state" bold="true" size="17"></u-text>
-			<u-text v-if="parcel.orderId" :text="parcel.orderId" size="13" color="gray"></u-text>
-			<u-text v-if="parcel.orderId" :text="parcel.orderTime" size="13" color="gray"></u-text>
+			<u-text :text="judgeReserve(parcel.state)" bold="true" size="17"></u-text>
+			<u-text v-if="parcel.orderId" :text="'订单号：' + parcel.orderId" size="13" color="gray"></u-text>
+			<u-text v-if="parcel.orderId" :text="'下单时间：' + formatDate(parcel.orderTime)" size="13" color="gray"></u-text>
 		</div>
 
-		<div class="card addressBar">
+		<div class="card addressBar" v-if="parcel.company">
 			<div>
-				<u-image :src="parcel.logo" height="40" width="40" errorIcon="http://114.132.155.61:9000/companylogo/fail.png"></u-image>
+				<u-image v-if="parcel.logo" :src="parcel.logo" height="40" width="40" errorIcon="http://114.132.155.61:9000/companylogo/fail.png"></u-image>
 			</div>
 			<div class="header" style="margin-left: 20rpx;">
-				<u-text :text="parcel.company? parcel.company : '百世' " bold="true"></u-text>
+				<u-text :text="parcel.company" bold="true"></u-text>
 				<u-text :text="'快递单号：' +  parcel.parcelId"></u-text>
 			</div>
 		</div>
@@ -19,10 +19,10 @@
 		<div class="card header">
 			<div class="parcelCard" @click="toDetail">
 				<div class="right">
-					<u-text :text="parcel.state" color="#0165fe"></u-text>
-					<u-text v-if="parcel.state != '等待揽收'" :text="'快递已到达' + '[' + parcel.currentCity + ']'"
+					<u-text :text="judgeReserve(parcel.state)" color="#0165fe"></u-text>
+					<u-text v-if="!parcel.state.includes('等待揽收')" :text="'快递已到达' + '[' + parcel.currentCity + ']'"
 						color="#0165fe" size="12"></u-text>
-					<u-text v-if="parcel.state != '等待揽收'" :text="formatDate(parcel.currentDate)" size="11"
+					<u-text v-if="!parcel.state.includes('等待揽收')" :text="formatDate(parcel.currentDate)" size="11"
 						color="#0165fe"></u-text>
 				</div>
 
@@ -123,6 +123,16 @@
 		const sec = String(date.getSeconds()).padStart(2, '0')
 
 		return `${year}-${month}-${day} ${hours}:${min}:${sec}`
+	}
+	
+	const judgeReserve = (items) => {
+		if(items.includes("_")){
+			let word = items.split("_")
+			return word[0]
+		}
+		else{
+			return items
+		} 
 	}
 </script>
 
