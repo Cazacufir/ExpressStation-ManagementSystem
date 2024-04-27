@@ -106,6 +106,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderList> implem
             }
             staff.setAffair(newAffair);
             staffMapper.updateById(staff);
+
+            parcel.setState("等待揽收" + "_" + "由配送员"+ staff.getName() + "配送，有疑问请致电" + staff.getContact());
         }
         orderList.setPrice(orderParcelMerge.getPrice());
 
