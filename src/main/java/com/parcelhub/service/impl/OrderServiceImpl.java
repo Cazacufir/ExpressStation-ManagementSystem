@@ -74,8 +74,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderList> implem
                 orderList.setUser_id(user.getUserId());
             }
         }
-
-
+        parcelMapper.insert(parcel);
         int parcelId = parcel.getParcelId();
 
         orderList.setOrderType(orderParcelMerge.getOrderType());
@@ -108,12 +107,13 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderList> implem
             staffMapper.updateById(staff);
 
             parcel.setState("等待揽收" + "_" + "由配送员"+ staff.getName() + "配送，有疑问请致电" + staff.getContact());
+            parcelMapper.updateById(parcel);
         }
         orderList.setPrice(orderParcelMerge.getPrice());
 
         orderList.setHub_id(orderParcelMerge.getHub_id());
         orderList.setParcel_id(parcelId);
-        parcelMapper.insert(parcel);
+
         orderMapper.insert(orderList);
 
         return Result.okResult();
