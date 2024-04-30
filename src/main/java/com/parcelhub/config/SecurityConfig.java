@@ -56,10 +56,10 @@ public class SecurityConfig {
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(authenticationEntryPoint).accessDeniedHandler(accessDeniedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
-//                        auth.requestMatchers("/login","/register","/vertifyHub","/vertifyInfo","/user/**").permitAll()
-//                                .anyRequest().authenticated()
-                                auth.requestMatchers("/**").permitAll()
-                                        .anyRequest().authenticated()
+                        auth.requestMatchers("/login","/register","/vertifyHub","/vertifyInfo","/user/**").permitAll()
+                                .anyRequest().authenticated()
+//                                auth.requestMatchers("/**").permitAll()
+//                                        .anyRequest().authenticated()
                 );
 
         http.authenticationProvider(authenticationProvider());
