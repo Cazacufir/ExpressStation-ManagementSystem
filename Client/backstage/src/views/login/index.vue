@@ -1,5 +1,9 @@
 <template>
-    <div class="login-container h-full w-full flex justify-center items-center" >
+    <div class="login-container h-full w-full flex justify-around items-center" >
+        <div class="w-30% h-60%">
+            <img class="w-full h-full" src="../../static/login1.png"/> 
+        </div>
+        
         <article class="login-form min-h-60% w-30% bg-white rounded-20 flex flex-col items-center overflow-hidden" >
 
             <div class=" <sm:shadow-none p-5 h-60% flex flex-col items-center">
@@ -15,10 +19,13 @@
                 <Transition name="slide-fade" mode="out-in">
                     <component :is="tabs[currentTab]" class="tab"></component>
                 </Transition>
-
             </div>
 
         </article>
+
+        <div class="w-30% h-60%">
+            <img class="w-full h-full" src="../../static/login2.png"/> 
+        </div>
     </div>
 </template>
 
@@ -31,6 +38,8 @@ const tabs = { Login, Register };
 const currentTab = ref('Login')
 
 let showNext = ref(false)
+
+const url = ['src="../../static/login1.png"','src="../../static/login1.png"']
 </script>
 
 <style scoped lang="scss">
