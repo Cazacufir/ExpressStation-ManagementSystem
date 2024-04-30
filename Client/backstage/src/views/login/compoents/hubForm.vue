@@ -13,28 +13,27 @@
         </el-form-item>
 
         <el-form-item v-show="hub.role == 1" prop="name" label="驿站名称">
-            <el-input v-model="hub.name"></el-input>
+            <el-input v-model="hub.name" style="width:250px"></el-input>
         </el-form-item>
 
         <el-form-item v-show="hub.role == 1" prop="hubContact" label="驿站联系方式">
-            <el-input v-model="hub.hubContact"></el-input>
+            <el-input v-model="hub.hubContact" style="width:250px"></el-input>
         </el-form-item>
 
         <el-form-item v-show="hub.role == 1" prop="city" label="驿站地址">
-            <el-cascader size="large" :options="pcaTextArr" v-model="hub.city">
+            <el-cascader size="large" :options="pcaTextArr" v-model="hub.city" style="width:250px">
             </el-cascader>
         </el-form-item>
 
         <el-form-item v-show="hub.role == 1" prop="detail" label="详细地址">
-            <el-input v-model="hub.detail"></el-input>
+            <el-input v-model="hub.detail" style="width:250px"></el-input>
         </el-form-item>
 
-        <el-form-item v-show="hub.role == 1" prop="close" label="营业时间">
-            <el-time-picker format = 'HH:mm' value-format = 'HH:mm' v-model="hub.open_time" arrow-control placeholder="选择营业开始时间" />
-            <div class="mt-10 mb-10">
-                <el-text>至</el-text>
-            </div>
-            <el-time-picker format = 'HH:mm' value-format = 'HH:mm' v-model="hub.close_time" arrow-control placeholder="选择营业结束时间" />
+        <el-form-item v-show="hub.role == 1" prop="close_time" label="营业时间" style="width:300px">
+            <el-time-picker format='HH:mm' value-format='HH:mm' v-model="hub.open_time" arrow-control
+                placeholder="选择营业开始时间" />
+            <el-time-picker format='HH:mm' value-format='HH:mm' v-model="hub.close_time" arrow-control
+                placeholder="选择营业结束时间" class="mt-15" />
         </el-form-item>
 
         <el-form-item>
@@ -87,16 +86,16 @@ const checkName = (role, value, callback) => {
     }
 }
 
-// const checkAddress = (role, value, callback) => {
-//     if (hub.role == 1) {
-//         if (value == '') {
-//             callback(new Error('驿站地址不能为空!'))
-//         }
-//     }
-//     else {
-//         callback()
-//     }
-// }
+const checkAddress = (role, value, callback) => {
+    if (hub.role == 1) {
+        if (value == '') {
+            callback(new Error('驿站地址不能为空!'))
+        }
+    }
+    else {
+        callback()
+    }
+}
 
 const checkContact = (role, value, callback) => {
     if (hub.role == 1) {
@@ -121,23 +120,20 @@ const checkTime = (role, value, callback) => {
 }
 
 const rules_hub = reactive({
-    hub_id: [
-        { validator: checkId, trigger: 'blur' }
-    ],
     name: [
-        { validator: checkName, trigger: 'blur' }
+        { required: true, message: '姓名不能为空！', trigger: 'blur' }
     ],
     detail: [
-        { required: true, message: '详细地址不能为空', trigger: 'blur' }
+        { required: true, message: '地址不能为空！', trigger: 'blur' }
     ],
     city: [
-        { required: true, message: '地址不能为空', trigger: 'blur' }
+        { required: true, message: '地址不能为空！', trigger: 'blur' }
     ],
     hubContact: [
-        { validator: checkContact, trigger: 'blur' }
+        { required: true, message: '联系方式不能为空！', trigger: 'blur' }
     ],
-    close: [
-        { validator: checkTime, trigger: 'blur' }
+    close_time: [
+        { required: true, message: '营业时间不能为空！', trigger: 'blur' }
     ]
 })
 
@@ -145,7 +141,7 @@ const toSubmit = async () => {
     hub.city.forEach(item => hub.address += item)
     hub.address += '_' + hub.detail
     console.log("🚀 ~ toSubmit ~ hub:", hub)
-    const [e, r] = await api.vertifyInfo(hub)
+    const [e, r] = await api.vertifyHub(hub)
     if (r.code == 200) emit('getHub', hub, true)
     else {
         ElMessage.error(r.msg)
@@ -153,15 +149,33 @@ const toSubmit = async () => {
     }
 }
 
-const toValidate = () => {
-    console.log('hub',hub)
-    hub_ruleFormRef.value.validate((vaild) => {
-        if (vaild) {
-            toSubmit()
+const toValidate = async () => {
+    if (hub.role === 0) {
+        if (hub.hub_id) {
+            const [e, r] = await api.vertifyInfo(hub)
+            if (r.code == 200) emit('getHub', hub, true)
+            else {
+                ElMessage.error(r.msg)
+                emit('getHub', null, false)
+            }
         }
         else {
-            return false
+            ElMessage.error('驿站ID不能为空')
         }
-    })
+    }
+    else {
+        console.log('hub', hub)
+        hub_ruleFormRef.value.validate((vaild) => {
+            if (vaild) {
+                console.log(111)
+                toSubmit()
+            }
+            else {
+                console.log(222)
+                return false
+            }
+        })
+    }
+
 }
 </script>

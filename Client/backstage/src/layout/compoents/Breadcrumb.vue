@@ -1,5 +1,6 @@
 <template>
   <el-breadcrumb :separator-icon="ArrowRight">
+    <el-breadcrumb-item>后台管理系统</el-breadcrumb-item>
     <el-breadcrumb-item v-for="(item, index) in breadList" :key='index' :to="{ path: item.path }"
        class="cursor-pointer">
       {{ item.meta.title }}

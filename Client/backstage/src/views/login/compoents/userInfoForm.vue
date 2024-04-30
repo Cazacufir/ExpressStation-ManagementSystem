@@ -9,7 +9,7 @@
             <el-input v-model.number="info.age"></el-input>
         </el-form-item>
 
-        <el-form-item prop="sex" label="您的性别：">
+        <el-form-item prop="sex" label="您的性别">
             <el-radio-group v-model="info.sex">
                 <el-radio label="F" size="large">男</el-radio>
                 <el-radio label="M" size="large">女</el-radio>
