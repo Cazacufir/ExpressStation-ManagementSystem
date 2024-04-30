@@ -69,6 +69,8 @@ const init = async () => {
 
 const logout = () => {
     utils.clearSession()
+    utils.removeLocal('saved')
+    utils.removeLocal('AutoLogin')
     router.replace("/login")
 }
 </script>

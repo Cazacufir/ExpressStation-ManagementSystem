@@ -11,26 +11,46 @@
         </el-form-item>
 
         <el-form-item>
+            <el-radio-group v-model="radio" class="m-auto">
+                <el-radio label="1" size="large">记住密码</el-radio>
+                <el-radio label="2" size="large">自动登录</el-radio>
+            </el-radio-group>
+        </el-form-item>
+
+        <el-form-item>
             <el-button type="primary" w-full @click="toValidate">登 录</el-button>
         </el-form-item>
     </el-form>
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue';
+import { reactive, ref,onMounted } from 'vue';
 import { useRouter } from "vue-router";
 import { utils } from "@/utils/session.js";
 import { api } from "@/api"
 import { adminStore } from "@/stores/admin.js";
 import { ElMessage } from 'element-plus'
+import { util } from 'echarts';
 
 const store = adminStore();
 const router = useRouter();
 const user = reactive({
     contact: 'ad@',
-    showContact:'',
+    showContact: '',
     password: ''
 })
+
+onMounted(()=>{
+    if(utils.getLocal('saved')){
+        Object.assign(user,JSON.parse(utils.getLocal('saved')))
+        radio.value = '1'
+        if(utils.getLocal('AutoLogin')){
+            toLogin()
+        }
+    }
+})
+
+let radio = ref('0')
 
 const login_ruleFormRef = ref()
 
@@ -45,7 +65,7 @@ const rules = reactive({
 
 const toValidate = () => {
     login_ruleFormRef.value.validate((vaild) => {
-        if(vaild){
+        if (vaild) {
             toLogin()
         }
         else {
@@ -56,15 +76,22 @@ const toValidate = () => {
 
 const toLogin = async () => {
     user.contact = 'ad@'
-    user.contact += user.showContact    
+    user.contact += user.showContact
     const [e, r] = await api.login(user)
     console.log("🚀 ~ toLogin ~ e:", e)
     console.log('res', r)
-    if(e){
+    if (e) {
         toLogin()
     }
     if (r.msg != '认证或授权失败' && r.code != 505) {
         utils.setSession("token", r.data.token);
+        if(radio.value === '1'){
+            utils.setLocal('saved',JSON.stringify(user))
+        }
+        else if(radio.value === '2'){
+            utils.setLocal('saved',JSON.stringify(user))
+            utils.setLocal('AutoLogin',true)
+        }
         // utils.setSession("admin",r.data.adminInfoVo)
         store.setAdminInfo(r.data.adminInfoVo)
         router.replace('/home')
