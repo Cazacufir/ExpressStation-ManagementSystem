@@ -10,10 +10,10 @@
         <el-table :data="isShowSearch ? searchList : deliverList" stripe>
             <el-table-column fixed prop="deliverId" label="快递员编号" width="100" align="center" />
             <el-table-column prop="name" label="姓名" width="140" align="center" />
-            <el-table-column prop="sex" label="性别" width="120" align="center" />
-            <el-table-column prop="age" label="年龄" width="120" align="center" />
+            <el-table-column prop="sex" sortable label="性别" width="120" align="center" />
+            <el-table-column prop="age" sortable label="年龄" width="120" align="center" />
             <el-table-column prop="contact" label="联系方式" width="180" align="center" />
-            <el-table-column prop="comName" label="所属公司" width="120" align="center" />
+            <el-table-column prop="comName" sortable label="所属公司" width="120" align="center" />
             <el-table-column prop="affair" label="当前事务" width="250" align="center" />
             <el-table-column fixed="right" label="操作" width="150" align="center">
                 <template #default="scope">
@@ -84,6 +84,8 @@ let delivery_RefForm = ref()
 
 let work = ref()
 
+let isShowSearch = ref(false)
+
 onMounted(() => {
     init()
 })
@@ -128,16 +130,18 @@ const closeForm = () => {
     isShow.value = false
 }
 
+const searchList = ref([])
+
 const searchDeliver = async () => {
     if (searchFor.value == null) {
         return
     }
-    deliverList.value = []
+    searchList.value = []
     const word = parseInt(searchFor.value)
     if (word) {
         const [e, r] = await api.getDeliver(searchFor.value, null)
         if (r.code == 200) {
-            deliverList.value.push(r.data)
+            searchList.value.push(r.data)
             isShowSearch.value = true
         }
         else {
@@ -147,7 +151,7 @@ const searchDeliver = async () => {
     else {
         const [e, r] = await api.getDeliver(null, searchFor.value)
         if (r.code == 200) {
-            deliverList.value = [...r.data]
+            searchList.value = [...r.data]
             isShowSearch.value = true
         }
         else {
