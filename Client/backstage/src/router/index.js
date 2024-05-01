@@ -42,6 +42,15 @@ const routes = [
         },
       },
       {
+        path: "/delivery",
+        name: "Deliver",
+        component: async () => await import("@/views/delivery/delivery.vue"),
+        meta: {
+          title: "快递员管理",
+          icon: "Promotion",
+        },
+      },
+      {
         path: "/staff",
         name: "Staff",
         component: async () => await import("@/views/staff/staff.vue"),
@@ -98,15 +107,6 @@ const routes = [
         meta: {
           title: "快递管理",
           icon: "Box",
-        },
-      },
-      {
-        path: "/delivery",
-        name: "Deliver",
-        component: async () => await import("@/views/delivery/delivery.vue"),
-        meta: {
-          title: "快递员管理",
-          icon: "Promotion",
         },
       },
       {

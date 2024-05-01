@@ -8,23 +8,23 @@
                 <el-button type="primary" icon="Search" @click="searchStaff"></el-button>
             </div>
         </div>
-        <el-table :data="isShowSearch ? searchList : staffList" stripe>
+        <el-table :data="isShowSearch ? searchList : staffList" stripe :default-sort="{ prop: 'work', order: 'ascending' }">
             <el-table-column type="expand">
                 <template #default="scope">
                     <div class="ml-15">
-                        <p m="t-0 b-4">当前任务列表</p>
+                        <p m="t-0 b-4">当前任务列表：</p>
                         <p m="t-0 b-4">{{ formatExpandMission(scope.row.affair) }}</p>
                     </div>
                 </template>
             </el-table-column>
             <el-table-column prop="staffId" label="工号" width="120" align="center" />
             <el-table-column prop="name" label="姓名" width="120" align="center" />
-            <el-table-column prop="sex" label="性别" width="120" align="center" />
-            <el-table-column prop="age" label="年龄" width="120" align="center" />
+            <el-table-column prop="sex" sortable label="性别" width="120" align="center" />
+            <el-table-column prop="age" sortable label="年龄" width="120" align="center" />
             <el-table-column prop="contact" label="联系方式" width="120" align="center" />
             <el-table-column prop="address" label="家庭住址" width="180" align="center" show-overflow-tooltip="true" />
 
-            <el-table-column prop="work" label="职位" width="120" align="center">
+            <el-table-column prop="work" sortable label="职位" width="120" align="center">
                 <template #default="scope">
                     <el-tag :type="judgeTag(scope.row.work)">{{ scope.row.work }}</el-tag>
                 </template>
@@ -34,7 +34,7 @@
                     <span>{{ formatMission(scope.row.affair) }}</span>
                 </template>
             </el-table-column>
-            <el-table-column prop="joinDate" label="入职日期" width="140" align="center">
+            <el-table-column prop="joinDate" sortable label="入职日期" width="140" align="center">
                 <template #default="scope">
                     <span>{{ formatDate(scope.row.joinDate) }}</span>
                 </template>
@@ -334,10 +334,12 @@ const formatMission = (item) => {
 }
 
 const formatExpandMission = (item) => {
+    console.log("🚀 ~ formatExpandMission ~ item:", item)
     if (item) {
         if (item[0] == ',') item.substring(1)
         let arr = ''
         item.split(',').forEach(str => {
+            if(str != '')
             arr += '● ' + str + '\n'
         })
         return arr
@@ -361,6 +363,7 @@ const judgeTag = (item) => {
             return 'warning'
     }
 }
+
 </script>
 
 <style lang="scss" scoped>
