@@ -26,10 +26,10 @@ inst.interceptors.response.use(
   function (response) {
     // 2xx 范围内的状态码都会触发该函数。
     // 对响应数据做点什么
-    const reg = /\d\d/;
-    if (response.data.code.toString().match(reg)[0] === "40") {
-      clearSession();
-    }
+    // const reg = /\d\d/;
+    // if (response.data.code.toString().match(reg)[0] === "40") {
+    //   clearSession();
+    // }
     return response;
   },
   function (error) {

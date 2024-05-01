@@ -33,7 +33,7 @@
 
 <script setup>
 
-import { onMounted, ref, computed,onBeforeMount } from "vue";
+import { ref, onBeforeMount } from "vue";
 import { useRouter } from "vue-router";
 import { useRoute } from "vue-router";
 
@@ -46,6 +46,12 @@ onBeforeMount(() => {
     tabs.value.splice(7)
     console.log(tabs.value)
 })
+
+// watch(route, (newValue, oldValue) => {
+//     if (route.path == '/login' || route.path == '/register') return
+//     let matched = route.matched.filter(item => item.meta && item.meta.title);
+    
+// })
 
 const toPage = (path) => {
     let arr = document.getElementsByClassName("el-menu-item");

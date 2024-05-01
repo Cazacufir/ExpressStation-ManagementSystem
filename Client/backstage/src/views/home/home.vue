@@ -34,13 +34,13 @@ const store = adminStore();
 const route = useRoute()
 onMounted(async () => {
     let hub_id = store.getAdminInfo().hub_id
-    console.log("🚀 ~ onMounted ~ hub_id:",  store.getAdminInfo())
+    // console.log("🚀 ~ onMounted ~ hub_id:",  store.getAdminInfo())
     const [e1, r1] = await api.countParcel(hub_id)
-    console.log("🚀 ~ onMounted ~ r1:", r1.data)
+    // console.log("🚀 ~ onMounted ~ r1:", r1.data)
     list.value.forEach(item => {
         item.count = r1.data[item.count]
     })
-    console.log("🚀 ~ onMounted ~ list.value:", list.value)
+    // console.log("🚀 ~ onMounted ~ list.value:", list.value)
     getPrice(hub_id)
     getKind(hub_id)
     getUserCount(hub_id)
@@ -49,7 +49,7 @@ onMounted(async () => {
 
 const getPrice = async (hub_id) => {
     const [e, r] = await api.getPriceWeek(hub_id)
-    console.log("🚀 ~ getPrice ~ r:", r.data)
+    // console.log("🚀 ~ getPrice ~ r:", r.data)
 
     const priceDom = priceRef.value
     const priceChart = echarts.init(priceDom)
@@ -76,7 +76,7 @@ const getPrice = async (hub_id) => {
         priceArray.push(item.totalPrice)
     })
 
-    console.log("🚀 ~ getPrice ~ priceArray:", priceArray)
+    // console.log("🚀 ~ getPrice ~ priceArray:", priceArray)
 
     const option = {
         xAxis: {
@@ -125,7 +125,7 @@ const list = ref([
 
 const getKind = async (hub_id) => {
     const [e, r] = await api.getKindsParcel(hub_id)
-    console.log("🚀 ~ getKind ~ r:", r.data)
+    // console.log("🚀 ~ getKind ~ r:", r.data)
 
     const kindDom = kindRef.value
     const kindChart = echarts.init(kindDom)
@@ -137,7 +137,7 @@ const getKind = async (hub_id) => {
             name: item
         })
     }
-    console.log("🚀 ~ getKind ~ dataArray:", dataArray)
+    // console.log("🚀 ~ getKind ~ dataArray:", dataArray)
 
     const option = {
         color: ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de'],
@@ -172,7 +172,7 @@ const getKind = async (hub_id) => {
 
 const getUserCount = async (hub_id) => {
     const [e, r] = await api.countUser(hub_id)
-    console.log("🚀 ~ getUserCount ~ r:", r)
+    // console.log("🚀 ~ getUserCount ~ r:", r)
 
     const userDom = userRef.value
     const userChart = echarts.init(userDom)
@@ -244,7 +244,7 @@ const getUserCount = async (hub_id) => {
 
 const getParcelCount = async (hub_id) => {
     const [e, r] = await api.countSRParcel(hub_id)
-    console.log("🚀 ~ getParcelCount ~ r:", r)
+    // console.log("🚀 ~ getParcelCount ~ r:", r)
 
     const parcelDom = parcelRef.value
     const parcelChart = echarts.init(parcelDom)

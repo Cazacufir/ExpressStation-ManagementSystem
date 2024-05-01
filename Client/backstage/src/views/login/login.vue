@@ -18,7 +18,7 @@
         </el-form-item>
 
         <el-form-item>
-            <el-button type="primary" w-full @click="toValidate">登 录</el-button>
+            <el-button type="primary" w-full @click="toValidate" :loading="isLoading">登 录</el-button>
         </el-form-item>
     </el-form>
 </template>
@@ -30,10 +30,10 @@ import { utils } from "@/utils/session.js";
 import { api } from "@/api"
 import { adminStore } from "@/stores/admin.js";
 import { ElMessage } from 'element-plus'
-import { util } from 'echarts';
 
 const store = adminStore();
 const router = useRouter();
+const isLoading = ref(false)
 const user = reactive({
     contact: 'ad@',
     showContact: '',
@@ -45,6 +45,7 @@ onMounted(()=>{
         Object.assign(user,JSON.parse(utils.getLocal('saved')))
         radio.value = '1'
         if(utils.getLocal('AutoLogin')){
+            radio.value = '2'
             toLogin()
         }
     }
@@ -75,15 +76,19 @@ const toValidate = () => {
 }
 
 const toLogin = async () => {
+    isLoading.value = true
     user.contact = 'ad@'
     user.contact += user.showContact
     const [e, r] = await api.login(user)
     console.log("🚀 ~ toLogin ~ e:", e)
     console.log('res', r)
     if (e) {
+        isLoading.value = false
+        utils.clearSession()
         toLogin()
     }
     if (r.msg != '认证或授权失败' && r.code != 505) {
+        isLoading.value = false
         utils.setSession("token", r.data.token);
         if(radio.value === '1'){
             utils.setLocal('saved',JSON.stringify(user))
@@ -94,6 +99,7 @@ const toLogin = async () => {
         }
         // utils.setSession("admin",r.data.adminInfoVo)
         store.setAdminInfo(r.data.adminInfoVo)
+        isLoading.value = false
         router.replace('/home')
         ElMessage({
             message: '登录成功！',

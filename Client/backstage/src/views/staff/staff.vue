@@ -1,24 +1,37 @@
 <template>
     <div class="container flex flex-col gap-20">
         <div class="flex justify-between">
-            <el-button plain type="primary" class="ml-10" icon="Plus" @click="openForm(null)" v-if="work === '站长'">新增员工</el-button>
+            <el-button plain type="primary" class="ml-10" icon="Plus" @click="openForm(null)"
+                v-if="work === '站长'">新增员工</el-button>
             <div class="flex ml-auto">
                 <el-input v-model="searchFor" placeholder="查找员工"></el-input>
                 <el-button type="primary" icon="Search" @click="searchStaff"></el-button>
             </div>
         </div>
         <el-table :data="isShowSearch ? searchList : staffList" stripe>
-            <el-table-column fixed  prop="staffId" label="工号" width="120" align="center" />
+            <el-table-column type="expand">
+                <template #default="scope">
+                    <div class="ml-15">
+                        <p m="t-0 b-4">当前任务列表</p>
+                        <p m="t-0 b-4">{{ formatExpandMission(scope.row.affair) }}</p>
+                    </div>
+                </template>
+            </el-table-column>
+            <el-table-column prop="staffId" label="工号" width="120" align="center" />
             <el-table-column prop="name" label="姓名" width="120" align="center" />
             <el-table-column prop="sex" label="性别" width="120" align="center" />
             <el-table-column prop="age" label="年龄" width="120" align="center" />
             <el-table-column prop="contact" label="联系方式" width="120" align="center" />
-            <el-table-column prop="address" label="家庭住址" width="180" align="center" />
+            <el-table-column prop="address" label="家庭住址" width="180" align="center" show-overflow-tooltip="true" />
 
-            <el-table-column prop="work" label="职位" width="120" align="center" />
-            <el-table-column prop="affair" label="任务列表" width="180" align="center">
+            <el-table-column prop="work" label="职位" width="120" align="center">
                 <template #default="scope">
-                    <span>{{ scope.row.affair? scope.row.affair : '-' }}</span>
+                    <el-tag :type="judgeTag(scope.row.work)">{{ scope.row.work }}</el-tag>
+                </template>
+            </el-table-column>
+            <el-table-column prop="affair" label="任务列表" width="180" align="center" show-overflow-tooltip="true">
+                <template #default="scope">
+                    <span>{{ formatMission(scope.row.affair) }}</span>
                 </template>
             </el-table-column>
             <el-table-column prop="joinDate" label="入职日期" width="140" align="center">
@@ -95,12 +108,15 @@ let staffForm_Ref = ref()
 
 let currentIndex = null
 
+let work = ref()
+
 onMounted(() => {
     init()
 })
 
 const init = async () => {
     const hub = store.getAdminInfo()
+    work.value = hub.work
     const [e, r] = await api.getStaffList(hub.hub_id)
     staffList.value = [...r.data]
     Staff.hub_id = hub.hub_id
@@ -119,7 +135,7 @@ const Staff = reactive({
     contact: '',
     address: '',
     work: '',
-    affair:''
+    affair: ''
 })
 
 const searchFor = ref()
@@ -306,6 +322,45 @@ watchEffect(() => {
 })
 
 const workType = ["站长", "管理员", "客服", "入库员", "配送员"]
+
+const formatMission = (item) => {
+    if (item) {
+        if (item[0] == ',') return item.substring(1)
+        else return item
+    }
+    else {
+        return '-'
+    }
+}
+
+const formatExpandMission = (item) => {
+    if (item) {
+        if (item[0] == ',') item.substring(1)
+        let arr = ''
+        item.split(',').forEach(str => {
+            arr += '● ' + str + '\n'
+        })
+        return arr
+    }
+    else {
+        return '-'
+    }
+}
+
+const judgeTag = (item) => {
+    switch(item){
+        case '站长' :
+            return 'danger'
+        case '管理员' :
+            return 'primary'
+        case '客服' :
+            return 'success'
+        case '入库员' :
+            return 'info'
+        case '配送员' :
+            return 'warning'
+    }
+}
 </script>
 
 <style lang="scss" scoped>
