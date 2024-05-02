@@ -29,6 +29,7 @@ public interface ParcelService extends IService<Parcel> {
     Result getRoute(int parcelId);
 
     Result sendParcelByHub(Map<String,Object> map);
+
     Result updateRoute(Parcel parcel);
 
     Result getSendingParcel(Integer pageNum,Integer pageSize,int hub_id);
@@ -60,4 +61,10 @@ public interface ParcelService extends IService<Parcel> {
     Result countUser(int hub_id);
 
     Result countSRParcel(int hub_id);
+
+    Result deleteParcelRecord(Parcel parcel);
+
+    Result selectAllinHub(int hub_id,String start,String end);
+
+    Result outParcelList(List<Map<String,Object>> mapList);
 }

@@ -145,4 +145,19 @@ public class ParcelController {
     public Result getReceivedParcelByUser(@RequestBody Parcel parcel){
         return parcelService.getReceivedParcelByUser(parcel);
     }
+
+    @PostMapping("/deleteParcelRecord")
+    public Result deleteParcelRecord(@RequestBody Parcel parcel){
+        return parcelService.deleteParcelRecord(parcel);
+    }
+
+    @GetMapping("/selectAllinHub")
+    public Result selectAllinHub(int hub_id,String start,String end){
+        return parcelService.selectAllinHub(hub_id,start,end);
+    }
+
+    @PostMapping("/outParcelList")
+    public Result outParcelList(@RequestBody List<Map<String,Object>> mapList){
+        return parcelService.outParcelList(mapList);
+    }
 }

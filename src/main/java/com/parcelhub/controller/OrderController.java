@@ -52,4 +52,14 @@ public class OrderController {
     public Result getPriceWeek(@RequestParam int hub_id){
         return orderService.getPriceWeek(hub_id);
     }
+
+    @GetMapping("/getOutedParcel")
+    public Result getOutedParcel(Integer pageNum, Integer pageSize,int hub_id){
+        return orderService.getOutedParcel(pageNum,pageSize,hub_id);
+    }
+
+    @GetMapping("/searchOutedParcel")
+    public Result searchOutedParcel(Integer hub_id,Integer parcelId,String word){
+        return orderService.searchOutedParcel(hub_id,parcelId,word);
+    }
 }

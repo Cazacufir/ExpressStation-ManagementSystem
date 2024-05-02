@@ -457,7 +457,9 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
     @Override
     public Result getAllParcelByHub(Integer pageNum,Integer pageSize,int hub_id){
         LambdaQueryWrapper<Parcel> parcelLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        parcelLambdaQueryWrapper.eq(Parcel::getHub_id,hub_id);
+        parcelLambdaQueryWrapper.eq(Parcel::getHub_id,hub_id)
+                .eq(Parcel::getState,"待取件")
+                .eq(Parcel::getIf_del,"0");
         Page<Parcel> parcelPage = new Page<>(pageNum,pageSize);
         page(parcelPage,parcelLambdaQueryWrapper);
         int total = (int) parcelPage.getTotal();
@@ -471,15 +473,18 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
     public Result searchAllParcelByHub(int hub_id,int parcelId,String word){
         if (parcelId == 0){
             LambdaQueryWrapper<Parcel> parcelLambdaQueryWrapper = new LambdaQueryWrapper<>();
-            parcelLambdaQueryWrapper.eq(Parcel::getHub_id,hub_id)
-                    .like(Parcel::getSendName,word)
-                    .or().like(Parcel::getSendAddress,word)
-                    .or().like(Parcel::getReceiveName,word)
-                    .or().like(Parcel::getReceiveAddress,word)
-                    .or().like(Parcel::getType,word)
-                    .or().like(Parcel::getCode,word)
-                    .or().like(Parcel::getState,word)
-                    .or().like(Parcel::getCompany,word);
+            parcelLambdaQueryWrapper.eq(Parcel::getHub_id, hub_id)
+                    .eq(Parcel::getState, "待取件")
+                    .and(wrapper -> wrapper
+                            .like(Parcel::getSendName, word)
+                            .or().like(Parcel::getSendAddress, word)
+                            .or().like(Parcel::getReceiveName, word)
+                            .or().like(Parcel::getReceiveAddress, word)
+                            .or().like(Parcel::getType, word)
+                            .or().like(Parcel::getCode, word)
+                            .or().like(Parcel::getState, word)
+                            .or().like(Parcel::getCompany, word)
+                    );
             List<Parcel> parcelList = parcelMapper.selectList(parcelLambdaQueryWrapper);
             if (parcelList.size() == 0){
                 return Result.errorResult(AppHttpCodeEnum.PARCEL_NOT_FOUND);
@@ -792,5 +797,44 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
         map.put("sendParcel",userCountsVoList);
         map.put("receiveParcel",userCountsVoList1);
         return Result.okResult(map);
+    }
+
+    @Override
+    public Result deleteParcelRecord(Parcel parcel){
+        parcel.setIf_del(1);
+        parcelMapper.updateById(parcel);
+        return Result.okResult();
+    }
+
+    @Override
+    public Result selectAllinHub(int hub_id,String start,String end){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try{
+            Date startDate = dateFormat.parse(start);
+            Date endDate = dateFormat.parse(end);
+            List<Parcel> parcelList = parcelMapper.selectAllWaiting(hub_id,startDate,endDate);
+            if (parcelList.size() == 0){
+                return Result.errorResult(AppHttpCodeEnum.PARCEL_NOT_FOUND);
+            }
+
+            return Result.okResult(parcelList);
+        }
+        catch (java.text.ParseException e){
+            System.out.println(e);
+        }
+//            List<Parcel> parcelList = parcelMapper.selectAllWaiting(hub_id,start,end);
+//            if (parcelList.size() == 0){
+//                return Result.errorResult(AppHttpCodeEnum.PARCEL_NOT_FOUND);
+//            }
+//
+            return Result.okResult();
+    }
+
+    @Override
+    public Result outParcelList(List<Map<String,Object>> mapList){
+        for (Map<String,Object> map : mapList){
+            sendParcelByHub(map);
+        }
+        return Result.okResult();
     }
 }

@@ -6,6 +6,7 @@ import com.parcelhub.vo.UserCountsVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -58,4 +59,9 @@ public interface ParcelMapper extends BaseMapper<Parcel> {
             "OR p.state = '待取件' " +
             "GROUP BY OrderDate")
     List<UserCountsVo> getReceiveParcel(int hub_id);
+
+    @Select("SELECT p.* " +
+            "From parcel p " +
+            "WHERE p.hub_id = #{hub_id} AND p.state = '待取件' AND p.receiveTime > #{start} AND p.receiveTime < #{end}")
+    List<Parcel> selectAllWaiting(int hub_id, Date start, Date end);
 }

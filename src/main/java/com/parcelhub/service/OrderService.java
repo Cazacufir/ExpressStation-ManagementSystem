@@ -24,4 +24,8 @@ public interface OrderService extends IService<OrderList> {
     Result searchSendListByHub(Integer hub_id,Integer parcelId,String word);
 
     Result getPriceWeek(int hub_id);
+
+    Result getOutedParcel(Integer pageNum, Integer pageSize,int hub_id);
+
+    Result searchOutedParcel(Integer hub_id,Integer parcelId,String word);
 }

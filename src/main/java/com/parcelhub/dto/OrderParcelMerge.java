@@ -73,4 +73,6 @@ public class OrderParcelMerge implements Serializable {
     private int deliver_id;
 
     private String code;
+
+    private int if_del;
 }
