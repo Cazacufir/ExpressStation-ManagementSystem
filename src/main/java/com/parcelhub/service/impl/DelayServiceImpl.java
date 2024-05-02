@@ -43,7 +43,9 @@ public class DelayServiceImpl extends ServiceImpl<DelayMapper, Delay> implements
         }
         else{
             delay1.setDays(delay.getDays());
-            delay1.setReason(delay.getReason());
+            if (!Objects.isNull(delay.getReason())){
+                delay1.setReason(delay.getReason());
+            }
             delayMapper.updateById(delay1);
         }
         return Result.okResult();

@@ -475,7 +475,7 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
     public Result getGotParcelByHub(Integer pageNum,Integer pageSize,int hub_id){
         LambdaQueryWrapper<Parcel> parcelLambdaQueryWrapper = new LambdaQueryWrapper<>();
         parcelLambdaQueryWrapper.eq(Parcel::getHub_id,hub_id)
-                .eq(Parcel::getState,"已取件")
+                .eq(Parcel::getState,"已签收")
                 .eq(Parcel::getIf_del,"0");
         Page<Parcel> parcelPage = new Page<>(pageNum,pageSize);
         page(parcelPage,parcelLambdaQueryWrapper);
@@ -525,7 +525,7 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
         if (parcelId == 0){
             LambdaQueryWrapper<Parcel> parcelLambdaQueryWrapper = new LambdaQueryWrapper<>();
             parcelLambdaQueryWrapper.eq(Parcel::getHub_id, hub_id)
-                    .eq(Parcel::getState, "已取件")
+                    .eq(Parcel::getState, "已签收")
                     .and(wrapper -> wrapper
                             .like(Parcel::getSendName, word)
                             .or().like(Parcel::getSendAddress, word)
@@ -636,7 +636,7 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
         delayLambdaQueryWrapper.eq(Delay::getParcel_id,parcelId);
         Delay delay = delayMapper.selectOne(delayLambdaQueryWrapper);
         if(!Objects.isNull(delay)){
-            deliverMapper.deleteById(delay);
+            delayMapper.deleteById(delay);
         }
 
         parcel.setReceiveTime(strDate);
@@ -691,7 +691,7 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
             delayLambdaQueryWrapper.eq(Delay::getParcel_id,parcel.getParcelId());
             Delay delay = delayMapper.selectOne(delayLambdaQueryWrapper);
             if(!Objects.isNull(delay)){
-                deliverMapper.deleteById(delay);
+                delayMapper.deleteById(delay);
             }
 
             Carrier carrier = carrierMapper.selectById(carrierId);
