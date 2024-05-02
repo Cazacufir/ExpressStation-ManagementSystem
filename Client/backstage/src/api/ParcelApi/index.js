@@ -163,6 +163,13 @@ export function searchGotParcelByHub(hub_id,parcelId,word){
     })
 }
 
+export function addDelay(parcelId,days){
+    return Post("/addDelay",{
+        parcel_id:parcelId,
+        days:days
+    })
+}
+
 export const ParcelApi = {
     getSendListByHub,
     sendParcelByHub,
@@ -189,5 +196,6 @@ export const ParcelApi = {
     inParcelList,
     selectAllGot,
     searchGotParcelByHub,
-    getGotParcelByHub
+    getGotParcelByHub,
+    addDelay
 }

@@ -103,7 +103,7 @@ const getList = async () => {
 }
 
 const toSend = async (scope) => {
-    const [e, r] = await api.sendParcelByHub(scope.row)
+    const [e, r] = await api.sendParcelByHub(scope.row.parcelId,hub_id)
     if (r.code == 200) {
         list.value.splice(scope.$index, 1)
         ElMessage({

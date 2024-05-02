@@ -2,7 +2,7 @@
 	<view class="containerS" v-if="list.length">
 		<div class="parcelCard" v-for="(items,index) in list" :key="index" @click="toDetail(items)">
 			<div>
-				<u-image v-if="items.logo" :src="item.logo" height="50" width="50"
+				<u-image v-if="items.logo" :src="items.logo" height="50" width="50"
 					errorIcon="http://114.132.155.61:9000/companylogo/fail.png"></u-image>
 				<u-image v-else src="http://114.132.155.61:9000/companylogo/fail.png" height="50" width="50"></u-image>
 			</div>
