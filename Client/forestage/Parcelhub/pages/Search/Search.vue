@@ -14,7 +14,6 @@
 			<div class="parcelInfo">
 				<u-text :text="parcel.state" bold size="13"></u-text>
 				<u-text :text="'快递单号' + parcel.parcelId" size="11" bold="true"></u-text>
-				<u-text :text="parcel.route? item.route : '快件等待揽收'" size="11"></u-text>
 			</div>
 		
 		</div>

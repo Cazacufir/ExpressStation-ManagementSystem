@@ -79,6 +79,9 @@ const getPrice = async (hub_id) => {
     // console.log("🚀 ~ getPrice ~ priceArray:", priceArray)
 
     const option = {
+        title: {
+            text: '驿站营业额'
+        },
         xAxis: {
             type: 'category',
             data: datesArray
@@ -272,7 +275,7 @@ const getParcelCount = async (hub_id) => {
     r.data.receiveParcel.forEach(item => receiveArray.push(item.counts))
 
     const sumArray = []
-    for(let i = 0; i < 10; i ++){
+    for (let i = 0; i < 10; i++) {
         sumArray[i] = sendArray[i] + receiveArray[i]
     }
 

@@ -38,7 +38,7 @@
 			</div>
 
 			<div style="width: 120rpx;margin-left: auto;margin-top: 20rpx;margin-right: 20rpx;"
-				@click.stop="toDelete(items,index)">
+				@click.stop="toDelete(items,index)" v-if="items.state.includes('等待揽收')">
 				<u-button text="取消" shape="circle" size="small"></u-button>
 			</div>
 
