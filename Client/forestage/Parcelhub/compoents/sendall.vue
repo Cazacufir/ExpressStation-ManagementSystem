@@ -7,7 +7,13 @@
 		</div>
 		<div class="parcelCard" v-for="(items,index) in (isShowSearch? searchList : list )" :key="index"
 			@click="toDetail(items)">
-			<u-text :text="'快递单号：' + items.parcelId" size="12"></u-text>
+			<div class="infoHead">
+				<u-text :text="'快递单号：' + items.parcelId" size="12"></u-text>
+				<div @click.stop="toDeleteList(items,index)">
+					<u-icon name="close" size="20"></u-icon>
+				</div>
+			</div>
+			
 			<u-text :text="'下单时间：' + formatDate(items.orderTime)" size="12"></u-text>
 
 			<div class="centerBar">
@@ -38,6 +44,9 @@
 
 			<u-modal :show="isShowModal" title="确认" content='确认取消此订单？' showCancelButton="true" @cancel="cancelModal"
 				@confirm="deleteList"></u-modal>
+				
+			<u-modal :show="isShow" title="确认" content='确认删除此订单记录？' showCancelButton="true" @cancel="cancelShow"
+				@confirm="deleteSendList"></u-modal>
 
 		</div>
 	</view>
@@ -62,6 +71,7 @@
 
 	let searchFor = ref()
 	let isShowSearch = ref(false)
+	let isShow = ref(false)
 
 	onLoad(async () => {
 		uni.getStorage({
@@ -110,6 +120,12 @@
 		currentId.value = items.orderId
 		currentIndex = index
 	}
+	
+	const toDeleteList = (items, index) => {
+		isShow.value = true
+		currentId.value = items.orderId
+		currentIndex = index
+	}
 
 	const deleteList = async () => {
 		await api.cancelSendList({
@@ -130,11 +146,37 @@
 		cancelModal()
 		console.log('id', currentId.value)
 	}
+	
+	const deleteSendList = async () => {
+		await api.deleteList({
+				orderId: currentId.value
+			})
+			.then(res => {
+				list.value.splice(currentIndex, 1)
+				uni.showToast({
+					icon: 'success',
+					title: '删除成功'
+				})
+			})
+			.catch(res => {
+				uni.showToast({
+					title: res.msg
+				})
+			})
+		cancelShow()
+		console.log('id', currentId.value)
+	}
 
 	const cancelModal = () => {
 		currentId.value = null
 		currentIndex = null
 		isShowModal.value = false
+	}
+	
+	const cancelShow = () => {
+		currentId.value = null
+		currentIndex = null
+		isShow.value = false
 	}
 
 	const searchList = ref([])
@@ -233,5 +275,12 @@
 		display: flex;
 		flex-direction: column;
 		gap: 40rpx;
+	}
+	
+	.infoHead{
+		width: 100%;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
 	}
 </style>

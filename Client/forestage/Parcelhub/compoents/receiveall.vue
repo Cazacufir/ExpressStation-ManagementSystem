@@ -6,7 +6,13 @@
 				customStyle="background: white;" @confirm="toSearch"></u-input>
 		</div>
 		<div class="parcelCard" v-for="(items,index) in (isShowSearch? searchList : list )" :key="index" @click="toDetail(items)">
-			<u-text :text="'快递单号：' + items.parcelId" size="12"></u-text>
+			<div class="infoHead">
+				<u-text :text="'快递单号：' + items.parcelId" size="12"></u-text>
+				<div @click.stop="toDelete(items,index)">
+					<u-icon name="close" size="20"></u-icon>
+				</div>
+			</div>
+			
 			
 			<div class="centerBar">
 				<div style="width: 40%;" class="parcelInfo">
@@ -30,6 +36,9 @@
 			</div>
 			
 		</div>
+		
+		<u-modal :show="isShowModal" title="确认" content='确认删除此订单记录？' showCancelButton="true" @cancel="cancelModal"
+			@confirm="deleteList"></u-modal>
 	</view>
 	
 	<view class="containerR" v-else>
@@ -45,6 +54,8 @@ import { ref } from 'vue';
 	import {
 		onLoad
 	} from '@dcloudio/uni-app'
+	
+	const isShowModal = ref(false)
 	
 	onLoad(() => {
 		uni.getStorage({
@@ -85,38 +96,39 @@ const formatDate = (dateString) => {
 		return address.replace(/_/g, '')
 	}
 	
-	// let currentId = ref()
-	// let currentIndex = null
+	let currentId = ref()
+	let currentIndex = null
 	
-	// const toDelete = (items,index) => {
-	// 	isShowModal.value = true
-	// 	currentId.value = items.orderId
-	// 	currentIndex = index
-	// }
+	const toDelete = (items,index) => {
+		console.log('items',items)
+		isShowModal.value = true
+		currentId.value = items.parcelId
+		currentIndex = index
+	}
 	
-	// const deleteList = async () => {
-	// 	await api.cancelSendList({ orderId:currentId.value })
-	// 	.then(res => {
-	// 		list.value.splice(currentIndex,1)
-	// 		uni.showToast({
-	// 			icon:'success',
-	// 			title:'取消成功'
-	// 		})
-	// 	})
-	// 	.catch(res => {
-	// 		uni.showToast({
-	// 			title:res.msg
-	// 		})
-	// 	})
-	// 	cancelModal()
-	// 	console.log('id',currentId.value)
-	// }
+	const deleteList = async () => {
+		console.log('items2',currentId.value)
+		await api.deleteReceiveList({ parcelId:currentId.value })
+		.then(res => {
+			list.value.splice(currentIndex,1)
+			uni.showToast({
+				icon:'success',
+				title:'删除成功'
+			})
+		})
+		.catch(res => {
+			uni.showToast({
+				title:res.msg
+			})
+		})
+		cancelModal()
+	}
 	
-	// const cancelModal = () => {
-	// 	currentId.value = null
-	// 	currentIndex = null
-	// 	isShowModal.value = false
-	// }
+	const cancelModal = () => {
+		currentId.value = null
+		currentIndex = null
+		isShowModal.value = false
+	}
 	
 	let isShowSearch = ref(false)
 	const searchList = ref([])
@@ -167,6 +179,8 @@ const formatDate = (dateString) => {
 				})
 		}
 	}
+	
+	
 </script>
 
 <style lang="scss">
@@ -208,5 +222,12 @@ const formatDate = (dateString) => {
 		display: flex;
 		flex-direction: column;
 		gap: 40rpx;
+	}
+	
+	.infoHead{
+		width: 100%;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
 	}
 </style>

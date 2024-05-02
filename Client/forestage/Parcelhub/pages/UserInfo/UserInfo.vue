@@ -1,7 +1,7 @@
 <template>
 	<view class="container">
 		<div class="formBar">
-			<u-form labelPosition="left" labelWidth="70" :model="userInfo" :rules="user_rules" ref="userFormRef">
+			<u-form labelPosition="left" labelWidth="70" :model="userInfo" :rules="userRules" ref="userFormRef">
 				<u-form-item prop="avatar" label="头像">
 					<div class="itemBar">
 						<u-avatar v-if="userInfo.avatar" :src="userInfo.avatar"></u-avatar>
@@ -35,7 +35,7 @@
 
 				<u-form-item prop="age" label="年龄">
 					<u-text v-if="!isModify" :text="userInfo.age"></u-text>
-					<u-input v-if="isModify" v-model="userInfo.age" type="number"></u-input>
+					<u-input v-if="isModify" v-model="userInfo.age"></u-input>
 				</u-form-item>
 			</u-form>
 		</div>
@@ -75,12 +75,12 @@
 	let isModify = ref(false)
 
 	const userInfo = reactive({
-		// name: '777',
-		// contact: '789',
-		// nickname: '123',
-		// avatar: '/static/person_fill.png',
-		// sex: 'M',
-		// age: 20
+		name: '',
+		contact: '',
+		nickname: '',
+		avatar: '',
+		sex: 'M',
+		age: 20
 	})
 
 	let token
@@ -102,21 +102,14 @@
 		console.log(userInfo)
 	})
 
-	const user_rules = {
+	const userRules = {
 		nickName: {
 			type: 'string',
 			required: true,
 			message: '昵称不能为空',
 			trigger: ['blur']
 		},
-		sex: {
-			type: 'string',
-			required: true,
-			message: '性别不能为空',
-			trigger: ['blur']
-		},
 		age: {
-			type: 'int',
 			required: true,
 			message: '年龄不能为空',
 			trigger: ['blur']
@@ -134,6 +127,7 @@
 	]
 
 	const toSubmit = () => {
+		console.log('fk',userInfo.age)
 		userFormRef.value.validate().then(async () => {
 			await api.updateUserInfo(userInfo)
 				.then(res => {

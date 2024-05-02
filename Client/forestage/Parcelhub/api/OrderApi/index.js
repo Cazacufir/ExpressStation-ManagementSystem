@@ -24,8 +24,26 @@ const cancelSendList = (params) => {
 	})
 }
 
+const deleteList = (params) => {
+	return request({
+		url:'/deleteList',
+		method:'get',
+		data:params
+	})
+}
+
+const deleteReceiveList = (params) => {
+	return request({
+		url:'/deleteReceiveList',
+		method:'get',
+		data:params
+	})
+}
+
 export const OrderApi = {
 	addSendList,
 	getSendList,
-	cancelSendList
+	cancelSendList,
+	deleteList,
+	deleteReceiveList
 }
