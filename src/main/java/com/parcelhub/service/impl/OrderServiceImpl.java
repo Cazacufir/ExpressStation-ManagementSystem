@@ -147,7 +147,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderList> implem
     public Result cancelSendList(int orderId){
         OrderList orderList = orderMapper.selectById(orderId);
         Parcel parcel = parcelMapper.selectById(orderList.getParcel_id());
-        if (!parcel.getState().equals("等待揽收")){
+        if (!parcel.getState().contains("等待揽收")){
             return Result.errorResult(AppHttpCodeEnum.PARCEL_OUT);
         }
         parcelMapper.deleteById(orderList.getParcel_id());
