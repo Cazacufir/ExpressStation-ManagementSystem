@@ -29,7 +29,7 @@
             <el-table-column prop="sendName" label="寄件人姓名" width="120" align="center" />
             <el-table-column prop="sendContact" label="联系方式" width="100" align="center" />
             <el-table-column prop="receiveName" label="收件人姓名" width="150" align="center" />
-            <el-table-column prop="receiveAddress" label="地址" width="180" align="center" show-overflow-tooltip="true">
+            <el-table-column prop="receiveAddress" label="收件人地址" width="180" align="center" show-overflow-tooltip="true">
                 <template #default="scope">
                     <span>{{ formatAddress(scope.row.receiveAddress) }}</span>
                 </template>

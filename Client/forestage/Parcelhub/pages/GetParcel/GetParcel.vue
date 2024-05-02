@@ -28,7 +28,7 @@
 				</div>
 			</div>
 
-			<div class="parcelBottom" v-if="!list.length">
+			<div class="parcelBottom">
 				<div style="width: 30%;">
 					<u-button text="身份码取件" shape="circle" type="primary" @click="toReceiveAll(item.parcel)"
 						size="small"></u-button>
@@ -244,8 +244,8 @@
 
 				await api.getReceivedParcel(parcel)
 					.then(res => {
-						list.value = [...res.data]
-						console.log('list', list.value)
+						list.value = unique(res.data)
+						console.log('list123', list.value)
 					})
 			}
 		})
@@ -353,6 +353,11 @@
 		})
 		return true
 	}
+	
+	const unique = (arr1) => {
+	  const res = new Map()
+	  return arr1.filter((item) => !res.has(item.hubName) && res.set(item.hubName, 1))
+	}
 </script>
 
 <style scoped lang="scss">
@@ -364,6 +369,7 @@
 		padding: 20rpx;
 		height: 100%;
 		align-items: center;
+		overflow: auto;
 	}
 
 	.parcel {

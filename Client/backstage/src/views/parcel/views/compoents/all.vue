@@ -6,22 +6,14 @@
         <el-button type="primary" icon="Search" @click="searchParcel"></el-button>
       </div>
       <div class="flex gap-10">
-        <el-text type="info">以取件时间筛选:</el-text>
-        <el-date-picker
-        v-model="receiveDateTime"
-        type="daterange"
-        unlink-panels
-        range-separator="To"
-        start-placeholder="开始时间"
-        end-placeholder="结束时间"
-        value-format="YYYY-MM-DD HH:mm:ss"
-        :shortcuts="shortcuts"
-        @change="handleChange"
-      />
+        <el-text type="info">以到站时间筛选:</el-text>
+        <el-date-picker v-model="receiveDateTime" type="daterange" unlink-panels range-separator="To"
+          start-placeholder="开始时间" end-placeholder="结束时间" value-format="YYYY-MM-DD HH:mm:ss" :shortcuts="shortcuts"
+          @change="handleChange" />
       </div>
     </div>
 
-    <el-table :data="isShowSearch ? searchList : list " stripe>
+    <el-table :data="isShowSearch ? searchList : list" stripe>
       <el-table-column fixed type="expand">
         <template #default="scope">
           <div class="ml-15 flex gap-15">
@@ -41,7 +33,7 @@
       </el-table-column>
       <el-table-column prop="parcelId" label="快递单号" width="100" align="center" />
       <el-table-column prop="receiveName" sortable label="收件人姓名" width="150" align="center" />
-      <el-table-column prop="receiveAddress" sortable label="地址" width="180" align="center"
+      <el-table-column prop="receiveAddress" sortable label="收件人地址" width="180" align="center"
         show-overflow-tooltip="true">
         <template #default="scope">
           <span>{{ formatAddress(scope.row.receiveAddress) }}</span>
@@ -49,7 +41,7 @@
       </el-table-column>
       <el-table-column prop="receiveContact" label="联系方式" width="150" align="center" />
       <el-table-column prop="sendName" label="寄件人姓名" width="120" align="center" />
-      <el-table-column prop="sendAddress" label="地址" width="180" align="center" show-overflow-tooltip="true">
+      <el-table-column prop="sendAddress" label="寄件人地址" width="180" align="center" show-overflow-tooltip="true">
         <template #default="scope">
           <span>{{ formatAddress(scope.row.sendAddress) }}</span>
         </template>
@@ -58,18 +50,15 @@
       <el-table-column sortable prop="type" label="类型" width="100" align="center" />
       <el-table-column sortable prop="weight" label="重量/kg" width="120" align="center" />
       <el-table-column sortable prop="company" label="运送公司" width="120" align="center" />
-      <el-table-column sortable prop="state" label="当前状态" width="120" align="center">
-        <template #default="scope">
-          <span>{{ formatState(scope.row.state) }}</span>
-        </template>
-      </el-table-column>
+      <el-table-column prop="state" label="当前状态" width="120" align="center" />
 
       <el-table-column prop="route" label="运输记录" width="180" align="center" show-overflow-tooltip="true">
         <template #default="scope">
           <span>{{ formatRoute(scope.row.route) }}</span>
         </template>
       </el-table-column>
-      <el-table-column sortable prop="arrivalTime" label="到站时间" width="180" align="center" :filters="receiveFilter" :filter-method="filterReceiveDate">
+      <el-table-column sortable prop="arrivalTime" label="到站时间" width="180" align="center" :filters="receiveFilter"
+        :filter-method="filterReceiveDate">
         <template #default="scope">
           <span>{{ formatArrivalTime(scope.row.arrivalTime) }}</span>
         </template>
@@ -79,15 +68,13 @@
           <span>{{ formatCode(scope.row.code) }}</span>
         </template>
       </el-table-column>
-      <el-table-column sortable prop="receiveTime" label="取件时间" width="120" align="center">
-        <template #default="scope">
-          <span>{{ formatReceiveTime(scope.row.receiveTime) }}</span>
-        </template>
-      </el-table-column>
       <el-table-column fixed="right" label="操作" width="100" align="center">
         <template #default="scope">
-          <el-button v-if="scope.row.state == '已取件'" link type="danger" @click.prevent="toDelete(scope)">删除记录</el-button>
-          <el-text v-else>-</el-text>
+          <el-popconfirm title="确定要回退此包裹?请确保已事先与用户沟通。" @confirm="toSendBack(scope)">
+            <template #reference>
+              <el-button link type="danger">回退</el-button>
+            </template>
+          </el-popconfirm>
         </template>
       </el-table-column>
     </el-table>
@@ -154,7 +141,7 @@ const formatReceiveTime = (time) => {
 
 const formatRoute = (route) => {
   // let routeStr = ''
-  if(!route) return '-'
+  if (!route) return '-'
   let newStr = ''
   route.split(',').forEach(item => {
     let Str = item.split('_')
@@ -223,50 +210,32 @@ const searchParcel = async () => {
   }
 }
 
-const formatState = (item) => {
-  let word = item.split('_')
-  if(word) return word[0]
-  return item
-}
-
-const toDelete = (scope) => {
-  ElMessageBox.confirm(
-    '确认后将从系统中删除词条记录',
-    '确认删除？',
-    {
-      confirmButtonText: '确认',
-      cancelButtonText: '取消',
-      type: 'warning',
-    }
-  )
-    .then(async() => {
-      const [e, r] = await api.deleteParcelRecord(scope.row)
-      if (r.code == 200) {
-        list.value.splice(scope.$index, 1)
+const toSendBack = async (scope) => {
+    const [e,r] = await api.returnParcel(scope.row.parcelId)
+    if(r.code == 200){
+        list.value.splice(scope.$index,1)
         ElMessage({
-          message: '登录成功！',
-          type: 'success',
+            message: '回退成功',
+            type: 'success',
         })
-      }
-    })
-    .catch(() => {
-      ElMessage({
-        type: 'info',
-        message: '取消删除',
-      })
-    })
+    }
+    else {
+        ElMessage.error(r.msg)
+    }
 }
 
 const receiveFilter = [
-  { text:'24小时内',value:1 },
-  { text:'一周内',value:7 },
-  { text:'一月内',value:30 }
+  { text: '24小时内', value: 1 },
+  { text: '一周内', value: 7 },
+  { text: '两周内', value: 14 },
+  { text: '滞留件', value: 15 }
 ]
 
-const filterReceiveDate = (value,row) => {
+const filterReceiveDate = (value, row) => {
   const dateStr = new Date(row.arrivalTime)
   const start = new Date()
   start.setTime(start.getTime() - 3600 * 1000 * 24 * value)
+  if (value == 15) return dateStr < start
   return dateStr >= start
 }
 
@@ -302,8 +271,8 @@ const shortcuts = [
   },
 ]
 
-const handleChange = async () =>{
+const handleChange = async () => {
   console.log(typeof receiveDateTime.value[0])
-  const [e,r] =  await api.selectAllinHub(receiveDateTime.value[0],receiveDateTime.value[1],hub_id)
+  const [e, r] = await api.selectAllGot(receiveDateTime.value[0], receiveDateTime.value[1], hub_id)
 }
 </script>

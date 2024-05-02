@@ -14,8 +14,9 @@
 				</u-form-item>
 				
 			</u-form>
-
+			
 			<u-button text="登 录" type="primary" shape="circle" size="large" @click="toHome()"></u-button>
+
 
 			<div class="btnBar">
 				<span>
@@ -23,7 +24,11 @@
 				</span>
 			</div>
 		</div>
-		<u-icon :name="show? 'eye' : 'eye-off' " size="20" @click="show = !show"></u-icon>
+		
+		<div style="position: absolute;right: 120rpx;z-index: 999;" @click="show = !show">
+			<u-icon :name="show? 'eye' : 'eye-off' " size="20"></u-icon>
+		</div>
+		
 	</view>
 	
 </template>
@@ -119,6 +124,7 @@
 		align-items: center;
 		padding: 0 40rpx;
 		height: 80%;
+		position: relative;
 	}
 
 	.logincard {
@@ -138,7 +144,4 @@
 		position: relative;
 	}
 	
-	.uicon-eye{
-		position: absolute;
-	}
 </style>

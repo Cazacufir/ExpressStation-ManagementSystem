@@ -115,6 +115,14 @@ export function selectAllinHub(start,end,hub_id){
     })
 }
 
+export function selectAllGot(start,end,hub_id){
+    return Get("/selectAllGot",{
+        start:start,
+        end:end,
+        hub_id:hub_id
+    })
+}
+
 export function getOutedParcel(pageNum,pageSize,hub_id){
     return Get("/getOutedParcel",{
         pageNum,
@@ -135,6 +143,25 @@ export function outParcelList(parcel){
     return Post("/outParcelList",parcel)
 }
 
+export function inParcelList(parcel){
+    return Post("/inParcelList",parcel)
+}
+
+export function getGotParcelByHub(pageNum,pageSize,hub_id){
+    return Get("/getGotParcelByHub",{
+        pageNum,
+        pageSize,
+        hub_id
+    })
+}
+
+export function searchGotParcelByHub(hub_id,parcelId,word){
+    return Get("/searchGotParcelByHub",{
+        hub_id:hub_id,
+        parcelId:parcelId,
+        word:word,
+    })
+}
 
 export const ParcelApi = {
     getSendListByHub,
@@ -158,5 +185,9 @@ export const ParcelApi = {
     selectAllinHub,
     searchOutedParcel,
     getOutedParcel,
-    outParcelList
+    outParcelList,
+    inParcelList,
+    selectAllGot,
+    searchGotParcelByHub,
+    getGotParcelByHub
 }
