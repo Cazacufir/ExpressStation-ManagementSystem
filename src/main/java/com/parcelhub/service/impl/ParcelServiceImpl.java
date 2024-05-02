@@ -449,7 +449,7 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
         parcel.setState("待取件");
 
         Hub hub = hubMapper.selectById(parcel.getHub_id());
-        String hubStr = "待取件" + "_" + now + parcel.getCurrentCity() + "_" + "您的快递已派送至<" + hub.getName() + "代收点;自提点联系方式:" + hub.getContact()
+        String hubStr = "待取件" + "_" + strDate + "_" + parcel.getCurrentCity() + "_" + "您的快递已派送至<" + hub.getName() + "代收点;自提点联系方式:" + hub.getContact()
                 + ">，请凭取件码" + code + "及时到代收点领取";
         String newRoute = parcel.getRoute() + "," + hubStr;
         parcel.setRoute(newRoute);
@@ -642,7 +642,7 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
 
         parcel.setReceiveTime(strDate);
         parcel.setState("已签收");
-        String str = "已签收" + "_" + now + "已签收，收件人已取走";
+        String str = "已签收" + "_" + strDate + "_" + "已签收，收件人已取走";
         String newRoute = parcel.getRoute() + "," + str;
         parcel.setRoute(newRoute);
         parcelMapper.updateById(parcel);
