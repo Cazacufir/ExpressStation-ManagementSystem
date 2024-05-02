@@ -11,7 +11,7 @@
         <el-table :data="isShowSearch ? searchList : staffList" stripe :default-sort="{ prop: 'work', order: 'ascending' }">
             <el-table-column type="expand">
                 <template #default="scope">
-                    <div class="ml-15">
+                    <div class="ml-15" style="white-space: pre-line;">
                         <p m="t-0 b-4">当前任务列表：</p>
                         <p m="t-0 b-4">{{ formatExpandMission(scope.row.affair) }}</p>
                     </div>

@@ -103,6 +103,39 @@ export function searchAllParcelByHub(hub_id,parcelId,word){
     })
 }
 
+export function deleteParcelRecord(parcel){
+    return Post("/deleteParcelRecord",parcel)
+}
+
+export function selectAllinHub(start,end,hub_id){
+    return Get("/selectAllinHub",{
+        start:start,
+        end:end,
+        hub_id:hub_id
+    })
+}
+
+export function getOutedParcel(pageNum,pageSize,hub_id){
+    return Get("/getOutedParcel",{
+        pageNum,
+        pageSize,
+        hub_id
+    })
+}
+
+export function searchOutedParcel(hub_id,parcelId,word){
+    return Get("/searchOutedParcel",{
+        hub_id:hub_id,
+        parcelId:parcelId,
+        word:word,
+    })
+}
+
+export function outParcelList(parcel){
+    return Post("/outParcelList",parcel)
+}
+
+
 export const ParcelApi = {
     getSendListByHub,
     sendParcelByHub,
@@ -120,5 +153,10 @@ export const ParcelApi = {
     countSRParcel,
     searchSendListByHub,
     searchSendingParcel,
-    searchAllParcelByHub
+    searchAllParcelByHub,
+    deleteParcelRecord,
+    selectAllinHub,
+    searchOutedParcel,
+    getOutedParcel,
+    outParcelList
 }

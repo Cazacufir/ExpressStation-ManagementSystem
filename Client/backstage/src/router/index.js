@@ -65,12 +65,13 @@ const routes = [
         component: async () => await import("@/views/parcel/parcel.vue"),
         children: [
           {
-            path: "all",
-            name: "All",
-            component: async () => await import("@/views/parcel/views/all.vue"),
+            path: "send",
+            name: "Send",
+            component: async () =>
+              await import("@/views/parcel/views/send.vue"),
             meta: {
-              title: "快递总览",
-              icon: "Search",
+              title: "快递出库",
+              icon: "Van",
             },
           },
           {
@@ -84,13 +85,12 @@ const routes = [
             },
           },
           {
-            path: "send",
-            name: "Send",
-            component: async () =>
-              await import("@/views/parcel/views/send.vue"),
+            path: "all",
+            name: "All",
+            component: async () => await import("@/views/parcel/views/get.vue"),
             meta: {
-              title: "快递出库",
-              icon: "Van",
+              title: "取件管理",
+              icon: "HelpFilled",
             },
           },
           {

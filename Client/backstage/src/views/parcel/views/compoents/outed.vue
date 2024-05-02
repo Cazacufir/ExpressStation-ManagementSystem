@@ -2,17 +2,29 @@
     <div class="w-full flex flex-col items-center gap-20">
         <div class="flex flex-row-reverse w-full">
             <div class="flex ml-auto">
-                <el-input v-model="searchFor" placeholder="搜索快件"></el-input>
+                <el-input v-model="searchFor" placeholder="搜索已出库快件"></el-input>
                 <el-button type="primary" icon="Search" @click="searchParcel"></el-button>
-            </div>
-            <div class="flex gap-20" v-show="isShowAll">
-                <el-button type="primary" @click="outedByList">出库所选快递</el-button>
-                <el-button @click="toggleSelection">清除所选</el-button>
             </div>
         </div>
 
-        <el-table :data="isShowSearch ? searchList : list" stripe @selection-change="handleSelectionChange" ref="multipleTableRef">
-            <el-table-column fixed type="selection" width="55" />
+        <el-table :data="isShowSearch ? searchList : list" stripe>
+            <el-table-column fixed type="expand">
+                <template #default="scope">
+                    <div class="ml-15 flex gap-15">
+                        <div class="w-200px">
+                            <p m="t-0 b-4">收件人地址：</p>
+                            <p m="t-0 b-4">{{ formatAddress(scope.row.receiveAddress) }}</p><br>
+                            <p m="t-0 b-4">寄件人地址：</p>
+                            <p m="t-0 b-4">{{ formatAddress(scope.row.sendAddress) }}</p>
+                        </div>
+
+                        <div style="white-space: pre-line;">
+                            <p m="t-0 b-4">运输历史：</p>
+                            <p m="t-0 b-4">{{ formatRoute(scope.row.route) }}</p>
+                        </div>
+                    </div>
+                </template>
+            </el-table-column>
             <el-table-column prop="parcelId" label="快递单号" width="100" align="center" />
             <el-table-column prop="sendName" label="寄件人姓名" width="120" align="center" />
             <el-table-column prop="sendContact" label="联系方式" width="100" align="center" />
@@ -30,13 +42,24 @@
                     <span>{{ formatPrice(scope.row.price) }}</span>
                 </template>
             </el-table-column>
+            <el-table-column sortable prop="company" label="运送公司" width="120" align="center" />
             <el-table-column prop="state" label="当前状态" width="100" align="center">
                 <template #default="scope">
                     <span>{{ formatState(scope.row.state) }}</span>
                 </template>
             </el-table-column>
+            <el-table-column prop="route" label="运输记录" width="180" align="center" show-overflow-tooltip="true">
+                <template #default="scope">
+                    <span>{{ formatRoute(scope.row.route) }}</span>
+                </template>
+            </el-table-column>
+            <el-table-column sortable prop="arrivalTime" label="到站时间" width="180" align="center"
+                :filters="receiveFilter" :filter-method="filterReceiveDate">
+                <template #default="scope">
+                    <span>{{ formatArrivalTime(scope.row.arrivalTime) }}</span>
+                </template>
+            </el-table-column>
             <el-table-column prop="orderType" sortable label="订单类型" width="120" align="center" />
-            <el-table-column prop="staff" label="配送人员" width="120" align="center" show-overflow-tooltip="true"/>
 
             <el-table-column prop="orderTime" sortable label="下单时间" width="180" align="center" :filters="receiveFilter"
                 :filter-method="filterReceiveDate">
@@ -44,14 +67,15 @@
                     <span>{{ formatDate(scope.row.orderTime) }}</span>
                 </template>
             </el-table-column>
-            <el-table-column fixed="right" label="操作" width="80" align="center">
+            <el-table-column prop="sendTime" sortable label="运输开始时间" width="180" align="center" :filters="receiveFilter"
+                :filter-method="filterReceiveDate">
                 <template #default="scope">
-                    <el-button link type="primary" @click.prevent="toSend(scope)">出库</el-button>
+                    <span>{{ formatDate(scope.row.sendTime) }}</span>
                 </template>
             </el-table-column>
         </el-table>
 
-        <!-- <el-pagination v-if="!isShowSearch" layout="prev, pager, next" :page-count="totalPage" @current-change="changePage" /> -->
+         <el-pagination v-if="!isShowSearch" layout="prev, pager, next" :page-count="totalPage" @current-change="changePage" />
     </div>
 </template>
 
@@ -59,15 +83,11 @@
 import { onMounted, reactive, ref, watchEffect } from "vue";
 import { adminStore } from "@/stores/admin.js";
 import { api } from "@/api"
-import { ElMessage } from 'element-plus'
 
 const store = adminStore();
 const list = ref([])
 let hub_id = null
 
-let pageNum = 1
-
-const isShowAll = ref(false)
 
 onMounted(() => {
     init()
@@ -78,12 +98,11 @@ const init = () => {
     getList()
 }
 
+let pageNum = 1
 let totalPage = null
 
-const multipleTableRef = ref()
-
 const getList = async () => {
-    const [e, r] = await api.getSendListByHub(
+    const [e, r] = await api.getOutedParcel(
         pageNum,
         9999,
         hub_id
@@ -91,29 +110,15 @@ const getList = async () => {
     list.value = [...r.data.dataList]
     list.value.forEach(item => {
         let word = item.state.split('_')
-        if (word.length == 2){
+        if (word.length == 2) {
             item.staff = word[1]
-        } 
-        else{
+        }
+        else {
             item.staff = "-"
         }
     })
     totalPage = r.data.totalPages
     console.log("🚀 ~ getList ~ list.value:", list.value)
-}
-
-const toSend = async (scope) => {
-    const [e, r] = await api.sendParcelByHub(scope.row)
-    if (r.code == 200) {
-        list.value.splice(scope.$index, 1)
-        ElMessage({
-            message: '出库成功，物流已更新',
-            type: 'success',
-        })
-    }
-    else {
-        ElMessage.error(r.msg)
-    }
 }
 
 function formatDate(dateString) {
@@ -136,12 +141,6 @@ const formatPrice = (price) => {
     return '¥' + price
 }
 
-const changePage = (value) => {
-    pageNum = value
-    console.log("🚀 ~ changePage ~ page:", value)
-    getList()
-}
-
 let isShowSearch = ref(false)
 const searchList = ref([])
 const searchFor = ref()
@@ -152,7 +151,6 @@ watchEffect(() => {
     }
 })
 
-
 const searchParcel = async () => {
     if (searchFor.value == null) {
         return
@@ -160,7 +158,7 @@ const searchParcel = async () => {
     searchList.value = []
     const word = parseInt(searchFor.value)
     if (word) {
-        const [e, r] = await api.searchSendListByHub(
+        const [e, r] = await api.searchOutedParcel(
             hub_id,
             searchFor.value,
             0
@@ -174,7 +172,7 @@ const searchParcel = async () => {
         }
     }
     else {
-        const [e, r] = await api.searchSendListByHub(
+        const [e, r] = await api.searchOutedParcel(
             hub_id,
             0,
             searchFor.value
@@ -189,16 +187,11 @@ const searchParcel = async () => {
     }
 }
 
-const formatState = (item) => {
-    let word = item.split('_')
-    if (word) return word[0]
-    return item
-}
-
 const receiveFilter = [
     { text: '24小时内', value: 1 },
     { text: '一周内', value: 7 },
-    { text: '两周内', value: 14 }
+    { text: '一月内', value: 30 },
+    { text: '三月内', value: 90 }
 ]
 
 const filterReceiveDate = (value, row) => {
@@ -208,45 +201,46 @@ const filterReceiveDate = (value, row) => {
     return dateStr >= start
 }
 
-let outList = []
-
-const handleSelectionChange = (val) => {
-    outList = []
-    outList = val
-    console.log("🚀 ~ handleSelectionChange ~ outList:", outList)
-    isShowAll.value = true
-    if(val.length == 0) isShowAll.value = false
+const formatState = (item) => {
+    let word = item.split('_')
+    if (word) return word[0]
+    return item
 }
 
-const toggleSelection = (rows) => {
-  console.log("🚀 ~ toggleSelection ~ rows:", rows)
-//   if (rows) {
-//     rows.forEach((row) => {
-//       multipleTableRef.value.toggleRowSelection(row, undefined)
-//     })
-//   } else {
-    multipleTableRef.value.clearSelection()
-//   }
+const formatRoute = (route) => {
+    // let routeStr = ''
+    if (!route) return '-'
+    let newStr = ''
+    route.split(',').forEach(item => {
+        let Str = item.split('_')
+        if (Str[0] == '已揽收') {
+            newStr += '[' + Str[1] + ']' + '快件从' + Str[2] + '寄出\n'
+        }
+        else if (Str[0] == '运输中') {
+            newStr += '[' + Str[1] + ']' + '快件已到达' + Str[2] + '\n'
+        }
+        else if (Str[0] == '派送中') {
+            newStr += '[' + Str[1] + ']' + Str[3] + '\n'
+        }
+        else if (Str[0] == '待取件') {
+            newStr += '[' + Str[1] + ']' + '快件到达此驿站\n'
+        }
+    })
+    console.log("🚀 ~ formatRoute ~ newStr:", newStr)
+    return newStr;
 }
 
-const outedByList = async () => {
-    console.log("🚀 ~ handleSelectionChange ~ outList:", outList)
-    const [e,r] = await api.outParcelList(outList)
-    if (r.code == 200) {
-        outList.forEach((value,index) => {
-            list.value.forEach((v,i) => {
-                if(value.parcelId == v.parcelId){
-                    list.value.splice(i, 1)
-                }
-            })
-        })
-        ElMessage({
-            message: '出库成功，物流已更新',
-            type: 'success',
-        })
-    }
-    else {
-        ElMessage.error(r.msg)
-    }
+const formatArrivalTime = (time) => {
+    return time ? time : '未到站'
+}
+
+const formatReceiveTime = (time) => {
+    return time ? time : '暂未领取'
+}
+
+const changePage = (value) => {
+  pageNum = value
+  console.log("🚀 ~ changePage ~ page:", value)
+  getList()
 }
 </script>

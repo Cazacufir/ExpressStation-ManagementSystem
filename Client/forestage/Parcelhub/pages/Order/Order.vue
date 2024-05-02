@@ -34,6 +34,8 @@
 		flex-direction: column;
 		height: 100%;
 		background-color: #ebebef;
+		overflow: auto;
+		padding-bottom: 30rpx;
 	}
 
 	.topBar {

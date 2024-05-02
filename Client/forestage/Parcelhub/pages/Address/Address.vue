@@ -260,9 +260,10 @@
 		flex-direction: column;
 		// justify-content: space-between;
 		align-items: center;
-		padding: 0rpx 40rpx 0 40rpx;
+		padding: 0rpx 40rpx 20rpx 40rpx;
 		background-color: #ebebef;
-		height: 100%;
+		height: 76%;
+		overflow:auto;
 	}
 
 	.addressBar {
