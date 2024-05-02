@@ -62,6 +62,11 @@ public interface ParcelMapper extends BaseMapper<Parcel> {
 
     @Select("SELECT p.* " +
             "From parcel p " +
-            "WHERE p.hub_id = #{hub_id} AND p.state = '待取件' AND p.receiveTime > #{start} AND p.receiveTime < #{end}")
+            "WHERE p.hub_id = #{hub_id} AND p.state = '待取件' AND p.arrivalTime > #{start} AND p.arrivalTime < #{end}")
     List<Parcel> selectAllWaiting(int hub_id, Date start, Date end);
+
+    @Select("SELECT p.* " +
+            "From parcel p " +
+            "WHERE p.hub_id = #{hub_id} AND p.state = '已取件' AND p.receiveTime > #{start} AND p.receiveTime < #{end}")
+    List<Parcel> selectAllGot(int hub_id, Date start, Date end);
 }

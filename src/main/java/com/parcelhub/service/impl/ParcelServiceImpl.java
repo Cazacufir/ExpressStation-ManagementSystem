@@ -472,11 +472,60 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
     }
 
     @Override
+    public Result getGotParcelByHub(Integer pageNum,Integer pageSize,int hub_id){
+        LambdaQueryWrapper<Parcel> parcelLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        parcelLambdaQueryWrapper.eq(Parcel::getHub_id,hub_id)
+                .eq(Parcel::getState,"已取件")
+                .eq(Parcel::getIf_del,"0");
+        Page<Parcel> parcelPage = new Page<>(pageNum,pageSize);
+        page(parcelPage,parcelLambdaQueryWrapper);
+        int total = (int) parcelPage.getTotal();
+        if(total == 0){
+            return Result.errorResult(AppHttpCodeEnum.PARCEL_NOT_FOUND);
+        }
+        return Result.okResult(parcelPage);
+    }
+
+    @Override
     public Result searchAllParcelByHub(int hub_id,int parcelId,String word){
         if (parcelId == 0){
             LambdaQueryWrapper<Parcel> parcelLambdaQueryWrapper = new LambdaQueryWrapper<>();
             parcelLambdaQueryWrapper.eq(Parcel::getHub_id, hub_id)
                     .eq(Parcel::getState, "待取件")
+                    .and(wrapper -> wrapper
+                            .like(Parcel::getSendName, word)
+                            .or().like(Parcel::getSendAddress, word)
+                            .or().like(Parcel::getReceiveName, word)
+                            .or().like(Parcel::getReceiveAddress, word)
+                            .or().like(Parcel::getType, word)
+                            .or().like(Parcel::getCode, word)
+                            .or().like(Parcel::getState, word)
+                            .or().like(Parcel::getCompany, word)
+                    );
+            List<Parcel> parcelList = parcelMapper.selectList(parcelLambdaQueryWrapper);
+            if (parcelList.size() == 0){
+                return Result.errorResult(AppHttpCodeEnum.PARCEL_NOT_FOUND);
+            }
+            return Result.okResult(parcelList);
+        }
+        else{
+            LambdaQueryWrapper<Parcel> parcelLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            parcelLambdaQueryWrapper.eq(Parcel::getHub_id,hub_id)
+                    .eq(Parcel::getParcelId,parcelId);
+            List<Parcel> parcelList = parcelMapper.selectList(parcelLambdaQueryWrapper);
+            if (parcelList.size() == 0){
+                return Result.errorResult(AppHttpCodeEnum.PARCEL_NOT_FOUND);
+            }
+            return Result.okResult(parcelList);
+        }
+    }
+
+    @Override
+    public Result searchGotParcelByHub(int hub_id,int parcelId,String word){
+        if (parcelId == 0){
+            LambdaQueryWrapper<Parcel> parcelLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            parcelLambdaQueryWrapper.eq(Parcel::getHub_id, hub_id)
+                    .eq(Parcel::getState, "已取件")
                     .and(wrapper -> wrapper
                             .like(Parcel::getSendName, word)
                             .or().like(Parcel::getSendAddress, word)
@@ -512,19 +561,21 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
             return Result.errorResult(AppHttpCodeEnum.PARCEL_NOT_FOUND);
         }
         List<ReceiveParcelVo> receiveParcelVos = BeanCopyUtils.copyBeanList(parcelList, ReceiveParcelVo.class);
+        receiveParcelVos = new ArrayList<>(new HashSet<>(receiveParcelVos));
         Map<String,List<Parcel>> mergedParcel = new HashMap<>();
         for (Parcel parcel1 : parcelList){
             String[] route = parcel1.getRoute().split(",");
-            String hubName = route[route.length - 2];
+            String hubName = route[route.length - 1];
             int startIndex = hubName.indexOf("<") + 1;
             int endIndex = hubName.indexOf("代");
             String key = hubName.substring(startIndex,endIndex);
 //            String key = parcel1.getReceiveName() + "_" + parcel1.getReceiveContact();
             mergedParcel.computeIfAbsent(key, k -> new ArrayList<>()).add(parcel1);
         }
+        Set<String> mergeSet = new HashSet<>(mergedParcel.keySet());
         for (ReceiveParcelVo receiveParcelVo : receiveParcelVos){
             String[] route = receiveParcelVo.getRoute().split(",");
-            String hubName = route[route.length - 2];
+            String hubName = route[route.length - 1];
             int startIndex = hubName.indexOf("<") + 1;
             int endIndex = hubName.indexOf("代");
             String key = hubName.substring(startIndex,endIndex);
@@ -824,12 +875,26 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
         catch (java.text.ParseException e){
             System.out.println(e);
         }
-//            List<Parcel> parcelList = parcelMapper.selectAllWaiting(hub_id,start,end);
-//            if (parcelList.size() == 0){
-//                return Result.errorResult(AppHttpCodeEnum.PARCEL_NOT_FOUND);
-//            }
-//
             return Result.okResult();
+    }
+
+    @Override
+    public Result selectAllGot(int hub_id,String start,String end){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try{
+            Date startDate = dateFormat.parse(start);
+            Date endDate = dateFormat.parse(end);
+            List<Parcel> parcelList = parcelMapper.selectAllGot(hub_id,startDate,endDate);
+            if (parcelList.size() == 0){
+                return Result.errorResult(AppHttpCodeEnum.PARCEL_NOT_FOUND);
+            }
+
+            return Result.okResult(parcelList);
+        }
+        catch (java.text.ParseException e){
+            System.out.println(e);
+        }
+        return Result.okResult();
     }
 
     @Override

@@ -40,7 +40,11 @@ public interface ParcelService extends IService<Parcel> {
 
     Result getAllParcelByHub(Integer pageNum,Integer pageSize,int hub_id);
 
+    Result getGotParcelByHub(Integer pageNum,Integer pageSize,int hub_id);
+
     Result searchAllParcelByHub(int hub_id,int parcelId,String word);
+
+    Result searchGotParcelByHub(int hub_id,int parcelId,String word);
 
     Result getReceivedParcel(Parcel parcel);
 
@@ -65,6 +69,8 @@ public interface ParcelService extends IService<Parcel> {
     Result deleteParcelRecord(Parcel parcel);
 
     Result selectAllinHub(int hub_id,String start,String end);
+
+    Result selectAllGot(int hub_id,String start,String end);
 
     Result outParcelList(List<Map<String,Object>> mapList);
 

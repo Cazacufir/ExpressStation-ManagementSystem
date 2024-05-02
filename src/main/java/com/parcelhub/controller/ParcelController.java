@@ -156,6 +156,11 @@ public class ParcelController {
         return parcelService.selectAllinHub(hub_id,start,end);
     }
 
+    @GetMapping("/selectAllGot")
+    public Result selectAllGot(int hub_id,String start,String end){
+        return parcelService.selectAllGot(hub_id,start,end);
+    }
+
     @PostMapping("/outParcelList")
     public Result outParcelList(@RequestBody List<Map<String,Object>> mapList){
         return parcelService.outParcelList(mapList);
@@ -164,5 +169,15 @@ public class ParcelController {
     @PostMapping("/inParcelList")
     public Result inParcelList(@RequestBody List<Parcel> parcelList){
         return parcelService.inParcelList(parcelList);
+    }
+
+    @GetMapping("/getGotParcelByHub")
+    public Result getGotParcelByHub(Integer pageNum,Integer pageSize,int hub_id){
+        return parcelService.getGotParcelByHub(pageNum,pageSize,hub_id);
+    }
+
+    @GetMapping("/searchGotParcelByHub")
+    public Result searchGotParcelByHub(int hub_id,int parcelId,String word){
+        return parcelService.searchGotParcelByHub(hub_id,parcelId,word);
     }
 }
