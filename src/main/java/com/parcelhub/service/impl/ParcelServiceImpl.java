@@ -367,14 +367,16 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
     public Result searchSendingParcel(int hub_id,int parcelId,String word){
         if (parcelId == 0){
             LambdaQueryWrapper<Parcel> parcelLambdaQueryWrapper = new LambdaQueryWrapper<>();
-            parcelLambdaQueryWrapper.eq(Parcel::getHub_id,hub_id)
-                    .eq(Parcel::getState,"派送中")
-                    .like(Parcel::getSendName,word)
-                    .or().like(Parcel::getSendAddress,word)
-                    .or().like(Parcel::getReceiveName,word)
-                    .or().like(Parcel::getReceiveAddress,word)
-                    .or().like(Parcel::getType,word)
-                    .or().like(Parcel::getCode,word);
+            parcelLambdaQueryWrapper.eq(Parcel::getHub_id, hub_id)
+                    .eq(Parcel::getState, "派送中")
+                    .and(wrapper -> wrapper
+                            .like(Parcel::getSendName, word)
+                            .or().like(Parcel::getSendAddress, word)
+                            .or().like(Parcel::getReceiveName, word)
+                            .or().like(Parcel::getReceiveAddress, word)
+                            .or().like(Parcel::getType, word)
+                            .or().like(Parcel::getCompany, word)
+                    );
             List<Parcel> parcelList = parcelMapper.selectList(parcelLambdaQueryWrapper);
             if (parcelList.size() == 0){
                 return Result.errorResult(AppHttpCodeEnum.PARCEL_NOT_FOUND);
