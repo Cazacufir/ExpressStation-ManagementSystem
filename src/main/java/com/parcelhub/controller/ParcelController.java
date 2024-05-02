@@ -160,4 +160,9 @@ public class ParcelController {
     public Result outParcelList(@RequestBody List<Map<String,Object>> mapList){
         return parcelService.outParcelList(mapList);
     }
+
+    @PostMapping("/inParcelList")
+    public Result inParcelList(@RequestBody List<Parcel> parcelList){
+        return parcelService.inParcelList(parcelList);
+    }
 }

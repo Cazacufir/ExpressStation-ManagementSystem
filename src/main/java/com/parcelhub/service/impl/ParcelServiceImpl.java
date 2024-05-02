@@ -839,4 +839,12 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
         }
         return Result.okResult();
     }
+
+    @Override
+    public Result inParcelList(List<Parcel> parcelList){
+        for (Parcel parcel : parcelList){
+             receiveParcelByHub(parcel);
+        }
+        return Result.okResult();
+    }
 }

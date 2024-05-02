@@ -67,4 +67,6 @@ public interface ParcelService extends IService<Parcel> {
     Result selectAllinHub(int hub_id,String start,String end);
 
     Result outParcelList(List<Map<String,Object>> mapList);
+
+    Result inParcelList(List<Parcel> parcelList);
 }
