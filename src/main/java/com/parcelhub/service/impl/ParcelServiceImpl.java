@@ -78,7 +78,8 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
 
         LambdaQueryWrapper<Parcel> parcelLambdaQueryWrapper = new LambdaQueryWrapper<>();
         parcelLambdaQueryWrapper.eq(Parcel::getReceiveName,user.getName())
-                .eq(Parcel::getReceiveContact,user.getContact());
+                .eq(Parcel::getReceiveContact,user.getContact())
+                .eq(Parcel::getIf_del_user,0);
         List<Parcel> parcelList = parcelMapper.selectList(parcelLambdaQueryWrapper);
 
         if(parcelList.size() > 0){

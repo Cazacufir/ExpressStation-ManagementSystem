@@ -61,6 +61,8 @@ public class Parcel implements Serializable {
 
     private int if_del;
 
+    private int if_del_user;
+
     @TableField(exist = false)
     private String dateTime;
     @TableField(exist = false)

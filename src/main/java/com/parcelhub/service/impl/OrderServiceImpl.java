@@ -158,6 +158,22 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderList> implem
     }
 
     @Override
+    public Result deleteList(int orderId){
+        OrderList orderList = orderMapper.selectById(orderId);
+        orderList.setDel_flag(1);
+        orderMapper.updateById(orderList);
+        return Result.okResult();
+    }
+
+    @Override
+    public Result deleteReceiveList(int parcelId){
+        Parcel parcel = parcelMapper.selectById(parcelId);
+        parcel.setIf_del_user(1);
+        parcelMapper.updateById(parcel);
+        return Result.okResult();
+    }
+
+    @Override
     public Result getSearchSendList(HttpServletRequest request,Integer parcelId,String word){
         int userId = -1;
         try {

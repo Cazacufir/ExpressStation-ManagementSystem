@@ -33,6 +33,16 @@ public class OrderController {
         return orderService.cancelSendList(orderId);
     }
 
+    @GetMapping("/deleteList")
+    public Result deleteList(@RequestParam int orderId){
+        return orderService.deleteList(orderId);
+    }
+
+    @GetMapping("/deleteReceiveList")
+    public Result deleteReceiveList(@RequestParam int parcelId){
+        return orderService.deleteReceiveList(parcelId);
+    }
+
     @GetMapping("/getSearchSendList")
     public Result getSearchSendList(HttpServletRequest request,Integer parcelId,String word){
         return orderService.getSearchSendList(request,parcelId,word);
