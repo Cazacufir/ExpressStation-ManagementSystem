@@ -178,8 +178,9 @@
 						<u-text :text="items.open_time + '-' + items.close_time" size="10" color="gray"></u-text>
 					</div>
 				</div>
-
+				
 			</div>
+			<div style="margin-bottom: 20rpx;"></div>
 		</u-popup>
 	</view>
 </template>
@@ -188,7 +189,8 @@
 	import {
 		computed,
 		reactive,
-		ref
+		ref,
+		watch
 	} from 'vue';
 	import {
 		onLoad
@@ -211,20 +213,20 @@
 				user_id = res.data.userId
 			}
 		})
-		uni.getStorage({
-			key: 'Location',
-			async success(res) {
-				await api.getNearHub({
-						address: res.data
-					})
-					.then(res => {
-						addressList.value = [...res.data]
-						console.log(addressList.value)
-						hubName.value = addressList.value[0].name
-						hub_id = addressList.value[0].id
-					})
-			}
-		})
+		// uni.getStorage({
+		// 	key: 'Location',
+		// 	async success(res) {
+		// 		await api.getNearHub({
+		// 				address: res.data
+		// 			})
+		// 			.then(res => {
+		// 				addressList.value = [...res.data]
+		// 				console.log(addressList.value)
+		// 				hubName.value = addressList.value[0].name
+		// 				hub_id = addressList.value[0].id
+		// 			})
+		// 	}
+		// })
 	})
 
 	let dateTime = ref('明天09:00-11:00')
@@ -328,12 +330,22 @@
 					receive.receiveAddress = data.address
 					console.log('getR', receive)
 				},
-				getSend: function(data) {
+				getSend: async function(data) {
 					// Object.assign(send, data)
 					send.sendName = data.name
 					send.sendContact = data.contact
 					send.sendAddress = data.address
 					console.log('getSend', send)
+					
+					await api.getNearHub({
+							address: send.sendAddress.split('_')[0]
+						})
+						.then(res => {
+							addressList.value = [...res.data]
+							console.log(addressList.value)
+							hubName.value = addressList.value[0].name
+							hub_id = addressList.value[0].id
+						})
 				}
 			}
 		})
@@ -396,6 +408,10 @@
 		hub_id = item.id
 		closeHubPicker()
 	}
+	
+	// watch(send,(newValue, oldValue) => {
+	// 	console.log('111' + send)
+	// })
 </script>
 
 <style lang="scss" scoped>
