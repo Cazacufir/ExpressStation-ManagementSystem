@@ -23,7 +23,7 @@
 					</span>
 
 					<div style="width: 500rpx;">
-						<u-text :text="send.sendAddress" size="13"></u-text>
+						<u-text :text="formatAddress(send.sendAddress)" size="13"></u-text>
 					</div>
 				</span>
 
@@ -56,7 +56,7 @@
 					</span>
 
 					<div style="width: 500rpx;">
-						<u-text :text="receive.receiveAddress" size="13"></u-text>
+						<u-text :text="formatAddress(receive.receiveAddress)" size="13"></u-text>
 					</div>
 
 				</span>
@@ -180,6 +180,9 @@
 				</div>
 				
 			</div>
+			<view class="containerR" v-if="!addressList.length">
+				<u-empty mode="list" text="未查询到驿站" size="13"></u-empty>
+			</view>
 			<div style="margin-bottom: 20rpx;"></div>
 		</u-popup>
 	</view>
@@ -412,6 +415,10 @@
 	// watch(send,(newValue, oldValue) => {
 	// 	console.log('111' + send)
 	// })
+	
+	const formatAddress = (address) => {
+		return address.replace(/_/g, '')
+	}
 </script>
 
 <style lang="scss" scoped>

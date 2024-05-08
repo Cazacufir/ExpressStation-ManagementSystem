@@ -304,6 +304,7 @@
 						icon: 'success',
 						title: '领取成功'
 					})
+					isShowMoal.value = false 
 				}
 			})
 	}
