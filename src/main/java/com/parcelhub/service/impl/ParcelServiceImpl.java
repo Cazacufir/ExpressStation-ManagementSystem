@@ -234,7 +234,8 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
         int parcelId =(int) map.get("parcelId");
         int hub_id =(int) map.get("hub_id");
         Parcel parcel = parcelMapper.selectById(parcelId);
-        Date now = new Date();
+//        Date now = new Date();
+        Calendar now = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         List<Deliver> deliverList =  redisCache.getCacheList("deliver_hub" + hub_id);
@@ -250,8 +251,11 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
         parcel.setLogo(company.getLogo());
         deliverMapper.updateById(deliver);
 
-        String orderType = (String) map.get("OrderType");
-        if(Objects.nonNull(orderType) && orderType.equals("上门取件")){
+        LambdaQueryWrapper<OrderList> orderListLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        orderListLambdaQueryWrapper.eq(OrderList::getParcel_id,parcelId);
+        OrderList orderList = orderMapper.selectOne(orderListLambdaQueryWrapper);
+
+        if(orderList.getOrderType().equals("上门取件")){
             LambdaQueryWrapper<Staff> staffLambdaQueryWrapper = new LambdaQueryWrapper<>();
             staffLambdaQueryWrapper.eq(Staff::getHub_id,hub_id)
                     .eq(Staff::getWork,"配送员");
@@ -259,44 +263,50 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
             Staff staff = null;
             String[] affairs = null;
             for(Staff staff1 : staffList){
-                if (staff1.getAffair().contains("" + parcelId)){
-                    staff = staff1;
-                    affairs = staff1.getAffair().split(",");
-                    for(int i = 0; i < affairs.length; i++){
-                        if(affairs[i].contains("" + parcelId)){
-                            affairs[i] = "";
-                            break;
+                if (!Objects.isNull(staff1.getAffair())){
+                    if (staff1.getAffair().contains("" + parcelId)){
+                        staff = staff1;
+                        affairs = staff1.getAffair().split(",");
+                        for(int i = 0; i < affairs.length; i++){
+                            if(affairs[i].contains("" + parcelId)){
+                                affairs[i] = "";
+                                break;
+                            }
                         }
+                        String result = String.join(",", affairs);
+                        result = result.substring(1,result.length() - 1);
+                        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+                        System.out.println(result);
+                        staff.setAffair(result);
+                        staffMapper.updateById(staff);
+                        break;
                     }
-                    break;
                 }
             }
-            String result = String.join(",", affairs);
-            if(!Objects.isNull(staff)){
-                staff.setAffair(result);
-            }
-            staffMapper.updateById(staff);
 
-            LambdaQueryWrapper<OrderList> orderListLambdaQueryWrapper = new LambdaQueryWrapper<>();
-            orderListLambdaQueryWrapper.eq(OrderList::getParcel_id,parcelId);
-            OrderList orderList = orderMapper.selectOne(orderListLambdaQueryWrapper);
-            String dateTime = orderList.getDateTime().substring(0,16);
-            try {
-                now = sdf.parse(dateTime);
+            String datePart = orderList.getDateTime().split(" ")[0];
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            try{
+                Calendar parsedDate = Calendar.getInstance();
+                parsedDate.setTime(format.parse(datePart));
+                now.set(Calendar.YEAR, parsedDate.get(Calendar.YEAR));
+                now.set(Calendar.MONTH, parsedDate.get(Calendar.MONTH));
+                now.set(Calendar.DAY_OF_MONTH, parsedDate.get(Calendar.DAY_OF_MONTH));
             }
             catch (java.text.ParseException e){
                 System.out.println(e);
             }
         }
+        Date dateDate = now.getTime();
 
-        parcel.setSendTime(now);
+        parcel.setSendTime(dateDate);
         parcel.setState("已揽收");
         String address = parcel.getSendAddress();
         List<Map<String, String>> result = AddressUtil.addressResolution(address);
-        parcel.setCurrentDate(now);
+        parcel.setCurrentDate(dateDate);
         String city = result.get(0).get("city");
         parcel.setCurrentCity(city);
-        String strDate = sdf.format(now);
+        String strDate = sdf.format(dateDate);
 //        if(!Objects.isNull(parcel.getCurrentDate())){
 //            parcel.setRoute("已揽收" + "_" +  parcel.getCurrentDate() + "_" + city);
 //        }

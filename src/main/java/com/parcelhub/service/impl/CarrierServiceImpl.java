@@ -14,7 +14,6 @@ import com.parcelhub.utils.AppHttpCodeEnum;
 import com.parcelhub.utils.PageUtils;
 import com.parcelhub.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

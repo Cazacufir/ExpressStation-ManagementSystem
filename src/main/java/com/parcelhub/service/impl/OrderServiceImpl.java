@@ -150,10 +150,38 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderList> implem
         if (!parcel.getState().contains("等待揽收")){
             return Result.errorResult(AppHttpCodeEnum.PARCEL_OUT);
         }
-        parcelMapper.deleteById(orderList.getParcel_id());
+        if (orderList.getOrderType().equals("上门取件")){
+            int  hub_id = orderList.getHub_id();
+            LambdaQueryWrapper<Staff> staffLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            staffLambdaQueryWrapper.eq(Staff::getHub_id,hub_id)
+                    .eq(Staff::getWork,"配送员");
+            Staff staff = new Staff();
+            String[] affairs = null;
+            List<Staff> staffList = staffMapper.selectList(staffLambdaQueryWrapper);
+            for(Staff staff1 : staffList){
+                if (!Objects.isNull(staff1.getAffair())){
+                    if (staff1.getAffair().contains("" + orderList.getParcel_id())){
+                        staff = staff1;
+                        affairs = staff1.getAffair().split(",");
+                        for(int i = 0; i < affairs.length; i++){
+                            if(affairs[i].contains("" + orderList.getParcel_id())){
+                                affairs[i] = "";
+                                break;
+                            }
+                        }
+                        String result = String.join(",", affairs);
+                        result = result.substring(1,result.length() - 1);
+                        staff.setAffair(result);
+                        staffMapper.updateById(staff);
+                        break;
+                    }
+                }
+            }
+        }
 
         orderList.setDel_flag(1);
         orderMapper.updateById(orderList);
+        parcelMapper.deleteById(orderList.getParcel_id());
         return Result.okResult();
     }
 
