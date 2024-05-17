@@ -790,15 +790,17 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
                 .eq(Parcel::getState,"派送中");
         countParcelVo.setPendingReceiveParcel(parcelMapper.selectCount(parcelLambdaQueryWrapper1));
 
-        LambdaQueryWrapper<Parcel> parcelLambdaQueryWrapper2 = new LambdaQueryWrapper<>();
-        parcelLambdaQueryWrapper2.eq(Parcel::getHub_id,hub_id)
-                .eq(Parcel::getState,"等待揽收");
-        countParcelVo.setPendingSendParcel(parcelMapper.selectCount(parcelLambdaQueryWrapper2));
+//        LambdaQueryWrapper<Parcel> parcelLambdaQueryWrapper2 = new LambdaQueryWrapper<>();
+//        parcelLambdaQueryWrapper2.eq(Parcel::getHub_id,hub_id)
+//                .like(Parcel::getState,"等待揽收");
+//        countParcelVo.setPendingSendParcel(parcelMapper.selectCount(parcelLambdaQueryWrapper2));
+        countParcelVo.setPendingSendParcel(parcelMapper.getPendingSendParcel(hub_id));
 
-        LambdaQueryWrapper<Parcel> parcelLambdaQueryWrapper3 = new LambdaQueryWrapper<>();
-        parcelLambdaQueryWrapper3.eq(Parcel::getHub_id,hub_id)
-                .between(Parcel::getSendTime,today.atStartOfDay(),today.atTime(LocalTime.MAX));
-        countParcelVo.setSendParcel(parcelMapper.selectCount(parcelLambdaQueryWrapper3));
+//        LambdaQueryWrapper<Parcel> parcelLambdaQueryWrapper3 = new LambdaQueryWrapper<>();
+//        parcelLambdaQueryWrapper3.eq(Parcel::getHub_id,hub_id)
+//                .between(Parcel::getSendTime,today.atStartOfDay(),today.atTime(LocalTime.MAX));
+//        countParcelVo.setSendParcel(parcelMapper.selectCount(parcelLambdaQueryWrapper3));
+        countParcelVo.setSendParcel(parcelMapper.getSendParcelOneDay(hub_id,today.atStartOfDay(),today.atTime(LocalTime.MAX)));
 
         LambdaQueryWrapper<Parcel> parcelLambdaQueryWrapper4 = new LambdaQueryWrapper<>();
         parcelLambdaQueryWrapper4.eq(Parcel::getHub_id,hub_id)

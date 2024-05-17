@@ -6,6 +6,7 @@ import com.parcelhub.vo.UserCountsVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -69,4 +70,16 @@ public interface ParcelMapper extends BaseMapper<Parcel> {
             "From parcel p " +
             "WHERE p.hub_id = #{hub_id} AND p.state = '已签收' AND p.receiveTime > #{start} AND p.receiveTime < #{end}")
     List<Parcel> selectAllGot(int hub_id, Date start, Date end);
+
+    @Select("SELECT COUNT(parcelId) " +
+            "FROM parcel p " +
+            "INNER JOIN orderlist o ON p.parcelId = o.parcel_id " +
+            "WHERE o.hub_id = #{hub_id} AND p.state LIKE '%等待揽收%' ;")
+    Long getPendingSendParcel(int hub_id);
+
+    @Select("SELECT COUNT(parcelId) " +
+            "FROM parcel p " +
+            "INNER JOIN orderlist o ON p.parcelId = o.parcel_id " +
+            "WHERE o.hub_id = #{hub_id} AND p.sendTime > #{start} AND p.sendTime < #{end}")
+    Long getSendParcelOneDay(int hub_id, LocalDateTime start, LocalDateTime end);
 }
