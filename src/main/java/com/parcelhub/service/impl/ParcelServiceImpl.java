@@ -824,10 +824,10 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
         Long DelayCount = parcelMapper.getDelay(hub_id);
         map.put("滞留件",DelayCount);
 
-        LambdaQueryWrapper<Parcel> parcelLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        parcelLambdaQueryWrapper.eq(Parcel::getHub_id,hub_id)
-                .eq(Parcel::getState,"等待揽收");
-        Long SendParcel = parcelMapper.selectCount(parcelLambdaQueryWrapper);
+//        LambdaQueryWrapper<Parcel> parcelLambdaQueryWrapper = new LambdaQueryWrapper<>();
+//        parcelLambdaQueryWrapper.eq(Parcel::getHub_id,hub_id)
+//                .eq(Parcel::getState,"等待揽收");
+        Long SendParcel = parcelMapper.getPendingSendParcel(hub_id);
         map.put("待出库",SendParcel);
 
         LambdaQueryWrapper<Parcel> parcelLambdaQueryWrapper1 = new LambdaQueryWrapper<>();
