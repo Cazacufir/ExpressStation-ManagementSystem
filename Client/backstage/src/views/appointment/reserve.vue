@@ -1,5 +1,8 @@
 <template>
-    <div class="w-full flex flex-col justify-center items-center">
+    <div class="w-full flex flex-col justify-center items-center" v-if="!isLoading">
+        <div class="w-full">
+            <el-button type="primary" plain icon="Refresh" size="small" @click="getList">刷新</el-button>
+        </div>
         <el-table :data="list" stripe>
             <el-table-column prop="parcelId" label="快递单号" width="100" align="center" />
             <el-table-column sortable prop="receiveName" label="收件人姓名" width="120" align="center" />
@@ -31,6 +34,9 @@
 
         <el-pagination layout="prev, pager, next" :page-count="totalPage" @current-change="changePage" />
     </div>
+    <div class="container w-full h-full" v-else>
+        <el-skeleton :rows="5" animated/>
+    </div>
 </template>
 
 <script setup>
@@ -45,9 +51,12 @@ let hub_id = null
 let pageNum = 1
 let totalPage = null
 
+let isLoading = ref(true)
+
 onMounted(() => {
     hub_id = store.getAdminInfo().hub_id
     getList()
+    isLoading.value = false
 })
 
 const getList = async () => {

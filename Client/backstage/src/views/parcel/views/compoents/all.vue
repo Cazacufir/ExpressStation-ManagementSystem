@@ -5,6 +5,9 @@
         <el-input v-model="searchFor" placeholder="搜索快件"></el-input>
         <el-button type="primary" icon="Search" @click="searchParcel"></el-button>
       </div>
+      <div class="flex ml-20 mt-auto" v-show="!isShowSearch">
+        <el-button type="primary" plain icon="Refresh" size="small" @click="getList">刷新</el-button>
+      </div>
       <div class="flex gap-10">
         <el-text type="info">以到站时间筛选:</el-text>
         <el-date-picker v-model="receiveDateTime" type="daterange" unlink-panels range-separator="To"

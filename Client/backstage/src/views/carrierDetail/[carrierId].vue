@@ -1,10 +1,14 @@
 <template>
-    <div class="container w-full flex flex-col gap-10">
+    <div class="container w-full flex gap-10">
         <div>
             <el-button size="large" type="info" @click="backTo">
                 < 返回</el-button>
         </div>
+        <div class="flex mt-auto">
+                <el-button type="primary" plain icon="Refresh" size="small" @click="getList">刷新</el-button>
+        </div>
     </div>
+
     <div class="w-full flex flex-col items-center">
         <el-table :data="list" stripe>
             <el-table-column fixed type="expand">

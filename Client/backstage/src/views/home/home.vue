@@ -1,5 +1,5 @@
 <template>
-    <div class="container flex flex-col justify-center items-center overflow-y-hidden gap-20">
+    <div class="container flex flex-col justify-center items-center overflow-y-hidden gap-20" v-if="!isLoading">
         <div class="flex justify-around items-center w-95% shadow-lg p-10">
             <div v-for="(item, index) in list" :key="index" class="flex flex-col justify-center items-center gap-10">
                 <span class="text-7xl font-semibold">{{ item.name }}</span>
@@ -13,6 +13,16 @@
             <div class="w-600px h-250px" ref="userRef"></div>
             <div class="w-600px h-250px" ref="parcelRef"></div>
         </div>
+    </div>
+
+    <div class="container w-full h-full" v-else>
+        <el-skeleton animated />
+        <br />
+        <el-skeleton style="--el-skeleton-circle-size: 100px" animated>
+            <template #template>
+                <el-skeleton-item variant="circle" />
+            </template>
+        </el-skeleton>
     </div>
 </template>
 
@@ -31,6 +41,8 @@ const userRef = ref(null)
 const parcelRef = ref(null)
 const store = adminStore();
 
+let isLoading = ref(true)
+
 const route = useRoute()
 onMounted(async () => {
     let hub_id = store.getAdminInfo().hub_id
@@ -45,6 +57,7 @@ onMounted(async () => {
     getKind(hub_id)
     getUserCount(hub_id)
     getParcelCount(hub_id)
+    isLoading.value = false
 })
 
 const getPrice = async (hub_id) => {
@@ -70,11 +83,15 @@ const getPrice = async (hub_id) => {
         datesArray.push(formatDate(new Date(i)));
     }
 
-    const priceArray = []
+    let priceArray = []
 
     r.data.forEach(item => {
         priceArray.push(item.totalPrice)
     })
+
+    if(!r.data.length){
+        priceArray = [0,0,0,0,0,0,0,0,0,0,0]
+    }
 
     // console.log("🚀 ~ getPrice ~ priceArray:", priceArray)
 
@@ -191,16 +208,21 @@ const getUserCount = async (hub_id) => {
         return `${month}-${day}`;
     }
 
-    const datesArray = [];
+    let datesArray = [];
     for (let i = tenDaysAgo; i <= currentDate; i.setDate(i.getDate() + 1)) {
         datesArray.push(formatDate(new Date(i)));
     }
 
-    const sendArray = []
+    let sendArray = []
     r.data.send.forEach(item => sendArray.push(item.counts))
 
-    const receiveArray = []
+    let receiveArray = []
     r.data.receive.forEach(item => receiveArray.push(item.counts))
+
+    if(!r.data.length){
+        sendArray = [0,0,0,0,0,0,0,0,0,0,0]
+        receiveArray = [0,0,0,0,0,0,0,0,0,0,0]
+    }
 
 
     const option = {

@@ -1,9 +1,12 @@
 <template>
-    <div class="w-full flex flex-col items-center gap-20">
+    <div class="w-full flex flex-col items-center gap-20" v-if="!isLoading">
         <div class="flex flex-row-reverse w-full">
             <div class="flex ml-auto">
                 <el-input v-model="searchFor" placeholder="搜索快件"></el-input>
                 <el-button type="primary" icon="Search" @click="searchParcel"></el-button>
+            </div>
+            <div class="flex ml-20 mt-auto" v-show="!isShowAll && !isShowSearch">
+                <el-button type="primary" plain icon="Refresh" size="small" @click="getList">刷新</el-button>
             </div>
             <div class="flex gap-20" v-show="isShowAll">
                 <el-button type="primary" @click="outedByList">出库所选快递</el-button>
@@ -53,6 +56,9 @@
 
         <!-- <el-pagination v-if="!isShowSearch" layout="prev, pager, next" :page-count="totalPage" @current-change="changePage" /> -->
     </div>
+    <div class="container w-full h-full" v-else>
+        <el-skeleton :rows="5" animated/>
+    </div>
 </template>
 
 <script setup>
@@ -65,6 +71,8 @@ const store = adminStore();
 const list = ref([])
 let hub_id = null
 
+let isLoading = ref(true)
+
 let pageNum = 1
 
 const isShowAll = ref(false)
@@ -76,6 +84,8 @@ onMounted(() => {
 const init = () => {
     hub_id = store.getAdminInfo().hub_id
     getList()
+    isLoading.value = false
+    console.log("🚀 ~ init ~ isLoading.value:", isLoading.value)
 }
 
 let totalPage = null
