@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.*;
 
 @Service
@@ -271,7 +273,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderList> implem
 
     @Override
     public Result getPriceWeek(int hub_id){
-        List<PriceVo> priceVoList = orderMapper.getPriceByHub(hub_id);
+        LocalDate today = LocalDate.now();
+        List<PriceVo> priceVoList = orderMapper.getPriceByHub(hub_id,today.minusDays(6),today.atTime(LocalTime.MAX));
         return Result.okResult(priceVoList);
     }
 

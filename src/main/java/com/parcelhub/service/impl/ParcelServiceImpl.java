@@ -840,6 +840,9 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
         parcelLambdaQueryWrapper2.eq(Parcel::getHub_id,hub_id)
                 .eq(Parcel::getState,"待取件");
         Long NormalParcel = parcelMapper.selectCount(parcelLambdaQueryWrapper2) - ReserveCount - DelayCount;
+        if (NormalParcel<0){
+            NormalParcel = 0L;
+        }
         map.put("正常待取",NormalParcel);
 
         return Result.okResult(map);
@@ -847,8 +850,9 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
 
     @Override
     public Result countUser(int hub_id){
-        List<UserCountsVo> userCountsVoList = parcelMapper.getSendUser(hub_id);
-        List<UserCountsVo> userCountsVoList1 = parcelMapper.getReceiveUser(hub_id);
+        LocalDate today = LocalDate.now();
+        List<UserCountsVo> userCountsVoList = parcelMapper.getSendUser(hub_id,today.minusDays(6),today.atTime(LocalTime.MAX));
+        List<UserCountsVo> userCountsVoList1 = parcelMapper.getReceiveUser(hub_id,today.minusDays(6),today.atTime(LocalTime.MAX));
         Map<String,List<UserCountsVo>> map = new HashMap<>();
         map.put("send",userCountsVoList);
         map.put("receive",userCountsVoList1);
@@ -857,8 +861,9 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
 
     @Override
     public Result countSRParcel(int hub_id){
-        List<UserCountsVo> userCountsVoList = parcelMapper.getSendUser(hub_id);
-        List<UserCountsVo> userCountsVoList1 = parcelMapper.getReceiveParcel(hub_id);
+        LocalDate today = LocalDate.now();
+        List<UserCountsVo> userCountsVoList = parcelMapper.getSendUser(hub_id,today.minusDays(6),today.atTime(LocalTime.MAX));
+        List<UserCountsVo> userCountsVoList1 = parcelMapper.getReceiveParcel(hub_id,today.minusDays(6),today.atTime(LocalTime.MAX));
         Map<String,List<UserCountsVo>> map = new HashMap<>();
         map.put("sendParcel",userCountsVoList);
         map.put("receiveParcel",userCountsVoList1);

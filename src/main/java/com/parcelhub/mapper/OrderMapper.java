@@ -8,6 +8,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper
@@ -37,12 +39,11 @@ public interface OrderMapper extends BaseMapper<OrderList> {
             "WHERE o.hub_id = #{hub_id} AND o.del_flag = 0 AND p.state LIKE '%等待揽收%' ;")
     List<OrderParcelMerge> getSendParcelByHub(int hub_id);
 
-    @Select("SELECT DATE(orderTime) AS OrderDate, SUM(price) AS TotalPrice " +
+    @Select("SELECT o.orderTime AS OrderDate, o.price AS TotalPrice " +
             "FROM orderlist o " +
-            "WHERE OrderTime BETWEEN DATE_SUB(CURDATE(), INTERVAL 10 DAY) AND CURDATE() AND o.hub_id = #{hub_id} " +
-            "AND o.del_flag = 0 " +
-            "GROUP BY OrderDate")
-    List<PriceVo> getPriceByHub(int hub_id);
+            "WHERE o.orderTime > #{start} AND o.orderTime < #{end} AND o.hub_id = #{hub_id} " +
+            "AND o.del_flag = 0 ")
+    List<PriceVo> getPriceByHub(int hub_id, LocalDate start, LocalDateTime end);
 
     @Select("SELECT o.*, p.* " +
             "FROM orderlist o " +

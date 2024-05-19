@@ -6,6 +6,7 @@ import com.parcelhub.vo.UserCountsVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -36,30 +37,27 @@ public interface ParcelMapper extends BaseMapper<Parcel> {
     @Select("SELECT COUNT(parcelId) " +
             "FROM parcel p " +
             "INNER JOIN delay d ON d.parcel_id = p.parcelId " +
-            "WHERE p.hub_id = #{hub_id} ")
+            "WHERE p.hub_id = #{hub_id} AND p.state = '待取件'")
     Long getDelay(int hub_id);
 
-    @Select("SELECT DATE(orderTime) AS OrderDate, COUNT(orderId) AS counts " +
+    @Select("SELECT o.orderTime AS OrderDate, COUNT(o.orderId) AS counts " +
             "FROM orderlist o " +
-            "WHERE OrderTime BETWEEN DATE_SUB(CURDATE(), INTERVAL 10 DAY) AND CURDATE() AND o.hub_id = #{hub_id} " +
-            "AND o.del_flag = 0 " +
-            "GROUP BY OrderDate")
-    List<UserCountsVo> getSendUser(int hub_id);
+            "WHERE o.orderTime > #{start} AND o.orderTime < #{end} AND o.hub_id = #{hub_id} " +
+            "AND o.del_flag = 0 ")
+    List<UserCountsVo> getSendUser(int hub_id, LocalDate start, LocalDateTime end);
 
-    @Select("SELECT DATE(receiveTime) AS OrderDate, COUNT(parcelId) AS counts " +
+    @Select("SELECT p.receiveTime AS OrderDate, COUNT(parcelId) AS counts " +
             "FROM parcel p " +
-            "WHERE receiveTime BETWEEN DATE_SUB(CURDATE(), INTERVAL 10 DAY) AND CURDATE() AND p.hub_id = #{hub_id} " +
-            "AND p.state = '已签收' " +
-            "GROUP BY OrderDate")
-    List<UserCountsVo> getReceiveUser(int hub_id);
+            "WHERE p.receiveTime > #{start} AND p.receiveTime < #{end} AND p.hub_id = #{hub_id} " +
+            "AND p.state = '已签收' ")
+    List<UserCountsVo> getReceiveUser(int hub_id, LocalDate start, LocalDateTime end);
 
-    @Select("SELECT DATE(receiveTime) AS OrderDate, COUNT(parcelId) AS counts " +
+    @Select("SELECT p.receiveTime AS OrderDate, COUNT(parcelId) AS counts " +
             "FROM parcel p " +
-            "WHERE receiveTime BETWEEN DATE_SUB(CURDATE(), INTERVAL 10 DAY) AND CURDATE() AND p.hub_id = #{hub_id} " +
+            "WHERE p.receiveTime > #{start} AND p.receiveTime < #{end} AND p.hub_id = #{hub_id} " +
             "AND p.state = '已签收' " +
-            "OR p.state = '待取件' " +
-            "GROUP BY OrderDate")
-    List<UserCountsVo> getReceiveParcel(int hub_id);
+            "OR p.state = '待取件' ")
+    List<UserCountsVo> getReceiveParcel(int hub_id,LocalDate start, LocalDateTime end);
 
     @Select("SELECT p.* " +
             "From parcel p " +
@@ -74,7 +72,7 @@ public interface ParcelMapper extends BaseMapper<Parcel> {
     @Select("SELECT COUNT(parcelId) " +
             "FROM parcel p " +
             "INNER JOIN orderlist o ON p.parcelId = o.parcel_id " +
-            "WHERE o.hub_id = #{hub_id} AND p.state LIKE '%等待揽收%' ;")
+            "WHERE o.hub_id = #{hub_id} AND o.del_flag = 0 AND p.state LIKE '%等待揽收%' ;")
     Long getPendingSendParcel(int hub_id);
 
     @Select("SELECT COUNT(parcelId) " +
