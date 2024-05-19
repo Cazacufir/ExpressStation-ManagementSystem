@@ -66,7 +66,9 @@
 				
 				<div v-if="parcelList.length" class="parcelCard" v-for="(items,index) in parcelList" :key="index">
 					<div>
-						<u-image :src="items.logo" height="50" width="50" errorIcon="http://114.132.155.61:9000/companylogo/fail.png"></u-image>
+						<u-image v-if="items.logo" :src="items.logo" height="50" width="50"
+							errorIcon="http://114.132.155.61:9000/companylogo/fail.png"></u-image>
+						<u-image v-else src="http://114.132.155.61:9000/companylogo/fail.png" height="50" width="50"></u-image>
 					</div>
 				
 					<div class="parcelInfo">

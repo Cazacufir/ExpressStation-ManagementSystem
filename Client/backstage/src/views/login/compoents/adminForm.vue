@@ -40,11 +40,22 @@ const checkConf = (role,value,callback) => {
     }
 }
 
-const rules_user = reactive({
-    staffContact: [
-        { required: true, message: '手机号不能为空！', trigger: 'blur' }
-    ],
+const checkContact = (role,value,callback) => {
+    if(!value) {
+        callback(new Error('手机号不能为空!'))
+    }
+    else if(value.length < 11){
+        callback(new Error('请输入有效手机号'))
+    }
+}
 
+const rules_user = reactive({
+    // staffContact: [
+    //     { required: true, message: '手机号不能为空！', trigger: 'blur' }
+    // ],
+    staffContact:[
+        { validator: checkContact, trigger: 'blur' }
+    ],
     password: [
         { required: true, message: '密码不能为空!', trigger: 'blur' }
     ],

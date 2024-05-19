@@ -28,12 +28,13 @@
 		api
 	} from '../api/index.js'
 	import {
-		onLoad
+		onLoad,
+		onShow
 	} from '@dcloudio/uni-app'
 
 	const list = ref([])
 
-	onLoad(() => {
+	onShow(() => {
 		uni.getStorage({
 			key: 'user',
 			async success(res) {

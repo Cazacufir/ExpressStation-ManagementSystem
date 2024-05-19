@@ -30,12 +30,13 @@
 		api
 	} from '../api/index.js'
 	import {
-		onLoad
+		onLoad,
+		onShow
 	} from '@dcloudio/uni-app'
 
 	const list = ref([])
 
-	onLoad(() => {
+	onShow(() => {
 		uni.getStorage({
 			key: 'user',
 			async success(res) {
@@ -84,7 +85,7 @@
 		display: flex;
 		flex-direction: column;
 		gap: 40rpx;
-		background-color: #f3f6fa;
+		// background-color: #f3f6fa;
 		border-radius: 40rpx;
 	}
 

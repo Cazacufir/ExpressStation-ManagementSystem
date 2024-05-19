@@ -70,7 +70,7 @@ const getPrice = async (hub_id) => {
     const currentDate = new Date();
 
     const tenDaysAgo = new Date();
-    tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
+    tenDaysAgo.setDate(tenDaysAgo.getDate() - 6);
 
     function formatDate(date) {
         const month = (date.getMonth() + 1).toString().padStart(2, '0');
@@ -83,17 +83,39 @@ const getPrice = async (hub_id) => {
         datesArray.push(formatDate(new Date(i)));
     }
 
-    let priceArray = []
-
-    r.data.forEach(item => {
-        priceArray.push(item.totalPrice)
-    })
-
-    if(!r.data.length){
-        priceArray = [0,0,0,0,0,0,0,0,0,0,0]
+    let resArray = []
+    if (!r.data.length) {
+        priceArray = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    }
+    else {
+        resArray = r.data.reduce((acc, cur) => {
+            let date = cur.orderDate.substring(5, 10);
+            let existing = acc.find(x => x.orderDate === date);
+            if (existing) {
+                existing.totalPrice += cur.totalPrice;
+            } else {
+                acc.push({
+                    orderDate: date,
+                    totalPrice: cur.totalPrice
+                });
+            }
+            return acc;
+        }, []);
     }
 
+    let priceArray = []
+
     // console.log("🚀 ~ getPrice ~ priceArray:", priceArray)
+
+    datesArray.forEach(item => {
+        let index = resArray.findIndex(date => date.orderDate == item)
+        if (index != -1) {
+            priceArray.push(resArray[index].totalPrice)
+        }
+        else {
+            priceArray.push(0)
+        }
+    })
 
     const option = {
         title: {
@@ -162,7 +184,7 @@ const getKind = async (hub_id) => {
     const option = {
         color: ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de'],
         title: {
-            text: '现有快件种类',
+            text: '现存快件种类',
             left: 'center'
         },
         tooltip: {
@@ -200,7 +222,7 @@ const getUserCount = async (hub_id) => {
     const currentDate = new Date();
 
     const tenDaysAgo = new Date();
-    tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
+    tenDaysAgo.setDate(tenDaysAgo.getDate() - 6);
 
     function formatDate(date) {
         const month = (date.getMonth() + 1).toString().padStart(2, '0');
@@ -214,16 +236,72 @@ const getUserCount = async (hub_id) => {
     }
 
     let sendArray = []
-    r.data.send.forEach(item => sendArray.push(item.counts))
-
-    let receiveArray = []
-    r.data.receive.forEach(item => receiveArray.push(item.counts))
-
-    if(!r.data.length){
-        sendArray = [0,0,0,0,0,0,0,0,0,0,0]
-        receiveArray = [0,0,0,0,0,0,0,0,0,0,0]
+    let resSendArray = []
+    let sendFlag = 1
+    r.data.send.forEach(item => {
+        if (item.orderDate == null) sendFlag = 0
+    })
+    if (sendFlag) {
+        resSendArray = r.data.send.reduce((acc, cur) => {
+            let date = cur.orderDate.substring(5, 10);
+            let existing = acc.find(x => x.orderDate === date);
+            if (existing) {
+                existing.counts += cur.counts;
+            } else {
+                acc.push({
+                    orderDate: date,
+                    counts: cur.counts
+                });
+            }
+            return acc;
+        }, []);
+        datesArray.forEach(item => {
+            let index = resSendArray.findIndex(date => date.orderDate == item)
+            if (index != -1) {
+                sendArray.push(resSendArray[index].counts)
+            }
+            else {
+                sendArray.push(0)
+            }
+        })
+    }
+    else{
+        sendArray = [0,0,0,0,0,0,0]
     }
 
+    let receiveArray = []
+    let resReArray = []
+    let reflag = 1
+    r.data.receive.forEach(item => {
+        if (item.orderDate == null) reflag = 0
+    })
+    if (reflag) {
+        resReArray = r.data.receive.reduce((acc, cur) => {
+            let date = cur.orderDate.substring(5, 10);
+            let existing = acc.find(x => x.orderDate === date);
+            if (existing) {
+                existing.counts += cur.counts;
+            } else {
+                acc.push({
+                    orderDate: date,
+                    counts: cur.counts
+                });
+            }
+            return acc;
+        }, []);
+        datesArray.forEach(item => {
+            let index = resReArray.findIndex(date => date.orderDate == item)
+            if (index != -1) {
+                receiveArray.push(resReArray[index].counts)
+            }
+            else {
+                receiveArray.push(0)
+            }
+        })
+    }
+    else {
+        receiveArray = [0, 0, 0, 0, 0, 0, 0]
+    }
 
     const option = {
         title: {
@@ -277,7 +355,7 @@ const getParcelCount = async (hub_id) => {
     const currentDate = new Date();
 
     const tenDaysAgo = new Date();
-    tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
+    tenDaysAgo.setDate(tenDaysAgo.getDate() - 6);
 
     function formatDate(date) {
         const month = (date.getMonth() + 1).toString().padStart(2, '0');
@@ -290,16 +368,81 @@ const getParcelCount = async (hub_id) => {
         datesArray.push(formatDate(new Date(i)));
     }
 
-    const sendArray = []
-    r.data.sendParcel.forEach(item => sendArray.push(item.counts))
+    let sendArray = []
+    let sendFlag = 1
+    let resSendArray = []
+    r.data.sendParcel.forEach(item => {
+        if (item.orderDate == null) sendFlag = 0
+    })
+    if(sendFlag){
+        resSendArray = r.data.sendParcel.reduce((acc, cur) => {
+            let date = cur.orderDate.substring(5, 10);
+            let existing = acc.find(x => x.orderDate === date);
+            if (existing) {
+                existing.counts += cur.counts;
+            } else {
+                acc.push({
+                    orderDate: date,
+                    counts: cur.counts
+                });
+            }
+            return acc;
+        }, []);
+        datesArray.forEach(item => {
+            let index = resSendArray.findIndex(date => date.orderDate == item)
+            if (index != -1) {
+                sendArray.push(resSendArray[index].counts)
+            }
+            else {
+                sendArray.push(0)
+            }
+        })
+    }
+    else{
+        sendArray = [0,0,0,0,0,0,0]
+    }
 
-    const receiveArray = []
-    r.data.receiveParcel.forEach(item => receiveArray.push(item.counts))
+    let receiveArray = []
+    let reFlag = 1
+    let resReArray = []
+    r.data.receiveParcel.forEach(item => {
+        if (item.orderDate == null) reFlag = 0
+    })
+    if(reFlag){
+        resReArray = r.data.receiveParcel.reduce((acc, cur) => {
+            let date = cur.orderDate.substring(5, 10);
+            let existing = acc.find(x => x.orderDate === date);
+            if (existing) {
+                existing.counts += cur.counts;
+            } else {
+                acc.push({
+                    orderDate: date,
+                    counts: cur.counts
+                });
+            }
+            return acc;
+        }, []);
+        datesArray.forEach(item => {
+            let index = resReArray.findIndex(date => date.orderDate == item)
+            if (index != -1) {
+                receiveArray.push(resReArray[index].counts)
+            }
+            else {
+                receiveArray.push(0)
+            }
+        })
+    }
+    else{
+        receiveArray = [0,0,0,0,0,0,0]
+    }
 
-    const sumArray = []
+    let sumArray = []
     for (let i = 0; i < 10; i++) {
         sumArray[i] = sendArray[i] + receiveArray[i]
     }
+    console.log("🚀 ~ getParcelCount ~ receiveArray:", receiveArray)
+    console.log("🚀 ~ getParcelCount ~ sendArray:", sendArray)
+    console.log("🚀 ~ getParcelCount ~ sumArray:", sumArray)
 
     const option = {
         title: {
