@@ -293,11 +293,11 @@
 			})
 			.then(res => {
 				if (res.code == 200) {
-					let startIndex = 0
 					list.value.forEach(item => {
 						item.parcel.forEach((child, index) => {
-							if (child.parcelId == currentVal.value) startIndex = index
-							item.parcel.splice(startIndex, 1)
+							if (child.parcelId == currentVal.value){
+								item.parcel.splice(index, 1)
+							} 
 						})
 					})
 					uni.showToast({
