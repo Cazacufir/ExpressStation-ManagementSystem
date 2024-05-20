@@ -94,7 +94,8 @@
 		api
 	} from '../../api/index.js'
 	import {
-		onLoad
+		onLoad,
+		onShow
 	} from '@dcloudio/uni-app'
 	import {
 		ref
@@ -113,14 +114,7 @@
 	const receivedParcel = ref([])
 
 	onLoad(async () => {
-		uni.getStorage({
-			key:'user',
-			success:async function (res) {
-				console.log(111)
-				await api.getReceivedParcelByUser({ receiveName:res.data.name,receiveContact:res.data.contact })
-				.then(res => receivedParcel.value = [...res.data])
-			}
-		})
+		getPendingReceive()
 		let amapPlugin = new amap.AMapWX({
 			key: '5a30fd46a68c8ca67069b5bd60ec34f4'
 		})
@@ -151,6 +145,20 @@
 	const toSearch = () => {
 		uni.navigateTo({
 			url:'/pages/Search/Search'
+		})
+	}
+	
+	onShow(()=>{
+		getPendingReceive()
+	})
+	
+	const getPendingReceive = () => {
+		uni.getStorage({
+			key:'user',
+			success:async function (res) {
+				await api.getReceivedParcelByUser({ receiveName:res.data.name,receiveContact:res.data.contact })
+				.then(res => receivedParcel.value = [...res.data])
+			}
 		})
 	}
 
