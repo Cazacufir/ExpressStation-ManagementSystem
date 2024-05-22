@@ -583,7 +583,7 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
 //            String key = parcel1.getReceiveName() + "_" + parcel1.getReceiveContact();
             mergedParcel.computeIfAbsent(key, k -> new ArrayList<>()).add(parcel1);
         }
-        Set<String> mergeSet = new HashSet<>(mergedParcel.keySet());
+//        Set<String> mergeSet = new HashSet<>(mergedParcel.keySet());
         for (ReceiveParcelVo receiveParcelVo : receiveParcelVos){
             String[] route = receiveParcelVo.getRoute().split(",");
             String hubName = route[route.length - 1];
@@ -822,7 +822,7 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
         Long ReserveCount = parcelMapper.getReserve(hub_id);
         map.put("预约取件",ReserveCount);
         Long DelayCount = parcelMapper.getDelay(hub_id);
-        map.put("滞留件",DelayCount);
+        map.put("延迟取件",DelayCount);
 
 //        LambdaQueryWrapper<Parcel> parcelLambdaQueryWrapper = new LambdaQueryWrapper<>();
 //        parcelLambdaQueryWrapper.eq(Parcel::getHub_id,hub_id)
@@ -851,8 +851,8 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
     @Override
     public Result countUser(int hub_id){
         LocalDate today = LocalDate.now();
-        List<UserCountsVo> userCountsVoList = parcelMapper.getSendUser(hub_id,today.minusDays(6),today.atTime(LocalTime.MAX));
-        List<UserCountsVo> userCountsVoList1 = parcelMapper.getReceiveUser(hub_id,today.minusDays(6),today.atTime(LocalTime.MAX));
+        List<UserCountsVo> userCountsVoList = parcelMapper.getSendUser(hub_id,today.minusDays(6),today.plusDays(1));
+        List<UserCountsVo> userCountsVoList1 = parcelMapper.getReceiveUser(hub_id,today.minusDays(6),today.plusDays(1));
         Map<String,List<UserCountsVo>> map = new HashMap<>();
         map.put("send",userCountsVoList);
         map.put("receive",userCountsVoList1);
@@ -862,8 +862,8 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
     @Override
     public Result countSRParcel(int hub_id){
         LocalDate today = LocalDate.now();
-        List<UserCountsVo> userCountsVoList = parcelMapper.getSendUser(hub_id,today.minusDays(6),today.atTime(LocalTime.MAX));
-        List<UserCountsVo> userCountsVoList1 = parcelMapper.getReceiveParcel(hub_id,today.minusDays(6),today.atTime(LocalTime.MAX));
+        List<UserCountsVo> userCountsVoList = parcelMapper.getSendUser(hub_id,today.minusDays(6),today.plusDays(1));
+        List<UserCountsVo> userCountsVoList1 = parcelMapper.getReceiveParcel(hub_id,today.minusDays(6),today.plusDays(1));
         Map<String,List<UserCountsVo>> map = new HashMap<>();
         map.put("sendParcel",userCountsVoList);
         map.put("receiveParcel",userCountsVoList1);

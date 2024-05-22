@@ -43,21 +43,23 @@ public interface ParcelMapper extends BaseMapper<Parcel> {
     @Select("SELECT o.orderTime AS OrderDate, COUNT(o.orderId) AS counts " +
             "FROM orderlist o " +
             "WHERE o.orderTime > #{start} AND o.orderTime < #{end} AND o.hub_id = #{hub_id} " +
-            "AND o.del_flag = 0 ")
-    List<UserCountsVo> getSendUser(int hub_id, LocalDate start, LocalDateTime end);
-
-    @Select("SELECT p.receiveTime AS OrderDate, COUNT(parcelId) AS counts " +
-            "FROM parcel p " +
-            "WHERE p.receiveTime > #{start} AND p.receiveTime < #{end} AND p.hub_id = #{hub_id} " +
-            "AND p.state = '已签收' ")
-    List<UserCountsVo> getReceiveUser(int hub_id, LocalDate start, LocalDateTime end);
+            "AND o.del_flag = 0 " +
+            "GROUP BY o.orderTime ")
+    List<UserCountsVo> getSendUser(int hub_id, LocalDate start, LocalDate end);
 
     @Select("SELECT p.receiveTime AS OrderDate, COUNT(parcelId) AS counts " +
             "FROM parcel p " +
             "WHERE p.receiveTime > #{start} AND p.receiveTime < #{end} AND p.hub_id = #{hub_id} " +
             "AND p.state = '已签收' " +
-            "OR p.state = '待取件' ")
-    List<UserCountsVo> getReceiveParcel(int hub_id,LocalDate start, LocalDateTime end);
+            "GROUP BY p.receiveTime ")
+    List<UserCountsVo> getReceiveUser(int hub_id, LocalDate start, LocalDate end);
+
+    @Select("SELECT p.receiveTime AS OrderDate, COUNT(parcelId) AS counts " +
+            "FROM parcel p " +
+            "WHERE p.receiveTime IS NOT NULL AND p.receiveTime > #{start} AND p.receiveTime < #{end} AND p.hub_id = #{hub_id} " +
+            "AND (p.state = '已签收' OR p.state = '待取件') " +
+            "GROUP BY p.receiveTime ")
+    List<UserCountsVo> getReceiveParcel(int hub_id,LocalDate start, LocalDate end);
 
     @Select("SELECT p.* " +
             "From parcel p " +
