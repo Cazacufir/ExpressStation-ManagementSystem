@@ -839,7 +839,7 @@ public class ParcelServiceImpl extends ServiceImpl<ParcelMapper, Parcel> impleme
         LambdaQueryWrapper<Parcel> parcelLambdaQueryWrapper2 = new LambdaQueryWrapper<>();
         parcelLambdaQueryWrapper2.eq(Parcel::getHub_id,hub_id)
                 .eq(Parcel::getState,"待取件");
-        Long NormalParcel = parcelMapper.selectCount(parcelLambdaQueryWrapper2) - ReserveCount - DelayCount;
+        Long NormalParcel = parcelMapper.selectCount(parcelLambdaQueryWrapper2);
         if (NormalParcel<0){
             NormalParcel = 0L;
         }
