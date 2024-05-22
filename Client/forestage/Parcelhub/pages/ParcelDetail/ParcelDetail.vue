@@ -19,7 +19,7 @@
 					<u-text :text="'预计' + expectTime  + '前后送达'" size="11"></u-text>
 				</div>
 
-				<div v-if="parcel.state != '等待揽收' && parcel.state != '派送中' && parcel.state != '待取件' 
+				<div v-if="parcel.state != '等待揽收' && parcel.state != '派送中' && parcel.state != '待取件' && parcel.state != '已签收'
 				&& cityIndex != cities.length && !parcel.state.includes('等待揽收')" style="margin-left: auto;">
 					<u-button shape="circle" text="+ 推进流程" type="primary" size="small" @click="pushRoute"></u-button>
 				</div>

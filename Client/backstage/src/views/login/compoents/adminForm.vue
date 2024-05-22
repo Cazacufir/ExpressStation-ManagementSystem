@@ -13,7 +13,7 @@
         </el-form-item>
 
         <el-form-item>
-            <el-button type="primary w-full" @click="toValidate">注 册</el-button>
+            <el-button type="primary w-full" @click="toSubmit">注 册</el-button>
         </el-form-item>
     </el-form>
 </template>
@@ -29,7 +29,7 @@ const user = reactive({
 
 const emit = defineEmits(['getInfo'])
 
-const register_ruleFormRef = ref()
+let register_ruleFormRef = ref()
 
 const checkConf = (role,value,callback) => {
     if(!value) {
@@ -50,12 +50,12 @@ const checkContact = (role,value,callback) => {
 }
 
 const rules_user = reactive({
-    // staffContact: [
-    //     { required: true, message: '手机号不能为空！', trigger: 'blur' }
-    // ],
-    staffContact:[
-        { validator: checkContact, trigger: 'blur' }
+    staffContact: [
+        { required: true, message: '手机号不能为空！', trigger: 'blur' }
     ],
+    // staffContact:[
+    //     { validator: checkContact, trigger: 'blur' }
+    // ],
     password: [
         { required: true, message: '密码不能为空!', trigger: 'blur' }
     ],
@@ -75,6 +75,7 @@ const toValidate = () => {
             toSubmit()
         }
         else {
+            console.log(111)
             return false
         }
     })

@@ -1,7 +1,8 @@
 <template>
     <div class="container flex flex-col gap-20 justify-center">
         <div class="flex justify-between">
-            <el-button plain type="primary" class="ml-10" icon="Plus" @click="openForm(null)" v-if="work === '站长'">新增快递员</el-button>
+            <el-button plain type="primary" class="ml-10" icon="Plus" @click="openForm(null)"
+                v-if="work === '站长'">新增快递员</el-button>
             <div class="flex ml-auto">
                 <el-input v-model="searchFor" placeholder="查找快递员"></el-input>
                 <el-button type="primary" icon="Search" @click="searchDeliver"></el-button>
@@ -39,8 +40,8 @@
 
                 <el-form-item prop="sex" label="性别：">
                     <el-radio-group v-model="deliver.sex">
-                        <el-radio label="F" size="large">男</el-radio>
-                        <el-radio label="M" size="large">女</el-radio>
+                        <el-radio label="M" size="large">男</el-radio>
+                        <el-radio label="F" size="large">女</el-radio>
                     </el-radio-group>
                 </el-form-item>
 
@@ -92,33 +93,36 @@ onMounted(() => {
 
 const companyName = ref([])
 
+const deliver = reactive({
+    name: '',
+    sex: 'M',
+    age: null,
+    contact: '',
+    affair: '',
+    comName: '',
+    com_id: null,
+    mapId: null
+})
+
 const init = async () => {
     const hub = store.getAdminInfo()
     work.value = hub.work
-    const [e, r] = await api.getAllDeliver(hub.hub_id)
-    deliverList.value = [...r.data]
     deliver.hub_id = hub.hub_id
+    const [e, r] = await api.getAllDeliver(hub.hub_id)
+    if (r.code == 200) {
+        deliverList.value = [...r.data]
+        deliver.hub_id = hub.hub_id
+    }
 
-    const[e1,r1] = await api.getCompanyList(hub.hub_id)
+    const [e1, r1] = await api.getCompanyList(hub.hub_id)
     let companyList = [...r1.data]
     const Name = new Set()
     companyList.forEach(item => {
         Name.add(item.name)
     })
-    const [e2,r2] = await api.getCompanyName()
+    const [e2, r2] = await api.getCompanyName()
     companyName.value = r2.data.filter(item => Name.has(item.name))
 }
-
-const deliver = reactive({
-    name: '',
-    sex: 'F',
-    age: null,
-    contact: '',
-    affair: '',
-    comName: '',
-    com_id:null,
-    mapId:null
-})
 
 const closeForm = () => {
     deliver.name = ''
@@ -262,7 +266,7 @@ const submitDeliver = () => {
 
 const toValidate = () => {
     delivery_RefForm.value.validate((vaild) => {
-        if(vaild){
+        if (vaild) {
             addDeliver()
         }
         else {
@@ -273,7 +277,7 @@ const toValidate = () => {
 
 const toValidateUpdate = () => {
     delivery_RefForm.value.validate((vaild) => {
-        if(vaild){
+        if (vaild) {
             updateForm()
         }
         else {

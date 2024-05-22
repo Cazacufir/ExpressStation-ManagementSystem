@@ -30,6 +30,7 @@ import adminForm from './compoents/adminForm.vue'
 import hubForm from './compoents/hubForm.vue'
 import infoForm from './compoents/userInfoForm.vue'
 import { api } from "@/api"
+import { ElMessage } from 'element-plus'
 
 const forms = [hubForm, infoForm, adminForm]
 

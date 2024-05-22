@@ -82,16 +82,20 @@ const init = async () => {
     work.value = hub.work
     hub_id.value = hub.hub_id
     const [e, r] = await api.getCompanyList(hub.hub_id)
-    companyList.value = [...r.data]
-    console.log("🚀 ~ init ~ companyList.value:", companyList.value)
-    const Name = new Set()
-    companyList.value.forEach(item => {
-        Name.add(item.name)
-    })
-    console.log("🚀 ~ init ~ companyList.value:", Name)
     const [e2, r2] = await api.getCompanyName()
-    companyName.value = r2.data.filter(item => !Name.has(item.name))
-    console.log("🚀 ~ init ~ companyName.value:", companyName.value)
+    if (r.code == 200) {
+        companyList.value = [...r.data]
+        console.log("🚀 ~ init ~ companyList.value:", companyList.value)
+        const Name = new Set()
+        companyList.value.forEach(item => {
+            Name.add(item.name)
+        })
+        companyName.value = r2.data.filter(item => !Name.has(item.name))
+    }
+    else{
+        companyName.value = [...r2.data]
+    }
+    
 }
 
 // const company = reactive({

@@ -61,6 +61,7 @@ onMounted(async () => {
 })
 
 const getPrice = async (hub_id) => {
+    let priceArray = []
     const [e, r] = await api.getPriceWeek(hub_id)
     // console.log("🚀 ~ getPrice ~ r:", r.data)
 
@@ -103,7 +104,6 @@ const getPrice = async (hub_id) => {
         }, []);
     }
 
-    let priceArray = []
 
     // console.log("🚀 ~ getPrice ~ priceArray:", priceArray)
 

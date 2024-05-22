@@ -25,10 +25,11 @@
 	let eventChannel
 
 	onLoad(option => {
-		// console.log('option',option)
-		parcelList = JSON.parse(option.parcelList)
-		eventChannel = getCurrentInstance().proxy.getOpenerEventChannel();
-		console.log('parcelList', parcelList)
+		console.log('option',option)
+		if (JSON.stringify(option) != "{}") {
+			parcelList = JSON.parse(option.parcelList)
+			eventChannel = getCurrentInstance().proxy.getOpenerEventChannel();
+		}
 		uni.getStorage({
 			key: 'user',
 			success(res) {
@@ -55,10 +56,10 @@
 						// uni.navigateTo({
 						// 	url:'/pages/GetParcel/GetParcel'
 						// })
-						eventChannel.emit('updateParcelList',parcelList)
+						eventChannel.emit('updateParcelList', parcelList)
 						uni.navigateBack()
 						uni.showToast({
-							icon:'none',
+							icon: 'none',
 							title: '该站点包裹已全部取出'
 						})
 
@@ -69,8 +70,7 @@
 						title: res.msg
 					})
 				})
-		}
-		else{
+		} else {
 			uni.navigateBack()
 		}
 	}

@@ -54,21 +54,27 @@
 			message: '姓名不能为空',
 			trigger: ['blur']
 		},
-		contact: [{
+		// contact: [{
+		// 	type: 'string',
+		// 	required: true,
+		// 	message: '手机号不能为空',
+		// 	trigger: ['blur']
+		// },
+		// {
+		// 	validator: (rule, value, callback) => {
+		// 		if (value.length < 11) return false
+		// 		return true
+		// 	},
+		// 	message: '请输入有效手机号',
+		// 	trigger: ['blur']
+		// }
+		// ],
+		contact: {
 			type: 'string',
 			required: true,
 			message: '手机号不能为空',
 			trigger: ['blur']
 		},
-		{
-			validator: (rule, value, callback) => {
-				if (value.length < 11) return false
-				return true
-			},
-			message: '请输入有效手机号',
-			trigger: ['blur']
-		}
-		],
 		password: {
 			type: 'string',
 			required: true,
