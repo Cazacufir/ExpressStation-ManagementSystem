@@ -33,7 +33,7 @@
 						<u-steps-item title="已下单"></u-steps-item>
 						<u-steps-item title="已出库"></u-steps-item>
 						<u-steps-item title="运输中"></u-steps-item>
-						<u-steps-item title="待签收"></u-steps-item>
+						<u-steps-item title="待取件"></u-steps-item>
 						<u-steps-item title="已签收"></u-steps-item>
 					</u-steps>
 				</div>
@@ -239,7 +239,7 @@
 	const judgeState = computed(() => {
 		if (parcel.state.includes('等待揽收')) return 0
 		else if (parcel.state == '已揽收') return 1
-		else if (parcel.state == '运输中') return 2
+		else if (parcel.state == '运输中' || parcel.state == '派送中') return 2
 		else if (parcel.state == '待取件') return 3
 		else{
 			return 4

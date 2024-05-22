@@ -437,7 +437,7 @@ const getParcelCount = async (hub_id) => {
     }
 
     let sumArray = []
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 7; i++) {
         sumArray[i] = sendArray[i] + receiveArray[i]
     }
     console.log("🚀 ~ getParcelCount ~ receiveArray:", receiveArray)

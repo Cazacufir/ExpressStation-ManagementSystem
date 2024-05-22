@@ -269,6 +269,7 @@
 		width: 90%;
 		border-radius: 50rpx;
 		padding: 15rpx 25rpx;
+		gap:5rpx
 	}
 
 	.parcelHead {
